@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 
 from apps.permissions.decorators import hr_or_admin_required
 from apps.shifts.forms import CompanyHolidayForm, ShiftAssignmentForm, WorkShiftForm
@@ -9,44 +9,103 @@ from apps.shifts.models import CompanyHoliday, ShiftAssignment, WorkShift
 
 @login_required
 def shift_list_view(request):
-    shifts = WorkShift.objects.all()
+    shifts = WorkShift.objects.all().order_by('start_time')
     assignments = ShiftAssignment.objects.filter(is_active=True).select_related('employee', 'shift')[:30]
+    
+    # Initialize an empty form for the quick modal creation
+    form = WorkShiftForm()
+    
     return render(request, 'shifts/shift_list.html', {
         'shifts': shifts,
         'assignments': assignments,
+        'form': form,
     })
 
-@login_required
-@hr_or_admin_required
-def shift_create_view(request):
-    form = WorkShiftForm(request.POST or None)
-    if request.method == 'POST' and form.is_valid():
-        shift = form.save()
-        messages.success(request, f"Shift '{shift.name}' created.")
-        return redirect('shifts:shift_list')
-    return render(request, 'shifts/shift_form.html', {'form': form, 'title': 'Create New Shift'})
 
 @login_required
-@hr_or_admin_required
+def shift_create_view(request):
+    """
+    Create a new work shift with timing, grace period, and full/half day hours.
+    """
+    if request.method == 'POST':
+        form = WorkShiftForm(request.POST)
+        if form.is_valid():
+            shift = form.save()
+            messages.success(request, f"Work Shift '{shift.name}' ({shift.code}) created successfully.")
+            return redirect('shifts:shift_list')
+        else:
+            messages.error(request, "Please correct the errors in the form below.")
+    else:
+        form = WorkShiftForm()
+
+    return render(request, 'shifts/shift_form.html', {
+        'form': form,
+        'title': 'Create New Work Shift',
+        'is_edit': False
+    })
+
+
+@login_required
+def shift_edit_view(request, shift_id):
+    """
+    Edit existing work shift parameters.
+    """
+    shift = get_object_or_404(WorkShift, id=shift_id)
+    if request.method == 'POST':
+        form = WorkShiftForm(request.POST, instance=shift)
+        if form.is_valid():
+            shift = form.save()
+            messages.success(request, f"Work Shift '{shift.name}' updated successfully.")
+            return redirect('shifts:shift_list')
+        else:
+            messages.error(request, "Please correct the errors in the form below.")
+    else:
+        form = WorkShiftForm(instance=shift)
+
+    return render(request, 'shifts/shift_form.html', {
+        'form': form,
+        'shift': shift,
+        'title': f"Edit Shift — {shift.name}",
+        'is_edit': True
+    })
+
+
+@login_required
+def shift_delete_view(request, shift_id):
+    """
+    Delete or deactivate work shift.
+    """
+    shift = get_object_or_404(WorkShift, id=shift_id)
+    if request.method == 'POST':
+        name = shift.name
+        shift.delete()
+        messages.success(request, f"Shift '{name}' deleted successfully.")
+        return redirect('shifts:shift_list')
+
+    return render(request, 'shifts/shift_confirm_delete.html', {'shift': shift})
+
+
+@login_required
 def shift_assign_view(request):
     form = ShiftAssignmentForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
         assignment = form.save()
-        messages.success(request, f"Shift assigned to {assignment.employee.full_name}.")
+        messages.success(request, f"Shift '{assignment.shift.name}' assigned to {assignment.employee.full_name}.")
         return redirect('shifts:shift_list')
     return render(request, 'shifts/shift_assign_form.html', {'form': form})
+
 
 @login_required
 def holiday_list_view(request):
     holidays = CompanyHoliday.objects.all().order_by('date')
     return render(request, 'shifts/holiday_list.html', {'holidays': holidays})
 
+
 @login_required
-@hr_or_admin_required
 def holiday_create_view(request):
     form = CompanyHolidayForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
         holiday = form.save()
-        messages.success(request, f"Holiday '{holiday.name}' added.")
+        messages.success(request, f"Holiday '{holiday.name}' added successfully.")
         return redirect('shifts:holiday_list')
     return render(request, 'shifts/holiday_form.html', {'form': form})

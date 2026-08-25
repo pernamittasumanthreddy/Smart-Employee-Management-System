@@ -42,6 +42,7 @@ URLS_TO_TEST = [
 
     # 4. Attendance
     ("/attendance/my-attendance/", 200),
+    ("/attendance/monthly/", 200),
     ("/attendance/department-summary/", 200),
 
     # 5. Leave Management
@@ -51,6 +52,7 @@ URLS_TO_TEST = [
 
     # 6. Shifts & Holidays
     ("/shifts/", 200),
+    ("/shifts/create/", 200),
     ("/shifts/holidays/", 200),
 
     # 7. Workload

@@ -1,17 +1,169 @@
 {% extends 'base.html' %}
 {% block title %}{{ title }} — Smart Employee Management System{% endblock %}
+
 {% block content %}
-<div class="ems-page-header"><div><h1 class="ems-page-heading">{{ title }}</h1></div></div>
-<div class="ems-card"><div class="ems-card-body p-4"><form method="post">{% csrf_token %}
-    <div class="row g-3">
-        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Shift Name *</label>{{ form.name }}</div>
-        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Code *</label>{{ form.code }}</div>
-        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Start Time *</label>{{ form.start_time }}</div>
-        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">End Time *</label>{{ form.end_time }}</div>
-        <div class="col-12 col-md-4"><label class="form-label small fw-semibold">Grace Minutes</label>{{ form.grace_period_minutes }}</div>
-        <div class="col-12 col-md-4"><label class="form-label small fw-semibold">Half Day Hours</label>{{ form.half_day_hours }}</div>
-        <div class="col-12 col-md-4"><label class="form-label small fw-semibold">Full Day Hours</label>{{ form.full_day_hours }}</div>
+<div class="ems-page-header">
+    <div>
+        <h1 class="ems-page-heading">
+            <i class="bi bi-clock-fill text-primary"></i> {{ title }}
+        </h1>
+        <p class="ems-page-subheading">Define work shift schedules, start/end times, and grace periods</p>
     </div>
-    <div class="d-flex justify-content-end gap-2 mt-4"><button type="submit" class="btn btn-primary px-4">Save Shift</button></div>
-</form></div></div>
+    <div>
+        <a href="{% url 'shifts:shift_list' %}" class="btn btn-outline-secondary btn-sm rounded-pill">
+            <i class="bi bi-arrow-left me-1"></i>Back to Shift List
+        </a>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+        <!-- Quick Presets -->
+        {% if not is_edit %}
+        <div class="ems-card p-3 mb-3 bg-white border">
+            <label class="form-label small fw-bold text-muted text-uppercase mb-2">
+                <i class="bi bi-lightning-charge-fill text-warning me-1"></i>Quick Autofill Presets
+            </label>
+            <div class="d-flex flex-wrap gap-2">
+                <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill" onclick="setPreset('General Day Shift', 'GEN-01', '09:00', '17:30', 15, 8.0, 4.0, false)">
+                    General (09:00 - 17:30)
+                </button>
+                <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill" onclick="setPreset('Morning Shift', 'MS-01', '07:00', '15:30', 15, 8.0, 4.0, false)">
+                    Morning (07:00 - 15:30)
+                </button>
+                <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill" onclick="setPreset('Evening Shift', 'ES-01', '15:00', '23:30', 15, 8.0, 4.0, false)">
+                    Evening (15:00 - 23:30)
+                </button>
+                <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill" onclick="setPreset('Night Shift', 'NS-01', '23:00', '07:30', 15, 8.0, 4.0, true)">
+                    Night (23:00 - 07:30)
+                </button>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Form Card -->
+        <div class="ems-card">
+            <div class="ems-card-header bg-white border-bottom">
+                <h5 class="ems-card-title mb-0">
+                    <i class="bi bi-sliders text-primary me-2"></i>Shift Configuration
+                </h5>
+            </div>
+            <div class="ems-card-body p-4">
+                <form method="post" id="shiftForm">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger small py-2 mb-3">
+                        {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <div class="row g-3">
+                        <div class="col-12 col-md-7">
+                            <label class="form-label small fw-semibold" for="{{ form.name.id_for_label }}">
+                                Shift Name <span class="text-danger">*</span>
+                            </label>
+                            {{ form.name }}
+                            {% if form.name.errors %}
+                            <div class="text-danger small mt-1">{{ form.name.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-12 col-md-5">
+                            <label class="form-label small fw-semibold" for="{{ form.code.id_for_label }}">
+                                Shift Code <span class="text-danger">*</span>
+                            </label>
+                            {{ form.code }}
+                            {% if form.code.errors %}
+                            <div class="text-danger small mt-1">{{ form.code.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-12 col-sm-6">
+                            <label class="form-label small fw-semibold" for="{{ form.start_time.id_for_label }}">
+                                Start Time <span class="text-danger">*</span>
+                            </label>
+                            {{ form.start_time }}
+                            {% if form.start_time.errors %}
+                            <div class="text-danger small mt-1">{{ form.start_time.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-12 col-sm-6">
+                            <label class="form-label small fw-semibold" for="{{ form.end_time.id_for_label }}">
+                                End Time <span class="text-danger">*</span>
+                            </label>
+                            {{ form.end_time }}
+                            {% if form.end_time.errors %}
+                            <div class="text-danger small mt-1">{{ form.end_time.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                            <label class="form-label small fw-semibold" for="{{ form.grace_period_minutes.id_for_label }}">
+                                Grace Period (Minutes)
+                            </label>
+                            {{ form.grace_period_minutes }}
+                            <div class="text-muted" style="font-size: 0.72rem;">Allowed late check-in before penalty</div>
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                            <label class="form-label small fw-semibold" for="{{ form.full_day_hours.id_for_label }}">
+                                Full Day Hours (Required)
+                            </label>
+                            {{ form.full_day_hours }}
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                            <label class="form-label small fw-semibold" for="{{ form.half_day_hours.id_for_label }}">
+                                Half Day Hours (Required)
+                            </label>
+                            {{ form.half_day_hours }}
+                        </div>
+
+                        <div class="col-12">
+                            <div class="d-flex gap-4 p-3 bg-light rounded-3 border mt-2">
+                                <div class="form-check">
+                                    {{ form.is_night_shift }}
+                                    <label class="form-check-label text-dark small fw-semibold" for="{{ form.is_night_shift.id_for_label }}">
+                                        Night Shift Schedule (Crosses midnight)
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    {{ form.is_active }}
+                                    <label class="form-check-label text-dark small fw-semibold" for="{{ form.is_active.id_for_label }}">
+                                        Active Shift Status
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                        <a href="{% url 'shifts:shift_list' %}" class="btn btn-outline-secondary">
+                            Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary px-4 fw-semibold" onclick="if(window.emsAudio) window.emsAudio.playChime();">
+                            <i class="bi bi-check-lg me-1"></i>{% if is_edit %}Update Shift{% else %}Save & Create Shift{% endif %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function setPreset(name, code, start, end, grace, fullHrs, halfHrs, isNight) {
+    if(window.emsAudio) window.emsAudio.playPop();
+    document.getElementById('id_name').value = name;
+    document.getElementById('id_code').value = code;
+    document.getElementById('id_start_time').value = start;
+    document.getElementById('id_end_time').value = end;
+    document.getElementById('id_grace_period_minutes').value = grace;
+    document.getElementById('id_full_day_hours').value = fullHrs;
+    document.getElementById('id_half_day_hours').value = halfHrs;
+    document.getElementById('id_is_night_shift').checked = isNight;
+}
+</script>
 {% endblock %}

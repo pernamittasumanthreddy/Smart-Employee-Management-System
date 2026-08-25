@@ -1,20 +1,304 @@
 {% extends 'base.html' %}
-{% block title %}Shifts & Schedules — Smart Employee Management System{% endblock %}
+{% block title %}Work Shifts & Rosters — Smart Employee Management System{% endblock %}
+
 {% block content %}
 <div class="ems-page-header">
-    <div><h1 class="ems-page-heading"><i class="bi bi-clock-fill text-primary"></i> Work Shifts & Roster Assignments</h1></div>
-    <div>{% if is_hr_or_admin %}<a href="{% url 'shifts:shift_create' %}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>Create Shift</a> <a href="{% url 'shifts:shift_assign' %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-person-check me-1"></i>Assign Shift</a>{% endif %}</div>
+    <div>
+        <h1 class="ems-page-heading"><i class="bi bi-clock-fill text-primary"></i> Work Shifts & Roster Management</h1>
+        <p class="ems-page-subheading">Configure company work shifts, timing schedules, grace periods, and employee assignments</p>
+    </div>
+    <div class="d-flex flex-wrap gap-2 align-items-center">
+        <!-- Add New Shift Modal Button -->
+        <button type="button" class="btn btn-primary btn-sm rounded-pill px-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#addShiftModal">
+            <i class="bi bi-plus-lg me-1"></i>Add New Shift
+        </button>
+
+        <!-- Direct Form Link -->
+        <a href="{% url 'shifts:shift_create' %}" class="btn btn-outline-primary btn-sm rounded-pill">
+            <i class="bi bi-sliders me-1"></i>Shift Form
+        </a>
+
+        <!-- Assign Shift -->
+        <a href="{% url 'shifts:shift_assign' %}" class="btn btn-outline-success btn-sm rounded-pill">
+            <i class="bi bi-person-check me-1"></i>Assign to Employee
+        </a>
+
+        <!-- Holidays -->
+        <a href="{% url 'shifts:holiday_list' %}" class="btn btn-outline-secondary btn-sm rounded-pill">
+            <i class="bi bi-calendar-event me-1"></i>Company Holidays
+        </a>
+    </div>
 </div>
-<div class="row g-4 mb-4">
-    {% for s in shifts %}
-    <div class="col-12 col-md-4">
-        <div class="ems-card p-3">
-            <h5 class="fw-bold mb-1">{{ s.name }}</h5>
-            <div class="badge bg-light text-dark border mb-2 font-monospace">{{ s.code }}</div>
-            <div class="text-muted small mb-2"><i class="bi bi-clock me-1"></i>{{ s.start_time }} to {{ s.end_time }} (Grace: {{ s.grace_period_minutes }}m)</div>
-            <div class="small text-muted">Full Day: {{ s.full_day_hours }}h | Half Day: {{ s.half_day_hours }}h</div>
+
+<!-- Active Shifts Grid -->
+<div class="mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold mb-0 text-dark">
+            <i class="bi bi-grid-fill text-primary me-2"></i>Active Work Shifts ({{ shifts|length }})
+        </h5>
+        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addShiftModal">
+            <i class="bi bi-plus-circle me-1"></i>New Shift
+        </button>
+    </div>
+
+    <div class="row g-3">
+        {% for s in shifts %}
+        <div class="col-12 col-md-6 col-xl-4">
+            <div class="ems-card h-100 p-4 position-relative border-start border-4 {% if s.is_night_shift %}border-purple bg-light{% elif s.is_active %}border-primary bg-white{% else %}border-secondary bg-light{% endif %} shadow-sm">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                        <h5 class="fw-bold text-dark mb-1">{{ s.name }}</h5>
+                        <span class="badge bg-light text-primary border font-monospace px-2 py-1 small">{{ s.code }}</span>
+                    </div>
+                    <div>
+                        {% if s.is_night_shift %}
+                        <span class="badge bg-purple-subtle text-purple border border-purple-subtle rounded-pill px-2 py-1 small">
+                            <i class="bi bi-moon-stars-fill me-1"></i>Night Shift
+                        </span>
+                        {% elif s.is_active %}
+                        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-1 small">
+                            <i class="bi bi-check-circle-fill me-1"></i>Active
+                        </span>
+                        {% else %}
+                        <span class="badge bg-secondary-subtle text-secondary rounded-pill px-2 py-1 small">Inactive</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Shift Timing Display -->
+                <div class="p-3 my-3 bg-light rounded-3 border">
+                    <div class="d-flex align-items-center justify-content-between mb-1">
+                        <span class="text-muted small"><i class="bi bi-sunrise text-warning me-1"></i>Start Time:</span>
+                        <span class="fw-bold text-dark font-monospace">{{ s.start_time|time:"H:i" }}</span>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between mb-1">
+                        <span class="text-muted small"><i class="bi bi-sunset text-danger me-1"></i>End Time:</span>
+                        <span class="fw-bold text-dark font-monospace">{{ s.end_time|time:"H:i" }}</span>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <span class="text-muted small"><i class="bi bi-stopwatch text-info me-1"></i>Grace Period:</span>
+                        <span class="badge bg-info-subtle text-info border border-info-subtle">{{ s.grace_period_minutes }} mins</span>
+                    </div>
+                </div>
+
+                <!-- Hours Breakdown -->
+                <div class="d-flex justify-content-between text-muted small mb-3">
+                    <span>Full Day: <strong class="text-dark">{{ s.full_day_hours }}h</strong></span>
+                    <span>Half Day: <strong class="text-dark">{{ s.half_day_hours }}h</strong></span>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="d-flex gap-2 pt-2 border-top mt-auto">
+                    <a href="{% url 'shifts:shift_edit' s.id %}" class="btn btn-outline-primary btn-sm w-100">
+                        <i class="bi bi-pencil-square me-1"></i>Edit
+                    </a>
+                    <a href="{% url 'shifts:shift_assign' %}" class="btn btn-outline-success btn-sm w-100">
+                        <i class="bi bi-person-plus me-1"></i>Assign
+                    </a>
+                    <a href="{% url 'shifts:shift_delete' s.id %}" class="btn btn-outline-danger btn-sm" title="Delete Shift">
+                        <i class="bi bi-trash"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="ems-card p-5 text-center bg-white">
+                <i class="bi bi-clock-history text-muted fs-1 d-block mb-3"></i>
+                <h5 class="fw-bold">No Work Shifts Configured</h5>
+                <p class="text-muted small mb-3">Create standard working shifts (e.g. General Shift 09:00 - 17:30) to automate attendance tracking.</p>
+                <button type="button" class="btn btn-primary rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#addShiftModal">
+                    <i class="bi bi-plus-lg me-1"></i>Add First Shift
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Employee Shift Assignments Table -->
+<div class="ems-card">
+    <div class="ems-card-header d-flex justify-content-between align-items-center">
+        <div>
+            <h5 class="ems-card-title mb-0"><i class="bi bi-person-lines-fill text-primary me-2"></i>Active Employee Shift Rosters</h5>
+            <span class="text-muted small">Current assigned working shifts</span>
+        </div>
+        <a href="{% url 'shifts:shift_assign' %}" class="btn btn-sm btn-primary">
+            <i class="bi bi-person-plus me-1"></i>Assign Employee to Shift
+        </a>
+    </div>
+    <div class="ems-card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover ems-table mb-0 align-middle">
+                <thead>
+                    <tr>
+                        <th>Employee</th>
+                        <th>Department</th>
+                        <th>Assigned Shift</th>
+                        <th>Schedule Timing</th>
+                        <th>Effective Period</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for a in assignments %}
+                    <tr>
+                        <td>
+                            <div class="fw-semibold text-dark">{{ a.employee.full_name }}</div>
+                            <div class="text-muted small font-monospace">{{ a.employee.employee_id }}</div>
+                        </td>
+                        <td>{{ a.employee.department.name|default:"General" }}</td>
+                        <td>
+                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle fw-semibold px-2.5 py-1">
+                                {{ a.shift.name }} ({{ a.shift.code }})
+                            </span>
+                        </td>
+                        <td>
+                            <span class="font-monospace fw-semibold">{{ a.shift.start_time|time:"H:i" }} - {{ a.shift.end_time|time:"H:i" }}</span>
+                        </td>
+                        <td>
+                            <div class="small">From: {{ a.start_date|date:"M d, Y" }}</div>
+                            <div class="text-muted small">To: {{ a.end_date|date:"M d, Y"|default:"Ongoing" }}</div>
+                        </td>
+                        <td>
+                            {% if a.is_active %}
+                            <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2.5 py-1 small">Active</span>
+                            {% else %}
+                            <span class="badge bg-secondary-subtle text-secondary rounded-pill px-2.5 py-1 small">Inactive</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">No active shift assignments found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
-    {% endfor %}
 </div>
+
+<!-- Modal: Quick Add New Shift -->
+<div class="modal fade" id="addShiftModal" tabindex="-1" aria-labelledby="addShiftModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+            <div class="modal-header bg-light border-bottom p-3.5">
+                <h5 class="modal-title fw-bold text-dark" id="addShiftModalLabel">
+                    <i class="bi bi-clock-fill text-primary me-2"></i>Add New Work Shift
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" action="{% url 'shifts:shift_create' %}">
+                {% csrf_token %}
+                <div class="modal-body p-4">
+                    <!-- Quick Presets -->
+                    <div class="mb-3 p-3 bg-light rounded-3 border">
+                        <label class="form-label small fw-bold text-muted text-uppercase mb-2">
+                            <i class="bi bi-lightning-charge-fill text-warning me-1"></i>1-Click Shift Presets
+                        </label>
+                        <div class="d-flex flex-wrap gap-2">
+                            <button type="button" class="btn btn-outline-secondary btn-xs rounded-pill px-2.5 py-1" onclick="setShiftPreset('General Shift', 'GEN-01', '09:00', '17:30', 15, 8.0, 4.0, false)">
+                                General (09:00 - 17:30)
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary btn-xs rounded-pill px-2.5 py-1" onclick="setShiftPreset('Morning Shift', 'MS-01', '07:00', '15:30', 15, 8.0, 4.0, false)">
+                                Morning (07:00 - 15:30)
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary btn-xs rounded-pill px-2.5 py-1" onclick="setShiftPreset('Evening Shift', 'ES-01', '15:00', '23:30', 15, 8.0, 4.0, false)">
+                                Evening (15:00 - 23:30)
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary btn-xs rounded-pill px-2.5 py-1" onclick="setShiftPreset('Night Shift', 'NS-01', '23:00', '07:30', 15, 8.0, 4.0, true)">
+                                Night (23:00 - 07:30)
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-12 col-md-7">
+                            <label class="form-label fw-semibold text-secondary small" for="id_name">
+                                Shift Name <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" name="name" id="id_name" class="form-control" placeholder="e.g. General Day Shift" required>
+                        </div>
+                        <div class="col-12 col-md-5">
+                            <label class="form-label fw-semibold text-secondary small" for="id_code">
+                                Shift Code <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" name="code" id="id_code" class="form-control" placeholder="e.g. GEN-01" required>
+                        </div>
+
+                        <div class="col-12 col-sm-6">
+                            <label class="form-label fw-semibold text-secondary small" for="id_start_time">
+                                Start Time <span class="text-danger">*</span>
+                            </label>
+                            <input type="time" name="start_time" id="id_start_time" class="form-control" value="09:00" required>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <label class="form-label fw-semibold text-secondary small" for="id_end_time">
+                                End Time <span class="text-danger">*</span>
+                            </label>
+                            <input type="time" name="end_time" id="id_end_time" class="form-control" value="17:30" required>
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                            <label class="form-label fw-semibold text-secondary small" for="id_grace_period_minutes">
+                                Grace Period (Mins)
+                            </label>
+                            <input type="number" name="grace_period_minutes" id="id_grace_period_minutes" class="form-control" value="15" min="0">
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label fw-semibold text-secondary small" for="id_full_day_hours">
+                                Full Day Required (Hrs)
+                            </label>
+                            <input type="number" name="full_day_hours" id="id_full_day_hours" class="form-control" value="8.0" step="0.5" min="1">
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label fw-semibold text-secondary small" for="id_half_day_hours">
+                                Half Day Required (Hrs)
+                            </label>
+                            <input type="number" name="half_day_hours" id="id_half_day_hours" class="form-control" value="4.0" step="0.5" min="1">
+                        </div>
+
+                        <div class="col-12">
+                            <div class="d-flex gap-4 p-2 bg-light rounded-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="is_night_shift" id="id_is_night_shift">
+                                    <label class="form-check-label text-dark small fw-semibold" for="id_is_night_shift">
+                                        Night Shift Schedule
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="is_active" id="id_is_active" checked>
+                                    <label class="form-check-label text-dark small fw-semibold" for="id_is_active">
+                                        Shift Is Active
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light p-3">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary px-4 fw-semibold" onclick="if(window.emsAudio) window.emsAudio.playChime();">
+                        <i class="bi bi-check-lg me-1"></i>Save & Create Shift
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function setShiftPreset(name, code, start, end, grace, fullHrs, halfHrs, isNight) {
+    if(window.emsAudio) window.emsAudio.playPop();
+    document.getElementById('id_name').value = name;
+    document.getElementById('id_code').value = code;
+    document.getElementById('id_start_time').value = start;
+    document.getElementById('id_end_time').value = end;
+    document.getElementById('id_grace_period_minutes').value = grace;
+    document.getElementById('id_full_day_hours').value = fullHrs;
+    document.getElementById('id_half_day_hours').value = halfHrs;
+    document.getElementById('id_is_night_shift').checked = isNight;
+}
+</script>
 {% endblock %}

@@ -97,6 +97,25 @@
                                 </div>
                             </div>
                             <span class="badge bg-light text-muted border">Jump &rarr;</span>
+                        <a href="{% url 'attendance:monthly_attendance' %}" class="list-group-item list-group-item-action d-flex align-items-center justify-content-between rounded-3 border-0 py-2.5 px-3 mb-1 ems-cmd-item">
+                            <div class="d-flex align-items-center gap-2.5">
+                                <div class="ems-cmd-icon-box bg-warning-subtle text-warning"><i class="bi bi-calendar3"></i></div>
+                                <div>
+                                    <div class="fw-semibold text-dark">Monthly Attendance Matrix</div>
+                                    <div class="text-muted small">View month-by-month attendance breakdown & stats</div>
+                                </div>
+                            </div>
+                            <span class="badge bg-light text-muted border">Jump &rarr;</span>
+                        </a>
+                        <a href="{% url 'shifts:shift_create' %}" class="list-group-item list-group-item-action d-flex align-items-center justify-content-between rounded-3 border-0 py-2.5 px-3 mb-1 ems-cmd-item">
+                            <div class="d-flex align-items-center gap-2.5">
+                                <div class="ems-cmd-icon-box bg-purple-subtle text-purple"><i class="bi bi-plus-circle"></i></div>
+                                <div>
+                                    <div class="fw-semibold text-dark">Add New Work Shift</div>
+                                    <div class="text-muted small">Create shift schedule with start/end times and grace minutes</div>
+                                </div>
+                            </div>
+                            <span class="badge bg-light text-muted border">Jump &rarr;</span>
                         </a>
                     </div>
 

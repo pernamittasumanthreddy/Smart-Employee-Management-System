@@ -69,7 +69,13 @@
         <li class="ems-nav-item">
             <a href="{% url 'attendance:my_attendance' %}" class="ems-nav-link">
                 <i class="bi bi-clock-history"></i>
-                <span>Attendance</span>
+                <span>Daily Attendance</span>
+            </a>
+        </li>
+        <li class="ems-nav-item">
+            <a href="{% url 'attendance:monthly_attendance' %}" class="ems-nav-link">
+                <i class="bi bi-calendar3"></i>
+                <span>Monthly Attendance</span>
             </a>
         </li>
         <li class="ems-nav-item">
@@ -80,15 +86,21 @@
         </li>
         <li class="ems-nav-item">
             <a href="{% url 'shifts:shift_list' %}" class="ems-nav-link">
-                <i class="bi bi-calendar-range"></i>
-                <span>Shifts & Holidays</span>
+                <i class="bi bi-clock-fill"></i>
+                <span>Work Shifts</span>
+            </a>
+        </li>
+        <li class="ems-nav-item">
+            <a href="{% url 'shifts:shift_create' %}" class="ems-nav-link">
+                <i class="bi bi-plus-circle"></i>
+                <span>+ Add Shift</span>
             </a>
         </li>
         {% if is_manager_or_above %}
         <li class="ems-nav-item">
             <a href="{% url 'workload:dashboard' %}" class="ems-nav-link">
                 <i class="bi bi-pie-chart"></i>
-                <span>Workload Management</span>
+                <span>Workload Capacity</span>
             </a>
         </li>
         {% endif %}

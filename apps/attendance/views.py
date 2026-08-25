@@ -1,15 +1,20 @@
-from datetime import datetime
+import calendar
+import csv
+from datetime import date, datetime
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Avg, Count, Q
-from django.shortcuts import redirect, render
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
 from apps.attendance.models import AttendanceRecord, AttendanceStatus
 from apps.attendance.services import AttendanceService
+from apps.employees.models import Employee
 from apps.organization.models import Department
 from apps.permissions.decorators import manager_or_above_required
+from apps.shifts.models import CompanyHoliday
 
 
 @login_required
@@ -37,6 +42,7 @@ def punch_in_out_action(request):
     
     return redirect('attendance:my_attendance')
 
+
 @login_required
 def my_attendance(request):
     employee = getattr(request.user, 'employee_profile', None)
@@ -62,6 +68,217 @@ def my_attendance(request):
         'absent_days': absent_days,
         'avg_hours': round(avg_hours, 1)
     })
+
+
+@login_required
+def monthly_attendance(request):
+    """
+    Monthly Attendance Overview:
+    Detailed calendar breakdown for a specific month and year with statistics,
+    daily status pills, working hours, and CSV export.
+    """
+    user = request.user
+    today = timezone.now().date()
+    
+    # 1. Determine target Year & Month
+    try:
+        selected_year = int(request.GET.get('year', today.year))
+    except (ValueError, TypeError):
+        selected_year = today.year
+
+    try:
+        selected_month = int(request.GET.get('month', today.month))
+        if selected_month < 1 or selected_month > 12:
+            selected_month = today.month
+    except (ValueError, TypeError):
+        selected_month = today.month
+
+    # 2. Determine target Employee
+    is_privileged = (
+        user.is_superuser or 
+        getattr(user, 'role', '') in ['ADMIN', 'HR', 'MANAGER']
+    )
+
+    employees_list = None
+    if is_privileged:
+        employees_list = Employee.objects.filter(employment_status='ACTIVE').select_related('department')
+
+    target_employee_id = request.GET.get('employee_id')
+    if is_privileged and target_employee_id:
+        target_employee = get_object_or_404(Employee, id=target_employee_id)
+    else:
+        target_employee = getattr(user, 'employee_profile', None)
+        if not target_employee:
+            target_employee = Employee.objects.filter(employment_status='ACTIVE').first() or Employee.objects.first()
+
+    if not target_employee:
+        messages.error(request, "No employee record found to view attendance.")
+        return redirect('authentication:dashboard')
+
+    # 3. Calculate date range for the month
+    num_days = calendar.monthrange(selected_year, selected_month)[1]
+    start_date = date(selected_year, selected_month, 1)
+    end_date = date(selected_year, selected_month, num_days)
+
+    # 4. Fetch records and holidays
+    records = AttendanceRecord.objects.filter(
+        employee=target_employee,
+        date__gte=start_date,
+        date__lte=end_date
+    )
+    records_by_date = {r.date: r for r in records}
+
+    holidays = CompanyHoliday.objects.filter(
+        date__gte=start_date,
+        date__lte=end_date
+    )
+    holidays_by_date = {h.date: h.name for h in holidays}
+
+    # 5. Build daily breakdown
+    daily_data = []
+    stats = {
+        'total_days': num_days,
+        'working_days': 0,
+        'present': 0,
+        'half_day': 0,
+        'on_leave': 0,
+        'holiday': 0,
+        'weekly_off': 0,
+        'absent': 0,
+        'late_count': 0,
+        'total_hours': 0.0,
+    }
+
+    month_name = calendar.month_name[selected_month]
+
+    for day in range(1, num_days + 1):
+        curr_date = date(selected_year, selected_month, day)
+        day_of_week = curr_date.strftime('%A')
+        is_weekend = curr_date.weekday() in (5, 6) # Saturday or Sunday
+        is_holiday = curr_date in holidays_by_date
+
+        record = records_by_date.get(curr_date)
+
+        if is_holiday:
+            status_display = 'Holiday'
+            badge_class = 'bg-info-subtle text-info border border-info-subtle'
+            stats['holiday'] += 1
+        elif is_weekend:
+            status_display = 'Weekly Off'
+            badge_class = 'bg-secondary-subtle text-secondary border border-secondary-subtle'
+            stats['weekly_off'] += 1
+        else:
+            stats['working_days'] += 1
+            if record:
+                if record.status == AttendanceStatus.PRESENT:
+                    status_display = 'Present'
+                    badge_class = 'bg-success-subtle text-success border border-success-subtle'
+                    stats['present'] += 1
+                elif record.status == AttendanceStatus.HALF_DAY:
+                    status_display = 'Half Day'
+                    badge_class = 'bg-warning-subtle text-warning border border-warning-subtle'
+                    stats['half_day'] += 1
+                elif record.status == AttendanceStatus.ON_LEAVE:
+                    status_display = 'On Leave'
+                    badge_class = 'bg-primary-subtle text-primary border border-primary-subtle'
+                    stats['on_leave'] += 1
+                else:
+                    status_display = 'Absent'
+                    badge_class = 'bg-danger-subtle text-danger border border-danger-subtle'
+                    stats['absent'] += 1
+            else:
+                if curr_date <= today:
+                    status_display = 'Absent'
+                    badge_class = 'bg-danger-subtle text-danger border border-danger-subtle'
+                    stats['absent'] += 1
+                else:
+                    status_display = 'Upcoming'
+                    badge_class = 'bg-light text-muted border'
+
+        if record:
+            if record.is_late:
+                stats['late_count'] += 1
+            stats['total_hours'] += float(record.total_working_hours or 0.0)
+
+        daily_data.append({
+            'date': curr_date,
+            'day_num': day,
+            'day_name': curr_date.strftime('%a'),
+            'full_day_name': day_of_week,
+            'is_weekend': is_weekend,
+            'is_holiday': is_holiday,
+            'holiday_name': holidays_by_date.get(curr_date, ''),
+            'record': record,
+            'status_display': status_display,
+            'badge_class': badge_class,
+            'check_in': record.check_in_time if record else None,
+            'check_out': record.check_out_time if record else None,
+            'hours': record.total_working_hours if record else 0.0,
+            'is_late': record.is_late if record else False,
+            'late_minutes': record.late_minutes if record else 0,
+        })
+
+    # Calculations
+    stats['total_hours'] = round(stats['total_hours'], 1)
+    stats['avg_daily_hours'] = round(stats['total_hours'] / max(stats['working_days'], 1), 1)
+    total_effective_presence = stats['present'] + (stats['half_day'] * 0.5)
+    stats['attendance_rate'] = round((total_effective_presence / max(stats['working_days'], 1)) * 100, 1) if stats['working_days'] > 0 else 100.0
+
+    # 6. CSV Export handler
+    if request.GET.get('export') == 'csv':
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename="Monthly_Attendance_{target_employee.employee_id}_{month_name}_{selected_year}.csv"'
+        
+        writer = csv.writer(response)
+        writer.writerow(['Monthly Attendance Report'])
+        writer.writerow(['Employee ID', target_employee.employee_id])
+        writer.writerow(['Employee Name', target_employee.full_name])
+        writer.writerow(['Department', target_employee.department.name if target_employee.department else 'N/A'])
+        writer.writerow(['Month / Year', f"{month_name} {selected_year}"])
+        writer.writerow([])
+        writer.writerow(['Date', 'Day', 'Status', 'Check In', 'Check Out', 'Total Hours', 'Late (Mins)', 'Notes'])
+        
+        for item in daily_data:
+            writer.writerow([
+                item['date'].strftime('%Y-%m-%d'),
+                item['day_name'],
+                item['status_display'],
+                item['check_in'].strftime('%H:%M:%S') if item['check_in'] else '--',
+                item['check_out'].strftime('%H:%M:%S') if item['check_out'] else '--',
+                item['hours'],
+                item['late_minutes'],
+                item['holiday_name'] or ''
+            ])
+            
+        writer.writerow([])
+        writer.writerow(['SUMMARY STATISTICS'])
+        writer.writerow(['Total Working Days', stats['working_days']])
+        writer.writerow(['Present Days', stats['present']])
+        writer.writerow(['Half Days', stats['half_day']])
+        writer.writerow(['On Leave', stats['on_leave']])
+        writer.writerow(['Absent Days', stats['absent']])
+        writer.writerow(['Total Hours Worked', stats['total_hours']])
+        writer.writerow(['Attendance Rate %', f"{stats['attendance_rate']}%"])
+        
+        return response
+
+    # 7. Generate list of available months and years for dropdowns
+    month_choices = [(i, calendar.month_name[i]) for i in range(1, 13)]
+    year_choices = [y for y in range(today.year - 2, today.year + 3)]
+
+    return render(request, 'attendance/monthly_attendance.html', {
+        'target_employee': target_employee,
+        'daily_data': daily_data,
+        'stats': stats,
+        'selected_year': selected_year,
+        'selected_month': selected_month,
+        'month_name': month_name,
+        'month_choices': month_choices,
+        'year_choices': year_choices,
+        'employees_list': employees_list,
+        'is_privileged': is_privileged,
+    })
+
 
 @login_required
 @manager_or_above_required
@@ -100,31 +317,31 @@ def attendance_roster(request):
         'late_count': late_count,
     })
 
+
 @login_required
 @manager_or_above_required
 def department_attendance_summary(request):
+    departments = Department.objects.filter(is_active=True)
     today = timezone.now().date()
-    departments = Department.objects.filter(is_active=True).annotate(
-        total_emp=Count('employees', filter=Q(employees__employment_status='ACTIVE'))
-    )
     
-    dept_stats = []
+    summary_data = []
     for dept in departments:
-        today_records = AttendanceRecord.objects.filter(employee__department=dept, date=today)
-        present = today_records.filter(status=AttendanceStatus.PRESENT).count()
-        late = today_records.filter(is_late=True).count()
-        absent = dept.total_emp - present
-        pct = round((present / dept.total_emp * 100), 1) if dept.total_emp > 0 else 0
-        dept_stats.append({
+        emp_count = dept.employees.filter(employment_status='ACTIVE').count()
+        present = AttendanceRecord.objects.filter(
+            employee__department=dept,
+            date=today,
+            status=AttendanceStatus.PRESENT
+        ).count()
+        rate = (present / emp_count * 100) if emp_count > 0 else 0
+        
+        summary_data.append({
             'department': dept,
-            'total': dept.total_emp,
-            'present': present,
-            'late': late,
-            'absent': max(0, absent),
-            'percentage': pct
+            'total_employees': emp_count,
+            'present_today': present,
+            'attendance_rate': round(rate, 1)
         })
-
+        
     return render(request, 'attendance/department_summary.html', {
-        'dept_stats': dept_stats,
+        'summary_data': summary_data,
         'today': today
     })

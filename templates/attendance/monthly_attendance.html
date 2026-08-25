@@ -1,0 +1,253 @@
+{% extends 'base.html' %}
+{% block title %}Monthly Attendance — Smart Employee Management System{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="ems-page-header">
+    <div>
+        <h1 class="ems-page-heading">
+            <i class="bi bi-calendar3 text-primary"></i> Monthly Attendance Matrix
+        </h1>
+        <p class="ems-page-subheading">
+            Comprehensive monthly attendance log, working hours, and presence records for <strong>{{ target_employee.full_name }}</strong> ({{ target_employee.employee_id }})
+        </p>
+    </div>
+    <div class="d-flex flex-wrap gap-2 align-items-center">
+        <!-- Navigation Tab Switcher -->
+        <div class="btn-group" role="group">
+            <a href="{% url 'attendance:my_attendance' %}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-clock-history me-1"></i>Daily Log
+            </a>
+            <a href="{% url 'attendance:monthly_attendance' %}" class="btn btn-primary btn-sm active">
+                <i class="bi bi-calendar3 me-1"></i>Monthly View
+            </a>
+            {% if is_manager_or_above %}
+            <a href="{% url 'attendance:roster' %}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-people me-1"></i>Department Roster
+            </a>
+            {% endif %}
+        </div>
+
+        <!-- CSV Export -->
+        <a href="?year={{ selected_year }}&month={{ selected_month }}{% if target_employee %}&employee_id={{ target_employee.id }}{% endif %}&export=csv" class="btn btn-outline-success btn-sm">
+            <i class="bi bi-file-earmark-spreadsheet me-1"></i>Export CSV
+        </a>
+    </div>
+</div>
+
+<!-- Month & Employee Filter Bar -->
+<div class="ems-card p-3 mb-4 bg-white shadow-sm">
+    <form method="get" class="row g-3 align-items-end">
+        <!-- Month Picker -->
+        <div class="col-12 col-sm-6 col-md-3">
+            <label class="form-label small fw-bold text-muted text-uppercase mb-1" for="monthSelect">
+                <i class="bi bi-calendar-month text-primary me-1"></i>Select Month
+            </label>
+            <select name="month" id="monthSelect" class="form-select form-select-sm" onchange="this.form.submit()">
+                {% for m_num, m_name in month_choices %}
+                <option value="{{ m_num }}" {% if m_num == selected_month %}selected{% endif %}>{{ m_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Year Picker -->
+        <div class="col-12 col-sm-6 col-md-2">
+            <label class="form-label small fw-bold text-muted text-uppercase mb-1" for="yearSelect">
+                <i class="bi bi-calendar-event text-primary me-1"></i>Select Year
+            </label>
+            <select name="year" id="yearSelect" class="form-select form-select-sm" onchange="this.form.submit()">
+                {% for y in year_choices %}
+                <option value="{{ y }}" {% if y == selected_year %}selected{% endif %}>{{ y }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Employee Switcher (For HR / Managers) -->
+        {% if is_privileged and employees_list %}
+        <div class="col-12 col-sm-12 col-md-4">
+            <label class="form-label small fw-bold text-muted text-uppercase mb-1" for="employeeSelect">
+                <i class="bi bi-person-badge text-primary me-1"></i>Employee Profile
+            </label>
+            <select name="employee_id" id="employeeSelect" class="form-select form-select-sm" onchange="this.form.submit()">
+                {% for emp in employees_list %}
+                <option value="{{ emp.id }}" {% if emp.id == target_employee.id %}selected{% endif %}>
+                    {{ emp.full_name }} ({{ emp.employee_id }}) — {{ emp.department.name|default:"General" }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        {% endif %}
+
+        <div class="col-12 col-md-3 d-flex gap-2">
+            <button type="submit" class="btn btn-primary btn-sm w-100">
+                <i class="bi bi-filter me-1"></i>Apply Filter
+            </button>
+            <a href="{% url 'attendance:monthly_attendance' %}" class="btn btn-outline-secondary btn-sm" title="Reset to Current Month">
+                <i class="bi bi-arrow-clockwise"></i>
+            </a>
+        </div>
+    </form>
+</div>
+
+<!-- Monthly Summary Stat KPI Cards -->
+<div class="row g-3 mb-4">
+    <!-- Attendance Rate -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="ems-stat-card">
+            <div class="ems-stat-icon primary"><i class="bi bi-percent"></i></div>
+            <div class="ems-stat-content">
+                <div class="ems-stat-label">Monthly Presence Rate</div>
+                <div class="ems-stat-value">{{ stats.attendance_rate }}%</div>
+                <div class="ems-stat-sub text-success">
+                    <i class="bi bi-check-circle-fill me-1"></i>{{ stats.present }} Present / {{ stats.working_days }} Working Days
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Total Working Hours -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="ems-stat-card">
+            <div class="ems-stat-icon success"><i class="bi bi-hourglass-split"></i></div>
+            <div class="ems-stat-content">
+                <div class="ems-stat-label">Hours Logged</div>
+                <div class="ems-stat-value">{{ stats.total_hours }} hrs</div>
+                <div class="ems-stat-sub text-muted">
+                    Avg {{ stats.avg_daily_hours }} hrs / day
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaves & Holidays -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="ems-stat-card">
+            <div class="ems-stat-icon warning"><i class="bi bi-calendar2-week"></i></div>
+            <div class="ems-stat-content">
+                <div class="ems-stat-label">Leaves & Offs</div>
+                <div class="ems-stat-value">{{ stats.on_leave|add:stats.holiday }}</div>
+                <div class="ems-stat-sub text-muted">
+                    {{ stats.on_leave }} Leaves | {{ stats.holiday }} Holidays | {{ stats.weekly_off }} Weekends
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Late Marks & Absences -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="ems-stat-card">
+            <div class="ems-stat-icon danger"><i class="bi bi-exclamation-octagon"></i></div>
+            <div class="ems-stat-content">
+                <div class="ems-stat-label">Lates & Absences</div>
+                <div class="ems-stat-value">{{ stats.late_count }}</div>
+                <div class="ems-stat-sub text-danger">
+                    <i class="bi bi-x-circle me-1"></i>{{ stats.absent }} Absent Days
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Daily Attendance Matrix Table -->
+<div class="ems-card">
+    <div class="ems-card-header d-flex justify-content-between align-items-center">
+        <div>
+            <h5 class="ems-card-title mb-0">
+                <i class="bi bi-table text-primary me-2"></i>Daily Breakdown for {{ month_name }} {{ selected_year }}
+            </h5>
+            <span class="text-muted small">Displaying all {{ stats.total_days }} calendar days</span>
+        </div>
+        <div class="d-flex gap-2">
+            <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 small">● Present: {{ stats.present }}</span>
+            <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-2 py-1 small">● Half Day: {{ stats.half_day }}</span>
+            <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1 small">● Absent: {{ stats.absent }}</span>
+        </div>
+    </div>
+    <div class="ems-card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover ems-table mb-0 align-middle">
+                <thead>
+                    <tr>
+                        <th style="width: 130px;">Date</th>
+                        <th style="width: 100px;">Day</th>
+                        <th style="width: 140px;">Status</th>
+                        <th style="width: 130px;">Check In</th>
+                        <th style="width: 130px;">Check Out</th>
+                        <th style="width: 120px;">Working Hours</th>
+                        <th style="width: 120px;">Punctuality</th>
+                        <th>Notes / Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for day in daily_data %}
+                    <tr class="{% if day.is_weekend %}bg-light opacity-75{% endif %}">
+                        <td class="fw-semibold font-monospace">
+                            {{ day.date|date:"M d, Y" }}
+                        </td>
+                        <td>
+                            <span class="fw-semibold {% if day.is_weekend %}text-muted{% else %}text-dark{% endif %}">
+                                {{ day.day_name }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge rounded-pill px-2.5 py-1 {{ day.badge_class }} small">
+                                {{ day.status_display }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if day.check_in %}
+                            <span class="font-monospace text-dark fw-semibold"><i class="bi bi-box-arrow-in-right text-success me-1"></i>{{ day.check_in|time:"H:i:s" }}</span>
+                            {% else %}
+                            <span class="text-muted small">--:--:--</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if day.check_out %}
+                            <span class="font-monospace text-dark fw-semibold"><i class="bi bi-box-arrow-right text-danger me-1"></i>{{ day.check_out|time:"H:i:s" }}</span>
+                            {% else %}
+                            <span class="text-muted small">--:--:--</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if day.hours > 0 %}
+                            <div class="d-flex align-items-center gap-1.5">
+                                <span class="fw-bold {% if day.hours >= 7.5 %}text-success{% elif day.hours >= 4.0 %}text-warning{% else %}text-danger{% endif %}">
+                                    {{ day.hours }}h
+                                </span>
+                            </div>
+                            {% else %}
+                            <span class="text-muted small">0.0h</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if day.is_late %}
+                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-0.5 small">
+                                <i class="bi bi-clock me-1"></i>Late {{ day.late_minutes }}m
+                            </span>
+                            {% elif day.check_in %}
+                            <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-0.5 small">
+                                <i class="bi bi-check2 me-1"></i>On Time
+                            </span>
+                            {% else %}
+                            <span class="text-muted small">--</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if day.is_holiday %}
+                            <span class="text-info fw-semibold small"><i class="bi bi-award-fill me-1"></i>{{ day.holiday_name }}</span>
+                            {% elif day.is_weekend %}
+                            <span class="text-muted small">Weekly Rest Day</span>
+                            {% elif day.record and day.record.notes %}
+                            <span class="text-muted small">{{ day.record.notes }}</span>
+                            {% else %}
+                            <span class="text-muted small">—</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
