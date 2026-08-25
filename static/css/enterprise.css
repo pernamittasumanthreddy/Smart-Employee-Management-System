@@ -13,6 +13,9 @@
   --ems-primary-glow: rgba(79, 70, 229, 0.25);
   
   --ems-secondary: #475569;
+  --ems-secondary-hover: #334155;
+  --ems-secondary-light: #f8fafc;
+  
   --ems-accent: #06b6d4;
   --ems-accent-hover: #0891b2;
   --ems-accent-light: #ecfeff;
@@ -32,6 +35,7 @@
   --ems-danger-glow: rgba(239, 68, 68, 0.2);
   
   --ems-info: #3b82f6;
+  --ems-info-hover: #2563eb;
   --ems-info-light: #eff6ff;
 
   /* Gradients */
@@ -185,6 +189,7 @@ h1, h2, h3, h4, h5, h6, .ems-brand-text, .ems-page-heading {
 /* Sidebar Search Filter Box */
 .ems-sidebar-search-container {
   padding: 0.85rem 1.15rem 0.25rem;
+  position: relative;
 }
 
 .ems-sidebar-search-input {
@@ -195,6 +200,7 @@ h1, h2, h3, h4, h5, h6, .ems-brand-text, .ems-page-heading {
   border-radius: 10px;
   padding: 0.45rem 0.75rem 0.45rem 2rem;
   transition: all 0.2s;
+  width: 100%;
 }
 
 .ems-sidebar-search-input:focus {
@@ -202,11 +208,12 @@ h1, h2, h3, h4, h5, h6, .ems-brand-text, .ems-page-heading {
   border-color: #818cf8;
   color: #ffffff;
   box-shadow: 0 0 12px rgba(129, 140, 248, 0.3);
+  outline: none;
 }
 
 .ems-sidebar-search-icon {
   position: absolute;
-  left: 0.75rem;
+  left: 1.75rem;
   top: 50%;
   transform: translateY(-50%);
   color: #64748b;
@@ -654,7 +661,9 @@ h1, h2, h3, h4, h5, h6, .ems-brand-text, .ems-page-heading {
   background-color: rgba(79, 70, 229, 0.02);
 }
 
-/* Custom Buttons */
+/* --------------------------------------------------------------------------
+   Buttons & Actions
+   -------------------------------------------------------------------------- */
 .btn {
   font-family: var(--ems-font-sans);
   font-weight: 600;
@@ -671,6 +680,7 @@ h1, h2, h3, h4, h5, h6, .ems-brand-text, .ems-page-heading {
 .btn-primary {
   background: var(--ems-grad-primary);
   border: none;
+  color: #ffffff;
   box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
 }
 
@@ -678,23 +688,129 @@ h1, h2, h3, h4, h5, h6, .ems-brand-text, .ems-page-heading {
   background: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
   box-shadow: 0 6px 18px rgba(79, 70, 229, 0.45);
   transform: translateY(-1px);
+  color: #ffffff;
 }
 
 .btn-success {
   background: var(--ems-grad-success);
   border: none;
+  color: #ffffff;
   box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.btn-success:hover, .btn-success:focus {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.45);
+  transform: translateY(-1px);
+  color: #ffffff;
+}
+
+.btn-warning {
+  background: var(--ems-grad-warning);
+  border: none;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.btn-warning:hover, .btn-warning:focus {
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+  box-shadow: 0 6px 18px rgba(245, 158, 11, 0.45);
+  transform: translateY(-1px);
+  color: #ffffff;
+}
+
+.btn-danger {
+  background: var(--ems-grad-danger);
+  border: none;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.btn-danger:hover, .btn-danger:focus {
+  background: linear-gradient(135deg, #dc2626 0%, #be123c 100%);
+  box-shadow: 0 6px 18px rgba(239, 68, 68, 0.45);
+  transform: translateY(-1px);
+  color: #ffffff;
 }
 
 .btn-outline-primary {
   color: var(--ems-primary);
   border-color: #c7d2fe;
+  background: transparent;
 }
 
 .btn-outline-primary:hover {
   background-color: var(--ems-primary-light);
   border-color: var(--ems-primary);
   color: var(--ems-primary);
+}
+
+.btn-outline-secondary {
+  color: var(--ems-secondary);
+  border-color: var(--ems-border-color);
+  background: transparent;
+}
+
+.btn-outline-secondary:hover {
+  background-color: var(--ems-border-light);
+  border-color: #cbd5e1;
+  color: var(--ems-text-main);
+}
+
+/* --------------------------------------------------------------------------
+   Forms & Controls
+   -------------------------------------------------------------------------- */
+.form-control, .form-select {
+  border-radius: var(--ems-radius-sm);
+  border: 1px solid var(--ems-border-color);
+  padding: 0.6rem 0.95rem;
+  font-size: 0.885rem;
+  color: var(--ems-text-main);
+  background-color: #ffffff;
+  transition: all 0.2s;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--ems-primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+  outline: none;
+}
+
+.form-label {
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 0.4rem;
+}
+
+/* --------------------------------------------------------------------------
+   Badges & Pills
+   -------------------------------------------------------------------------- */
+.badge {
+  font-weight: 600;
+  font-size: 0.75rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+}
+
+.badge-primary {
+  background-color: var(--ems-primary-light);
+  color: var(--ems-primary);
+}
+
+.badge-success {
+  background-color: var(--ems-success-light);
+  color: #065f46;
+}
+
+.badge-warning {
+  background-color: var(--ems-warning-light);
+  color: #92400e;
+}
+
+.badge-danger {
+  background-color: var(--ems-danger-light);
+  color: #991b1b;
 }
 
 /* Command Palette Modal Styling */
