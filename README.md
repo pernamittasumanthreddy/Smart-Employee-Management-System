@@ -121,6 +121,16 @@ Smart EMS features a glassmorphic user interface paired with a custom synthesize
 
 ---
 
+## ⚡ REST API Documentation & Endpoints
+
+Smart EMS delivers a RESTful API with JSON envelopes, query filtering, and automated validation:
+- **Comprehensive API Surface**: Endpoints across Employee records, Attendance punches, Payroll calculations, and ML Risk models.
+- **Predictable Responses**: Unified schema with status codes, metadata, and error descriptors.
+- **Swagger / Postman Ready**: Clean routing and predictable URL schemas for simple enterprise integration.
+- For complete technical specifications, see [API_DOCUMENTATION.md](documentation/API_DOCUMENTATION.md).
+
+---
+
 ## 📄 License
 Licensed under the [MIT License](LICENSE).
 
