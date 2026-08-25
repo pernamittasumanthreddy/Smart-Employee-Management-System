@@ -111,6 +111,16 @@ Smart EMS incorporates a military-grade Role-Based Access Control (RBAC) matrix 
 
 ---
 
+## 🎨 UI Improvements & Web Audio Engine
+
+Smart EMS features a glassmorphic user interface paired with a custom synthesized sound engine:
+- **Glassmorphic Surface Design**: Translucent layered cards, neon accents, and smooth CSS transitions.
+- **Web Audio Notification Engine**: Zero-dependency browser-synthesized chime harmonics for alerts and punches.
+- **Responsive Executive Dashboards**: Fluid layouts built on CSS Grid and Flexbox for mobile, tablet, and ultra-wide screens.
+- For complete technical specifications, see [UI_DESIGN_SYSTEM.md](documentation/UI_DESIGN_SYSTEM.md).
+
+---
+
 ## 📄 License
 Licensed under the [MIT License](LICENSE).
 
