@@ -3,14 +3,26 @@
         <div class="d-flex align-items-center gap-2">
             <span class="text-primary fw-bold fs-5">Smart EMS</span>
             <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2.5 py-1 small d-none d-lg-inline">
-                <i class="bi bi-patch-check-fill text-primary me-1"></i>Enterprise V2
+                <i class="bi bi-patch-check-fill text-primary me-1"></i>Next-Gen V2
             </span>
         </div>
-        <span class="text-muted fw-normal fs-6 d-none d-xl-inline ps-2 border-start">Workforce, HR & Operations</span>
+
+        <!-- Command Palette Trigger Search Box -->
+        <div class="ems-navbar-cmd-trigger d-none d-md-flex ms-3" data-bs-toggle="modal" data-bs-target="#emsCommandPalette" role="button">
+            <i class="bi bi-search text-muted"></i>
+            <span>Search or jump to module...</span>
+            <span class="ems-kbd-shortcut">Ctrl + K</span>
+        </div>
     </div>
 
     <div class="ems-navbar-right">
-        <!-- Quick Sound Toggle with Audio Feedback -->
+        <!-- Live Quick Attendance Widget -->
+        <a href="{% url 'attendance:my_attendance' %}" class="btn btn-sm btn-outline-success rounded-pill px-3 py-1.5 d-none d-lg-inline-flex align-items-center" title="Go to Attendance & Shift Logs">
+            <i class="bi bi-clock-history me-1.5"></i>
+            <span class="small fw-semibold">Attendance Log</span>
+        </a>
+
+        <!-- Sound Controls -->
         <button type="button" class="btn btn-sm btn-outline-primary ems-sound-toggle-btn rounded-pill px-3 py-1.5" title="Toggle Notification Chime">
             <i class="bi bi-volume-up-fill text-primary me-1"></i>
             <span class="d-none d-md-inline small fw-semibold">Sound On</span>
@@ -21,7 +33,7 @@
             <i class="bi bi-shield-check me-1"></i>{{ user_role_display }}
         </span>
 
-        <!-- Notification Bell Dropdown with Sound & Preview -->
+        <!-- Notification Bell Dropdown with Sound Preview -->
         <div class="dropdown">
             <a href="#" class="btn btn-light rounded-circle position-relative p-2.5 border shadow-sm" id="notifDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Notifications">
                 <i class="bi bi-bell fs-5 text-secondary"></i>
@@ -65,7 +77,7 @@
                     </li>
                 {% endif %}
                 <li class="p-2 text-center bg-light">
-                    <a href="{% url 'notifications:center' %}" class="text-decoration-none small text-muted">Manage notification settings &rarr;</a>
+                    <a href="{% url 'notifications:center' %}" class="text-decoration-none small text-muted">Notification center &rarr;</a>
                 </li>
             </ul>
         </div>

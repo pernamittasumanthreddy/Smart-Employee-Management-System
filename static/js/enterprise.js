@@ -1,6 +1,7 @@
 /**
- * Smart Employee Management System — Enterprise Core Scripts (V2 Ultra)
- * Interactive UI behaviors, Web Audio chimes, Live Toast notifications, and search helpers
+ * Smart Employee Management System — Enterprise Core Scripts (Next-Gen 2026 Edition)
+ * Features: Command Palette (Ctrl+K), Live Module Filtering, Web Audio Synthesizer,
+ * Live Toast Notifications, and Smooth Micro-interactions.
  */
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -14,7 +15,65 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // 2. Auto-dismiss alert banners after 6 seconds with smooth fade
+    // 2. Global Keyboard Shortcut for Command Palette (Ctrl+K / ⌘K)
+    document.addEventListener('keydown', function (e) {
+        if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) {
+            e.preventDefault();
+            const cmdModalEl = document.getElementById('emsCommandPalette');
+            if (cmdModalEl && typeof bootstrap !== 'undefined') {
+                const cmdModal = bootstrap.Modal.getOrCreateInstance(cmdModalEl);
+                cmdModal.toggle();
+                setTimeout(() => {
+                    const input = document.getElementById('emsCmdInput');
+                    if (input) input.focus();
+                }, 300);
+            }
+        }
+    });
+
+    // 3. Command Palette Live Search Filter
+    const cmdInput = document.getElementById('emsCmdInput');
+    if (cmdInput) {
+        cmdInput.addEventListener('keyup', function () {
+            const filter = this.value.toLowerCase();
+            const items = document.querySelectorAll('#emsCmdResults .ems-cmd-item, #emsCmdResults .ems-cmd-module-btn');
+            items.forEach(function (item) {
+                const text = item.textContent.toLowerCase();
+                const parentCol = item.closest('.col-6') || item;
+                if (text.indexOf(filter) > -1) {
+                    parentCol.style.display = '';
+                } else {
+                    parentCol.style.display = 'none';
+                }
+            });
+        });
+    }
+
+    // 4. Live Sidebar Module Filter
+    const sidebarFilterInput = document.getElementById('emsSidebarFilter');
+    if (sidebarFilterInput) {
+        sidebarFilterInput.addEventListener('keyup', function () {
+            const filter = this.value.toLowerCase();
+            const navItems = document.querySelectorAll('.ems-sidebar-menu .ems-nav-item');
+            const groupTitles = document.querySelectorAll('.ems-sidebar .ems-nav-group-title');
+
+            navItems.forEach(function (item) {
+                const text = item.textContent.toLowerCase();
+                item.style.display = (text.indexOf(filter) > -1) ? '' : 'none';
+            });
+
+            // Hide headers if no items visible in that group
+            groupTitles.forEach(function (title) {
+                if (filter.length > 0) {
+                    title.style.opacity = '0.5';
+                } else {
+                    title.style.opacity = '1';
+                }
+            });
+        });
+    }
+
+    // 5. Auto-dismiss alert banners after 6 seconds with smooth fade
     const alerts = document.querySelectorAll('.alert-dismissible');
     alerts.forEach(function (alert) {
         setTimeout(function () {
@@ -32,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 6000);
     });
 
-    // 3. Initialize tooltips
+    // 6. Initialize Tooltips
     if (typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
         const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
         tooltipTriggerList.map(function (tooltipTriggerEl) {
@@ -40,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // 4. Live Toast Notification Helper with Audio Chime
+    // 7. Live Toast Notification Helper with Audio Chime
     window.emsToast = function (title, message, type = 'info') {
         let toastContainer = document.getElementById('emsToastContainer');
         if (!toastContainer) {
@@ -96,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     };
 
-    // 5. Generic Chart.js Helper
+    // 8. Generic Chart.js Helper
     window.renderEMSChart = function (canvasId, type, data, options) {
         const canvas = document.getElementById(canvasId);
         if (!canvas) return null;
@@ -124,22 +183,4 @@ document.addEventListener('DOMContentLoaded', function () {
             options: mergedOptions
         });
     };
-
-    // 6. Live Table Search Filter
-    const liveSearchInputs = document.querySelectorAll('[data-ems-search-target]');
-    liveSearchInputs.forEach(function (input) {
-        input.addEventListener('keyup', function () {
-            const targetTableId = this.getAttribute('data-ems-search-target');
-            const table = document.getElementById(targetTableId);
-            if (!table) return;
-
-            const filter = this.value.toLowerCase();
-            const rows = table.querySelectorAll('tbody tr');
-
-            rows.forEach(function (row) {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.indexOf(filter) > -1 ? '' : 'none';
-            });
-        });
-    });
 });

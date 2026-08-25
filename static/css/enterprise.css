@@ -1,12 +1,12 @@
 /* ==========================================================================
-   Smart Employee Management System — Enterprise Design System (V2 Ultra)
-   High-end, glassmorphic, luxury SaaS interface with ambient lighting
+   Smart Employee Management System (Smart EMS) — Next-Gen 2026/2027 Design System
+   Linear / Stripe / Apple-inspired Enterprise Glassmorphism Architecture
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
-  /* Brand Color Palette (Electric Indigo & Cyber Accents) */
+  /* Brand Color Palette */
   --ems-primary: #4f46e5;
   --ems-primary-hover: #4338ca;
   --ems-primary-light: #eef2ff;
@@ -20,7 +20,7 @@
   --ems-success: #10b981;
   --ems-success-hover: #059669;
   --ems-success-light: #ecfdf5;
-  --ems-success-glow: rgba(16, 185, 129, 0.25);
+  --ems-success-glow: rgba(16, 185, 129, 0.2);
   
   --ems-warning: #f59e0b;
   --ems-warning-hover: #d97706;
@@ -29,7 +29,7 @@
   --ems-danger: #ef4444;
   --ems-danger-hover: #dc2626;
   --ems-danger-light: #fef2f2;
-  --ems-danger-glow: rgba(239, 68, 68, 0.25);
+  --ems-danger-glow: rgba(239, 68, 68, 0.2);
   
   --ems-info: #3b82f6;
   --ems-info-light: #eff6ff;
@@ -40,20 +40,21 @@
   --ems-grad-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
   --ems-grad-warning: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
   --ems-grad-danger: linear-gradient(135deg, #ef4444 0%, #e11d48 100%);
-  --ems-grad-dark: linear-gradient(180deg, #0a0f1d 0%, #0f172a 100%);
-  --ems-grad-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.75) 100%);
+  --ems-grad-dark: linear-gradient(180deg, #090d16 0%, #0f172a 100%);
+  --ems-grad-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.8) 100%);
   
-  /* Surfaces & Glassmorphism */
-  --ems-bg-body: #f4f6fb;
+  /* Surfaces & Canvas */
+  --ems-bg-body: #f8fafc;
   --ems-bg-surface: #ffffff;
   --ems-bg-card: #ffffff;
   --ems-bg-sidebar: #090d16;
   --ems-bg-sidebar-active: #131b2e;
-  --ems-bg-sidebar-hover: #101726;
+  --ems-bg-sidebar-hover: #111827;
   
   /* Typography */
   --ems-font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --ems-font-heading: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+  --ems-font-mono: 'JetBrains Mono', monospace;
   
   --ems-text-main: #0f172a;
   --ems-text-muted: #64748b;
@@ -64,34 +65,33 @@
   /* Borders & Radius */
   --ems-border-color: #e2e8f0;
   --ems-border-light: #f1f5f9;
-  --ems-border-glass: rgba(255, 255, 255, 0.6);
   --ems-radius-sm: 8px;
   --ems-radius-md: 12px;
   --ems-radius-lg: 16px;
   --ems-radius-xl: 24px;
   
-  /* Advanced Shadows */
+  /* Modern Layered Shadows */
   --ems-shadow-sm: 0 2px 4px 0 rgba(15, 23, 42, 0.04);
-  --ems-shadow-md: 0 8px 20px -4px rgba(15, 23, 42, 0.06), 0 4px 6px -2px rgba(15, 23, 42, 0.02);
-  --ems-shadow-lg: 0 16px 32px -8px rgba(15, 23, 42, 0.08), 0 8px 16px -4px rgba(15, 23, 42, 0.03);
+  --ems-shadow-md: 0 10px 25px -4px rgba(15, 23, 42, 0.06), 0 4px 6px -2px rgba(15, 23, 42, 0.02);
+  --ems-shadow-lg: 0 20px 35px -8px rgba(15, 23, 42, 0.08), 0 8px 16px -4px rgba(15, 23, 42, 0.03);
   --ems-shadow-glow: 0 12px 28px -6px rgba(79, 70, 229, 0.35);
   
   --ems-sidebar-width: 275px;
   --ems-topbar-height: 70px;
 }
 
-/* Global Reset & Base Setup */
+/* Base Reset */
 *, *::before, *::after {
   box-sizing: border-box;
 }
 
-body {
+body.ems-body-root {
   font-family: var(--ems-font-sans);
   background-color: var(--ems-bg-body);
   background-image: 
-    radial-gradient(at 0% 0%, rgba(79, 70, 229, 0.06) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, rgba(6, 182, 212, 0.05) 0px, transparent 50%),
-    radial-gradient(at 50% 100%, rgba(16, 185, 129, 0.04) 0px, transparent 50%);
+    radial-gradient(at 0% 0%, rgba(79, 70, 229, 0.05) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(6, 182, 212, 0.04) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, rgba(16, 185, 129, 0.03) 0px, transparent 50%);
   background-attachment: fixed;
   color: var(--ems-text-main);
   margin: 0;
@@ -117,7 +117,7 @@ h1, h2, h3, h4, h5, h6, .ems-brand-text, .ems-page-heading {
   width: 100%;
 }
 
-/* Sidebar */
+/* Next-Gen Sidebar */
 .ems-sidebar {
   width: var(--ems-sidebar-width);
   background: linear-gradient(180deg, #070a12 0%, #0d1424 50%, #090e18 100%);
@@ -172,7 +172,6 @@ h1, h2, h3, h4, h5, h6, .ems-brand-text, .ems-page-heading {
   font-weight: 800;
   color: #ffffff;
   line-height: 1.2;
-  letter-spacing: -0.01em;
 }
 
 .ems-brand-subtext {
@@ -181,6 +180,38 @@ h1, h2, h3, h4, h5, h6, .ems-brand-text, .ems-page-heading {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
+}
+
+/* Sidebar Search Filter Box */
+.ems-sidebar-search-container {
+  padding: 0.85rem 1.15rem 0.25rem;
+}
+
+.ems-sidebar-search-input {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  font-size: 0.82rem;
+  border-radius: 10px;
+  padding: 0.45rem 0.75rem 0.45rem 2rem;
+  transition: all 0.2s;
+}
+
+.ems-sidebar-search-input:focus {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: #818cf8;
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(129, 140, 248, 0.3);
+}
+
+.ems-sidebar-search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #64748b;
+  font-size: 0.85rem;
+  pointer-events: none;
 }
 
 .ems-nav-group-title {
@@ -265,7 +296,7 @@ h1, h2, h3, h4, h5, h6, .ems-brand-text, .ems-page-heading {
   min-width: 0;
 }
 
-/* Top Navbar */
+/* Luminous Top Navbar */
 .ems-navbar {
   height: var(--ems-topbar-height);
   background: rgba(255, 255, 255, 0.85);
@@ -292,6 +323,39 @@ h1, h2, h3, h4, h5, h6, .ems-brand-text, .ems-page-heading {
   display: flex;
   align-items: center;
   gap: 0.85rem;
+}
+
+/* Quick Jump / Command Palette Search Pill */
+.ems-navbar-cmd-trigger {
+  background: #f1f5f9;
+  border: 1px solid var(--ems-border-color);
+  color: var(--ems-text-muted);
+  border-radius: 9999px;
+  padding: 0.4rem 1rem;
+  font-size: 0.825rem;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ems-navbar-cmd-trigger:hover {
+  background: #ffffff;
+  border-color: var(--ems-primary);
+  color: var(--ems-primary);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.12);
+}
+
+.ems-kbd-shortcut {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+  border-radius: 6px;
+  padding: 0.1rem 0.4rem;
+  font-size: 0.7rem;
+  font-family: var(--ems-font-mono);
+  font-weight: 600;
 }
 
 /* Role Badges */
@@ -633,6 +697,48 @@ h1, h2, h3, h4, h5, h6, .ems-brand-text, .ems-page-heading {
   color: var(--ems-primary);
 }
 
+/* Command Palette Modal Styling */
+.ems-cmd-palette-modal .modal-content {
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.3);
+}
+
+.ems-cmd-icon-box {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  flex-shrink: 0;
+}
+
+.ems-cmd-item {
+  transition: all 0.15s;
+}
+
+.ems-cmd-item:hover {
+  background-color: var(--ems-primary-light);
+  transform: translateX(3px);
+}
+
+.ems-cmd-module-btn {
+  font-size: 0.85rem;
+  transition: all 0.15s;
+}
+
+.ems-cmd-module-btn:hover {
+  background-color: #ffffff;
+  border-color: var(--ems-primary) !important;
+  color: var(--ems-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.1);
+}
+
 /* Floating Action / Sound Bar */
 .ems-sound-bar {
   position: fixed;
@@ -649,4 +755,11 @@ h1, h2, h3, h4, h5, h6, .ems-brand-text, .ems-page-heading {
   padding: 0.4rem 0.6rem;
   border-radius: 9999px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Auth / Login Container */
+.ems-auth-container {
+  background: radial-gradient(at 0% 0%, rgba(79, 70, 229, 0.08) 0px, transparent 50%),
+              radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.06) 0px, transparent 50%),
+              #f8fafc;
 }
