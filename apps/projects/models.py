@@ -71,3 +71,8 @@ class ProjectMilestone(models.Model):
 
     def __str__(self):
         return f"{self.project.code} - {self.title}"
+
+
+# Alias for backward compatibility
+Milestone = ProjectMilestone
+

@@ -104,3 +104,8 @@ class TaskComment(models.Model):
 
     def __str__(self):
         return f"{self.author.full_name} on {self.task.code}"
+
+
+# Alias for backward compatibility
+Subtask = SubTask
+

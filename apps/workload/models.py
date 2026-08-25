@@ -52,3 +52,8 @@ class WorkloadHistory(models.Model):
 
     def __str__(self):
         return f"{self.employee.full_name} ({self.recorded_date}): {self.workload_score}%"
+
+
+# Alias for backward compatibility
+WorkloadMetric = EmployeeWorkloadMetric
+

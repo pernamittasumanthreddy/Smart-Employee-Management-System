@@ -69,3 +69,8 @@ class CompanyHoliday(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.date})"
+
+
+# Alias for backward compatibility
+Shift = WorkShift
+

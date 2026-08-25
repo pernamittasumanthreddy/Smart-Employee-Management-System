@@ -46,3 +46,8 @@ class EmployeeRecognition(models.Model):
 
     def __str__(self):
         return f"{self.sender.full_name} -> {self.recipient.full_name} [{self.category.name}]"
+
+
+# Alias for backward compatibility
+Recognition = EmployeeRecognition
+

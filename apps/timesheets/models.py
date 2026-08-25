@@ -54,3 +54,8 @@ class TimesheetEntry(models.Model):
 
     def __str__(self):
         return f"{self.entry_date} - {self.project.name} ({self.hours_logged} hrs)"
+
+
+# Alias for backward compatibility
+ProjectRateCard = ClientRateCard
+

@@ -25,13 +25,26 @@ class SurveyQuestion(models.Model):
 
     survey = models.ForeignKey(Survey, on_delete=models.CASCADE, related_name='questions')
     order = models.PositiveIntegerField(default=1)
-    prompt_text = models.CharField(max_length=300)
+    prompt_text = models.CharField(max_length=300, blank=True)
     question_type = models.CharField(max_length=30, choices=QUESTION_TYPES, default='RATING_10')
     choices_csv = models.CharField(max_length=255, blank=True, help_text="Comma separated options if Multiple Choice")
     is_required = models.BooleanField(default=True)
 
     class Meta:
         ordering = ['order']
+
+    def __init__(self, *args, **kwargs):
+        if 'question_text' in kwargs:
+            kwargs['prompt_text'] = kwargs.pop('question_text')
+        super().__init__(*args, **kwargs)
+
+    @property
+    def question_text(self):
+        return self.prompt_text
+
+    @question_text.setter
+    def question_text(self, val):
+        self.prompt_text = val
 
     def __str__(self):
         return f"Q{self.order}: {self.prompt_text}"
@@ -47,3 +60,13 @@ class SurveySubmission(models.Model):
 
     def __str__(self):
         return f"Submission #{self.id} for {self.survey.title} ({self.sentiment_label})"
+
+
+class SurveyAnswer(models.Model):
+    submission = models.ForeignKey(SurveySubmission, on_delete=models.CASCADE, related_name='answers')
+    question = models.ForeignKey(SurveyQuestion, on_delete=models.CASCADE)
+    rating_value = models.IntegerField(null=True, blank=True)
+    text_answer = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"Answer to {self.question} ({self.rating_value})"

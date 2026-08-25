@@ -45,3 +45,8 @@ class ExecutionLog(models.Model):
 
     def __str__(self):
         return f"Log: {self.rule.name} @ {self.executed_at} ({self.status})"
+
+
+# Alias for backward compatibility
+AutomationExecutionLog = ExecutionLog
+
