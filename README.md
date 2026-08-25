@@ -131,6 +131,16 @@ Smart EMS delivers a RESTful API with JSON envelopes, query filtering, and autom
 
 ---
 
+## 🧪 Testing Guide & Quality Assurance
+
+Smart EMS is backed by test suites ensuring reliability and enterprise compliance:
+- **Pytest Automation**: Comprehensive unit and integration test coverage across all domain calculation engines.
+- **Full View Verification**: Automated end-to-end endpoint test harness checking all 78 views (`scripts/verify_all_views.py`).
+- **Regression Proofing**: Mathematical sanity verification for Tax, ESI, EPF, and ML Risk models.
+- For complete technical specifications, see [TESTING_GUIDE.md](documentation/TESTING_GUIDE.md).
+
+---
+
 ## 📄 License
 Licensed under the [MIT License](LICENSE).
 
