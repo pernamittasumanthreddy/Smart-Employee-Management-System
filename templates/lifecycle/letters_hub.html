@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+{% block title %}HR Letters & Certificate Studio — Smart Employee Management System{% endblock %}
+
+{% block content %}
+<div class="ems-page-header">
+    <div>
+        <h1 class="ems-page-heading">
+            <i class="bi bi-file-earmark-text-fill text-primary"></i> HR Letters & Certificate Studio
+        </h1>
+        <p class="ems-page-subheading">
+            1-Click instant generation of official verification letters, salary certificates, NOCs, and bonafide credentials
+        </p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{% url 'lifecycle:dashboard' %}" class="btn btn-outline-secondary btn-sm rounded-pill">
+            <i class="bi bi-arrow-left me-1"></i>Lifecycle Hub
+        </a>
+    </div>
+</div>
+
+<!-- Employee Switcher (For HR / Admins) -->
+{% if is_privileged and employees_list %}
+<div class="ems-card p-3 mb-4 bg-white shadow-sm">
+    <div class="row align-items-center">
+        <div class="col-12 col-md-3">
+            <span class="small fw-bold text-muted text-uppercase">
+                <i class="bi bi-person-gear text-primary me-1"></i>Select Employee:
+            </span>
+        </div>
+        <div class="col-12 col-md-9">
+            <select id="employeeSelector" class="form-select form-select-sm" onchange="updateSelectedEmp(this.value)">
+                {% for emp in employees_list %}
+                <option value="{{ emp.id }}" {% if emp.id == current_emp.id %}selected{% endif %}>
+                    {{ emp.full_name }} ({{ emp.employee_id }}) — {{ emp.designation.title|default:"Staff" }} [{{ emp.department.name|default:"General" }}]
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Available Official Letters Grid -->
+<div class="row g-4 mb-4">
+    <!-- 1. Employment Verification Letter -->
+    <div class="col-12 col-md-6 col-xl-4">
+        <div class="ems-card h-100 p-4 bg-white border-top border-4 border-primary shadow-sm d-flex flex-column">
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="p-3 rounded-3 bg-primary-subtle text-primary fs-3">
+                    <i class="bi bi-person-check-fill"></i>
+                </div>
+                <div>
+                    <h5 class="fw-bold text-dark mb-1">Employment Verification</h5>
+                    <span class="badge bg-light text-muted border">Standard Verification</span>
+                </div>
+            </div>
+            <p class="text-muted small mb-4 flex-grow-1">
+                Official letter confirming employment status, date of joining, current designation, and active standing with the organization.
+            </p>
+            <button type="button" class="btn btn-primary w-100 rounded-pill" onclick="openLetterModal('employment_verification', 'Employment Verification Letter')">
+                <i class="bi bi-printer me-1"></i>Generate Letter
+            </button>
+        </div>
+    </div>
+
+    <!-- 2. Salary Certificate -->
+    <div class="col-12 col-md-6 col-xl-4">
+        <div class="ems-card h-100 p-4 bg-white border-top border-4 border-success shadow-sm d-flex flex-column">
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="p-3 rounded-3 bg-success-subtle text-success fs-3">
+                    <i class="bi bi-cash-stack"></i>
+                </div>
+                <div>
+                    <h5 class="fw-bold text-dark mb-1">Salary Certificate</h5>
+                    <span class="badge bg-light text-muted border">Proof of Income</span>
+                </div>
+            </div>
+            <p class="text-muted small mb-4 flex-grow-1">
+                Formal proof of earnings, monthly CTC, annual package, and allowances for bank loan, credit card, and housing applications.
+            </p>
+            <button type="button" class="btn btn-success w-100 rounded-pill" onclick="openLetterModal('salary_certificate', 'Salary & Proof of Income Certificate')">
+                <i class="bi bi-printer me-1"></i>Generate Certificate
+            </button>
+        </div>
+    </div>
+
+    <!-- 3. Bonafide & Visa Letter -->
+    <div class="col-12 col-md-6 col-xl-4">
+        <div class="ems-card h-100 p-4 bg-white border-top border-4 border-info shadow-sm d-flex flex-column">
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="p-3 rounded-3 bg-info-subtle text-info fs-3">
+                    <i class="bi bi-globe-americas"></i>
+                </div>
+                <div>
+                    <h5 class="fw-bold text-dark mb-1">Bonafide & Visa Letter</h5>
+                    <span class="badge bg-light text-muted border">Consulate / Embassy</span>
+                </div>
+            </div>
+            <p class="text-muted small mb-4 flex-grow-1">
+                Travel support letter for foreign embassies and visa processing confirming continuous employment and approved travel leaves.
+            </p>
+            <button type="button" class="btn btn-info text-white w-100 rounded-pill" onclick="openLetterModal('bonafide_visa', 'Bonafide & Visa Support Letter')">
+                <i class="bi bi-printer me-1"></i>Generate Visa Letter
+            </button>
+        </div>
+    </div>
+
+    <!-- 4. Experience & Relieving Certificate -->
+    <div class="col-12 col-md-6 col-xl-4">
+        <div class="ems-card h-100 p-4 bg-white border-top border-4 border-warning shadow-sm d-flex flex-column">
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="p-3 rounded-3 bg-warning-subtle text-warning fs-3">
+                    <i class="bi bi-award-fill"></i>
+                </div>
+                <div>
+                    <h5 class="fw-bold text-dark mb-1">Experience Certificate</h5>
+                    <span class="badge bg-light text-muted border">Service Record</span>
+                </div>
+            </div>
+            <p class="text-muted small mb-4 flex-grow-1">
+                Comprehensive service record certificate detailing tenure, key roles, performance commendation, and successful exit clearance.
+            </p>
+            <button type="button" class="btn btn-warning w-100 rounded-pill" onclick="openLetterModal('experience_letter', 'Experience & Relieving Certificate')">
+                <i class="bi bi-printer me-1"></i>Generate Certificate
+            </button>
+        </div>
+    </div>
+
+    <!-- 5. No Objection Certificate (NOC) -->
+    <div class="col-12 col-md-6 col-xl-4">
+        <div class="ems-card h-100 p-4 bg-white border-top border-4 border-danger shadow-sm d-flex flex-column">
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="p-3 rounded-3 bg-danger-subtle text-danger fs-3">
+                    <i class="bi bi-patch-check-fill"></i>
+                </div>
+                <div>
+                    <h5 class="fw-bold text-dark mb-1">No Objection Certificate</h5>
+                    <span class="badge bg-light text-muted border">NOC Form</span>
+                </div>
+            </div>
+            <p class="text-muted small mb-4 flex-grow-1">
+                Formal NOC for external certifications, higher education exams, government document verifications, and passport renewals.
+            </p>
+            <button type="button" class="btn btn-danger w-100 rounded-pill" onclick="openLetterModal('noc_letter', 'No Objection Certificate (NOC)')">
+                <i class="bi bi-printer me-1"></i>Generate NOC
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Customize Letter Generation -->
+<div class="modal fade" id="letterModal" tabindex="-1" aria-labelledby="letterModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+            <div class="modal-header bg-light border-bottom p-3.5">
+                <h5 class="modal-title fw-bold text-dark" id="letterModalLabel">
+                    <i class="bi bi-file-earmark-text text-primary me-2"></i>Generate Official Letter
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="get" action="{% url 'lifecycle:letter_generator' %}" target="_blank">
+                <input type="hidden" name="type" id="modalLetterType" value="employment_verification">
+                <input type="hidden" name="employee_id" id="modalEmpId" value="{{ current_emp.id }}">
+
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary" for="id_addressed_to">
+                            Addressed To / Recipient
+                        </label>
+                        <input type="text" name="addressed_to" id="id_addressed_to" class="form-control" value="To Whom It May Concern" placeholder="e.g. The Visa Consular Officer / HDFC Bank Limited / To Whom It May Concern">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary" for="id_purpose">
+                            Specific Purpose / Reason (Optional)
+                        </label>
+                        <input type="text" name="purpose" id="id_purpose" class="form-control" placeholder="e.g. Tourist Visa Application for Schengen Area / Home Loan Verification">
+                    </div>
+
+                    <div class="p-3 bg-light rounded-3 border">
+                        <div class="small text-muted">
+                            <i class="bi bi-info-circle text-primary me-1"></i>
+                            The generated document will contain official company letterhead, digital reference number, issue date, and authorized corporate seal.
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light p-3">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary px-4 fw-semibold" onclick="if(window.emsAudio) window.emsAudio.playChime();">
+                        <i class="bi bi-eye me-1"></i>Open Official Printable Letter
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+let selectedEmpId = "{{ current_emp.id }}";
+
+function updateSelectedEmp(empId) {
+    selectedEmpId = empId;
+    document.getElementById('modalEmpId').value = empId;
+}
+
+function openLetterModal(type, title) {
+    if (window.emsAudio) window.emsAudio.playPop();
+    document.getElementById('modalLetterType').value = type;
+    document.getElementById('letterModalLabel').innerHTML = '<i class="bi bi-file-earmark-text text-primary me-2"></i>' + title;
+    var myModal = new bootstrap.Modal(document.getElementById('letterModal'));
+    myModal.show();
+}
+</script>
+{% endblock %}

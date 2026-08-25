@@ -116,6 +116,35 @@
                                 </div>
                             </div>
                             <span class="badge bg-light text-muted border">Jump &rarr;</span>
+                        <a href="{% url 'lifecycle:letters_hub' %}" class="list-group-item list-group-item-action d-flex align-items-center justify-content-between rounded-3 border-0 py-2.5 px-3 mb-1 ems-cmd-item">
+                            <div class="d-flex align-items-center gap-2.5">
+                                <div class="ems-cmd-icon-box bg-primary-subtle text-primary"><i class="bi bi-file-earmark-text-fill"></i></div>
+                                <div>
+                                    <div class="fw-semibold text-dark">HR Letters & Certificate Studio</div>
+                                    <div class="text-muted small">1-click official verification, salary, & NOC letters</div>
+                                </div>
+                            </div>
+                            <span class="badge bg-light text-muted border">Jump &rarr;</span>
+                        </a>
+                        <a href="{% url 'announcements:workspace_calendar' %}" class="list-group-item list-group-item-action d-flex align-items-center justify-content-between rounded-3 border-0 py-2.5 px-3 mb-1 ems-cmd-item">
+                            <div class="d-flex align-items-center gap-2.5">
+                                <div class="ems-cmd-icon-box bg-danger-subtle text-danger"><i class="bi bi-calendar-heart-fill"></i></div>
+                                <div>
+                                    <div class="fw-semibold text-dark">Workspace Calendar & Celebrations</div>
+                                    <div class="text-muted small">Birthdays, anniversaries, company holidays & events</div>
+                                </div>
+                            </div>
+                            <span class="badge bg-light text-muted border">Jump &rarr;</span>
+                        </a>
+                        <a href="{% url 'attendance:team_radar' %}" class="list-group-item list-group-item-action d-flex align-items-center justify-content-between rounded-3 border-0 py-2.5 px-3 mb-1 ems-cmd-item">
+                            <div class="d-flex align-items-center gap-2.5">
+                                <div class="ems-cmd-icon-box bg-success-subtle text-success"><i class="bi bi-radar"></i></div>
+                                <div>
+                                    <div class="fw-semibold text-dark">Team Presence Radar</div>
+                                    <div class="text-muted small">Live workforce attendance, WFH, and leave tracker</div>
+                                </div>
+                            </div>
+                            <span class="badge bg-light text-muted border">Jump &rarr;</span>
                         </a>
                     </div>
 
@@ -127,6 +156,37 @@
                         <div class="col-6"><a href="{% url 'insights:dashboard' %}" class="btn btn-light w-100 text-start p-2.5 rounded-3 border ems-cmd-module-btn"><i class="bi bi-cpu text-info me-2"></i>AI Smart Insights</a></div>
                         <div class="col-6"><a href="{% url 'compliance:dashboard' %}" class="btn btn-light w-100 text-start p-2.5 rounded-3 border ems-cmd-module-btn"><i class="bi bi-shield-check text-danger me-2"></i>Compliance Vault</a></div>
                         <div class="col-6"><a href="{% url 'workplace:dashboard' %}" class="btn btn-light w-100 text-start p-2.5 rounded-3 border ems-cmd-module-btn"><i class="bi bi-laptop text-secondary me-2"></i>Smart Workplace</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Scratchpad Modal (Ctrl + J) -->
+    <div class="modal fade" id="emsScratchpadModal" tabindex="-1" aria-labelledby="emsScratchpadModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+                <div class="modal-header bg-light border-bottom p-3.5">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-sticky-fill text-warning fs-5"></i>
+                        <div>
+                            <h5 class="modal-title fw-bold text-dark mb-0" id="emsScratchpadModalLabel">Productivity Quick Notes & Scratchpad</h5>
+                            <span class="text-muted small">Auto-saves locally • Accessible from all pages (Shortcut: Ctrl + J)</span>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted text-uppercase mb-1">Personal Notepad / Meeting Points</label>
+                        <textarea id="emsScratchpadText" class="form-control font-monospace" rows="9" placeholder="Type your quick notes, reminders, draft emails, or tasks here... Auto-saved continuously!" style="font-size: 0.9rem; line-height: 1.6;"></textarea>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span id="scratchSaveStatus" class="small text-success fw-semibold"><i class="bi bi-cloud-check me-1"></i>Saved locally</span>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill" onclick="copyScratchpad()"><i class="bi bi-clipboard me-1"></i>Copy Notes</button>
+                            <button type="button" class="btn btn-outline-danger btn-sm rounded-pill" onclick="clearScratchpad()"><i class="bi bi-trash me-1"></i>Clear</button>
+                        </div>
                     </div>
                 </div>
             </div>

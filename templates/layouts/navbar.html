@@ -22,6 +22,18 @@
             <span class="small fw-semibold">Attendance Log</span>
         </a>
 
+        <!-- Workspace Calendar -->
+        <a href="{% url 'announcements:workspace_calendar' %}" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1.5 d-none d-xl-inline-flex align-items-center" title="Company Events, Holidays & Celebrations">
+            <i class="bi bi-calendar-heart me-1.5 text-danger"></i>
+            <span class="small fw-semibold">Workspace Calendar</span>
+        </a>
+
+        <!-- Quick Notes Scratchpad Trigger -->
+        <button type="button" class="btn btn-sm btn-light border rounded-pill px-2.5 py-1.5 shadow-sm" data-bs-toggle="modal" data-bs-target="#emsScratchpadModal" title="Quick Notes Scratchpad (Ctrl+J)">
+            <i class="bi bi-sticky-fill text-warning"></i>
+            <span class="d-none d-md-inline ms-1 small fw-semibold">Scratchpad</span>
+        </button>
+
         <!-- Sound Controls -->
         <button type="button" class="btn btn-sm btn-outline-primary ems-sound-toggle-btn rounded-pill px-3 py-1.5" title="Toggle Notification Chime">
             <i class="bi bi-volume-up-fill text-primary me-1"></i>

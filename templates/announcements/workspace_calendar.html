@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+{% block title %}Workspace Calendar & Celebrations — Smart Employee Management System{% endblock %}
+
+{% block content %}
+<div class="ems-page-header">
+    <div>
+        <h1 class="ems-page-heading">
+            <i class="bi bi-calendar-heart-fill text-primary"></i> Workspace Calendar & Celebrations Hub
+        </h1>
+        <p class="ems-page-subheading">
+            Corporate events, public holidays, team leaves, employee birthdays, and milestone work anniversaries
+        </p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{% url 'announcements:board' %}" class="btn btn-outline-secondary btn-sm rounded-pill">
+            <i class="bi bi-megaphone me-1"></i>Bulletin Board
+        </a>
+        <a href="{% url 'announcements:events' %}" class="btn btn-outline-primary btn-sm rounded-pill">
+            <i class="bi bi-broadcast me-1"></i>Corporate Events
+        </a>
+    </div>
+</div>
+
+<!-- Month / Category Filters -->
+<div class="ems-card p-3 mb-4 bg-white shadow-sm">
+    <form method="get" class="row g-3 align-items-end">
+        <div class="col-12 col-sm-6 col-md-3">
+            <label class="form-label small fw-bold text-muted text-uppercase mb-1" for="monthSel">
+                <i class="bi bi-calendar-month text-primary me-1"></i>Select Month
+            </label>
+            <select name="month" id="monthSel" class="form-select form-select-sm" onchange="this.form.submit()">
+                {% for m_num, m_name in month_choices %}
+                <option value="{{ m_num }}" {% if m_num == month_filter %}selected{% endif %}>{{ m_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-2">
+            <label class="form-label small fw-bold text-muted text-uppercase mb-1" for="yearSel">
+                <i class="bi bi-calendar-event text-primary me-1"></i>Select Year
+            </label>
+            <select name="year" id="yearSel" class="form-select form-select-sm" onchange="this.form.submit()">
+                {% for y in year_choices %}
+                <option value="{{ y }}" {% if y == year_filter %}selected{% endif %}>{{ y }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-12 col-md-5">
+            <label class="form-label small fw-bold text-muted text-uppercase mb-1">
+                <i class="bi bi-funnel text-primary me-1"></i>Category Filter
+            </label>
+            <div class="btn-group btn-group-sm w-100" role="group">
+                <a href="?month={{ month_filter }}&year={{ year_filter }}&category=all" class="btn {% if category_filter == 'all' %}btn-primary{% else %}btn-outline-secondary{% endif %}">All</a>
+                <a href="?month={{ month_filter }}&year={{ year_filter }}&category=birthdays" class="btn {% if category_filter == 'birthdays' %}btn-primary{% else %}btn-outline-secondary{% endif %}">🎂 Celebrations</a>
+                <a href="?month={{ month_filter }}&year={{ year_filter }}&category=holidays" class="btn {% if category_filter == 'holidays' %}btn-primary{% else %}btn-outline-secondary{% endif %}">🏢 Holidays</a>
+                <a href="?month={{ month_filter }}&year={{ year_filter }}&category=leaves" class="btn {% if category_filter == 'leaves' %}btn-primary{% else %}btn-outline-secondary{% endif %}">🌴 Leaves</a>
+                <a href="?month={{ month_filter }}&year={{ year_filter }}&category=events" class="btn {% if category_filter == 'events' %}btn-primary{% else %}btn-outline-secondary{% endif %}">🚀 Events</a>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-2">
+            <a href="{% url 'announcements:workspace_calendar' %}" class="btn btn-outline-secondary btn-sm w-100">
+                <i class="bi bi-arrow-clockwise me-1"></i>Reset
+            </a>
+        </div>
+    </form>
+</div>
+
+<!-- Summary Stat Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="ems-stat-card">
+            <div class="ems-stat-icon danger"><i class="bi bi-gift-fill"></i></div>
+            <div class="ems-stat-content">
+                <div class="ems-stat-label">Birthdays & Anniversaries</div>
+                <div class="ems-stat-value text-danger">{{ stats.celebrations }}</div>
+                <div class="ems-stat-sub text-muted">In {{ month_name }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="ems-stat-card">
+            <div class="ems-stat-icon primary"><i class="bi bi-award-fill"></i></div>
+            <div class="ems-stat-content">
+                <div class="ems-stat-label">Company Holidays</div>
+                <div class="ems-stat-value text-primary">{{ stats.holidays }}</div>
+                <div class="ems-stat-sub text-muted">Public / Org Offs</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="ems-stat-card">
+            <div class="ems-stat-icon warning"><i class="bi bi-person-slash"></i></div>
+            <div class="ems-stat-content">
+                <div class="ems-stat-label">Approved Leaves</div>
+                <div class="ems-stat-value text-warning">{{ stats.leaves }}</div>
+                <div class="ems-stat-sub text-muted">Out-of-office team members</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="ems-stat-card">
+            <div class="ems-stat-icon success"><i class="bi bi-broadcast"></i></div>
+            <div class="ems-stat-content">
+                <div class="ems-stat-label">Corporate Events</div>
+                <div class="ems-stat-value text-success">{{ stats.events }}</div>
+                <div class="ems-stat-sub text-muted">Townhalls & Webinars</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Unified Interactive Timeline -->
+<div class="ems-card">
+    <div class="ems-card-header d-flex justify-content-between align-items-center">
+        <div>
+            <h5 class="ems-card-title mb-0">
+                <i class="bi bi-calendar3-event text-primary me-2"></i>Timeline for {{ month_name }} {{ year_filter }}
+            </h5>
+            <span class="text-muted small">Total {{ stats.total_items }} scheduled happenings</span>
+        </div>
+    </div>
+    <div class="ems-card-body p-0">
+        <div class="list-group list-group-flush">
+            {% for item in calendar_items %}
+            <div class="list-group-item p-3 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                <div class="d-flex align-items-start gap-3">
+                    <div class="text-center bg-light border rounded-3 p-2 px-3" style="min-width: 75px;">
+                        <div class="small fw-bold text-uppercase text-muted" style="font-size: 0.7rem;">{{ item.date|date:"M" }}</div>
+                        <div class="fs-4 fw-bold text-dark lh-1">{{ item.date|date:"d" }}</div>
+                        <div class="small text-muted" style="font-size: 0.7rem;">{{ item.date|date:"D" }}</div>
+                    </div>
+                    <div>
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <span class="badge {{ item.badge_class }} rounded-pill px-2.5 py-0.5 small">
+                                <i class="bi {{ item.icon }} me-1"></i>{{ item.category_label }}
+                            </span>
+                            {% if item.time %}
+                            <span class="text-muted small"><i class="bi bi-clock me-1"></i>{{ item.time }}</span>
+                            {% endif %}
+                        </div>
+                        <h6 class="fw-bold text-dark mb-1">{{ item.title }}</h6>
+                        <p class="text-muted small mb-0">{{ item.description }}</p>
+                    </div>
+                </div>
+
+                {% if item.action_url %}
+                <div class="ms-md-auto">
+                    <a href="{{ item.action_url }}" class="btn btn-sm btn-outline-primary rounded-pill px-3" onclick="if(window.emsAudio) window.emsAudio.playPop();">
+                        {{ item.action_label }} &rarr;
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+            {% empty %}
+            <div class="p-5 text-center text-muted">
+                <i class="bi bi-calendar-x fs-1 d-block mb-3 text-secondary"></i>
+                <h6 class="fw-bold">No Events or Celebrations Found for {{ month_name }} {{ year_filter }}</h6>
+                <p class="small mb-0">Try changing the category filter or choosing a different month.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

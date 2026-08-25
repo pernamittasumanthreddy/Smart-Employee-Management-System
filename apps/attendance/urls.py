@@ -10,4 +10,5 @@ urlpatterns = [
     path('monthly/', views.monthly_attendance, name='monthly_attendance'),
     path('roster/', views.attendance_roster, name='roster'),
     path('department-summary/', views.department_attendance_summary, name='department_summary'),
+    path('team-radar/', views.team_radar_view, name='team_radar'),
 ]

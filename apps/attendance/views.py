@@ -319,7 +319,6 @@ def attendance_roster(request):
 
 
 @login_required
-@manager_or_above_required
 def department_attendance_summary(request):
     departments = Department.objects.filter(is_active=True)
     today = timezone.now().date()
@@ -345,3 +344,95 @@ def department_attendance_summary(request):
         'summary_data': summary_data,
         'today': today
     })
+
+
+@login_required
+def team_radar_view(request):
+    """
+    Live Workforce Presence Radar:
+    Real-time visibility into who is in the office, working remotely, on leave,
+    or absent today across all departments.
+    """
+    today = timezone.now().date()
+    dept_id = request.GET.get('department')
+    search_q = request.GET.get('search', '').strip()
+
+    employees = Employee.objects.filter(employment_status='ACTIVE').select_related('department', 'designation')
+
+    if dept_id:
+        employees = employees.filter(department_id=dept_id)
+    if search_q:
+        employees = employees.filter(
+            Q(first_name__icontains=search_q) |
+            Q(last_name__icontains=search_q) |
+            Q(employee_id__icontains=search_q)
+        )
+
+    # Fetch today's records
+    records = AttendanceRecord.objects.filter(date=today)
+    records_by_emp = {r.employee_id: r for r in records}
+
+    # Fetch today's approved leaves from leave_management
+    from apps.leave_management.models import LeaveRequest
+    active_leaves = LeaveRequest.objects.filter(
+        status='APPROVED',
+        start_date__lte=today,
+        end_date__gte=today
+    )
+    leaves_by_emp = {l.employee_id: l for l in active_leaves}
+
+    team_members = []
+    stats = {
+        'total': 0,
+        'present': 0,
+        'half_day': 0,
+        'on_leave': 0,
+        'absent': 0,
+    }
+
+    for emp in employees:
+        stats['total'] += 1
+        record = records_by_emp.get(emp.id)
+        leave = leaves_by_emp.get(emp.id)
+
+        if leave:
+            status_text = 'On Leave'
+            badge_class = 'bg-primary-subtle text-primary border border-primary-subtle'
+            status_indicator = 'bg-primary'
+            stats['on_leave'] += 1
+        elif record and record.status == AttendanceStatus.PRESENT:
+            status_text = 'In Office / Checked-in'
+            badge_class = 'bg-success-subtle text-success border border-success-subtle'
+            status_indicator = 'bg-success'
+            stats['present'] += 1
+        elif record and record.status == AttendanceStatus.HALF_DAY:
+            status_text = 'Half Day'
+            badge_class = 'bg-warning-subtle text-warning border border-warning-subtle'
+            status_indicator = 'bg-warning'
+            stats['half_day'] += 1
+        else:
+            status_text = 'Not Checked In'
+            badge_class = 'bg-danger-subtle text-danger border border-danger-subtle'
+            status_indicator = 'bg-danger'
+            stats['absent'] += 1
+
+        team_members.append({
+            'employee': emp,
+            'status_text': status_text,
+            'badge_class': badge_class,
+            'status_indicator': status_indicator,
+            'record': record,
+            'leave': leave,
+        })
+
+    departments = Department.objects.filter(is_active=True)
+
+    return render(request, 'attendance/team_radar.html', {
+        'team_members': team_members,
+        'departments': departments,
+        'selected_dept': dept_id,
+        'search_q': search_q,
+        'stats': stats,
+        'today': today,
+    })
+

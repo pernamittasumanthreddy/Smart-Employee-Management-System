@@ -44,6 +44,7 @@ URLS_TO_TEST = [
     ("/attendance/my-attendance/", 200),
     ("/attendance/monthly/", 200),
     ("/attendance/department-summary/", 200),
+    ("/attendance/team-radar/", 200),
 
     # 5. Leave Management
     ("/leave/my-leaves/", 200),
@@ -101,6 +102,7 @@ URLS_TO_TEST = [
     # 19. Announcements & Events
     ("/announcements/", 200),
     ("/announcements/events/", 200),
+    ("/announcements/workspace-calendar/", 200),
 
     # 20. Notifications
     ("/notifications/", 200),
@@ -134,6 +136,8 @@ URLS_TO_TEST = [
     ("/lifecycle/", 200),
     ("/lifecycle/onboarding/", 200),
     ("/lifecycle/resignations/", 200),
+    ("/lifecycle/letters/", 200),
+    ("/lifecycle/letters/generate/", 200),
 
     # 27. Statutory Compliance
     ("/compliance/", 200),

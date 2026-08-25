@@ -183,4 +183,64 @@ document.addEventListener('DOMContentLoaded', function () {
             options: mergedOptions
         });
     };
+
+    // 9. Quick Scratchpad (Ctrl+J) & Local Storage Synchronization
+    const scratchArea = document.getElementById('emsScratchpadText');
+    const scratchStatus = document.getElementById('scratchSaveStatus');
+    
+    if (scratchArea) {
+        // Load saved content
+        const savedNotes = localStorage.getItem('ems_quick_scratchpad_content');
+        if (savedNotes) {
+            scratchArea.value = savedNotes;
+        }
+
+        scratchArea.addEventListener('input', function () {
+            localStorage.setItem('ems_quick_scratchpad_content', this.value);
+            if (scratchStatus) {
+                scratchStatus.innerHTML = '<i class="bi bi-cloud-check text-success me-1"></i>Saved locally';
+            }
+        });
+    }
+
+    // Global Shortcut for Scratchpad (Ctrl + J)
+    document.addEventListener('keydown', function (e) {
+        if ((e.ctrlKey || e.metaKey) && (e.key === 'j' || e.key === 'J')) {
+            e.preventDefault();
+            const modalEl = document.getElementById('emsScratchpadModal');
+            if (modalEl && typeof bootstrap !== 'undefined') {
+                const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                modal.toggle();
+                setTimeout(() => {
+                    if (scratchArea) scratchArea.focus();
+                }, 300);
+            }
+        }
+    });
+
+    window.copyScratchpad = function () {
+        if (!scratchArea) return;
+        navigator.clipboard.writeText(scratchArea.value).then(function () {
+            if (window.emsAudio) window.emsAudio.playPop();
+            if (scratchStatus) {
+                scratchStatus.innerHTML = '<i class="bi bi-check2-all text-primary me-1"></i>Copied to clipboard!';
+                setTimeout(() => {
+                    scratchStatus.innerHTML = '<i class="bi bi-cloud-check text-success me-1"></i>Saved locally';
+                }, 2500);
+            }
+        });
+    };
+
+    window.clearScratchpad = function () {
+        if (!scratchArea) return;
+        if (confirm('Clear all scratchpad notes?')) {
+            scratchArea.value = '';
+            localStorage.removeItem('ems_quick_scratchpad_content');
+            if (window.emsAudio) window.emsAudio.playPop();
+            if (scratchStatus) {
+                scratchStatus.innerHTML = '<i class="bi bi-check2 text-muted me-1"></i>Scratchpad cleared';
+            }
+        }
+    };
 });
+

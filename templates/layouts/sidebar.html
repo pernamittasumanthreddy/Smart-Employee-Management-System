@@ -79,6 +79,12 @@
             </a>
         </li>
         <li class="ems-nav-item">
+            <a href="{% url 'attendance:team_radar' %}" class="ems-nav-link">
+                <i class="bi bi-radar text-success"></i>
+                <span>Team Presence Radar</span>
+            </a>
+        </li>
+        <li class="ems-nav-item">
             <a href="{% url 'leave_management:my_leaves' %}" class="ems-nav-link">
                 <i class="bi bi-calendar2-check"></i>
                 <span>Leave Management</span>
@@ -192,6 +198,12 @@
             </a>
         </li>
         <li class="ems-nav-item">
+            <a href="{% url 'announcements:workspace_calendar' %}" class="ems-nav-link">
+                <i class="bi bi-calendar-heart text-danger"></i>
+                <span>Workspace Calendar</span>
+            </a>
+        </li>
+        <li class="ems-nav-item">
             <a href="{% url 'notifications:center' %}" class="ems-nav-link">
                 <i class="bi bi-bell"></i>
                 <span>Notifications</span>
@@ -234,8 +246,14 @@
         </li>
         <li class="ems-nav-item">
             <a href="{% url 'administration:settings' %}" class="ems-nav-link">
-                <i class="bi bi-sliders"></i>
-                <span>System Settings</span>
+                <i class="bi bi-gear"></i>
+                <span>Global Settings</span>
+            </a>
+        </li>
+        <li class="ems-nav-item">
+            <a href="{% url 'administration:backups' %}" class="ems-nav-link">
+                <i class="bi bi-database"></i>
+                <span>Backup & Restore</span>
             </a>
         </li>
         {% endif %}
@@ -260,6 +278,12 @@
             <a href="{% url 'lifecycle:dashboard' %}" class="ems-nav-link">
                 <i class="bi bi-arrows-fullscreen text-info"></i>
                 <span>Lifecycle & Clearances</span>
+            </a>
+        </li>
+        <li class="ems-nav-item">
+            <a href="{% url 'lifecycle:letters_hub' %}" class="ems-nav-link">
+                <i class="bi bi-file-earmark-text text-primary"></i>
+                <span>HR Letters & Studio</span>
             </a>
         </li>
         <li class="ems-nav-item">
