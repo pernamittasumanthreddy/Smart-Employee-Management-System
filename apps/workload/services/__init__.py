@@ -110,4 +110,3 @@ class WorkloadCalculationService:
         return results
 
     recalculate_all_workloads = recalculate_all
-
