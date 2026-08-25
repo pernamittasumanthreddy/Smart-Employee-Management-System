@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}{{ project.name }} — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div>
+        <h1 class="ems-page-heading"><i class="bi bi-kanban text-primary"></i> {{ project.name }} ({{ project.code }})</h1>
+        <p class="ems-page-subheading">Manager: {{ project.manager.full_name|default:"N/A" }} | Timeline: {{ project.start_date }} to {{ project.end_date|default:"Ongoing" }}</p>
+    </div>
+</div>
+<div class="row g-4">
+    <div class="col-12 col-lg-8">
+        <div class="ems-card mb-4"><div class="ems-card-header"><h5 class="ems-card-title">Project Tasks ({{ tasks.count }})</h5></div>
+        <div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+            <thead><tr><th>Code</th><th>Task</th><th>Assignee</th><th>Priority</th><th>Status</th></tr></thead>
+            <tbody>{% for t in tasks %}
+                <tr>
+                    <td><strong>{{ t.code }}</strong></td>
+                    <td><a href="{% url 'tasks:task_detail' t.id %}" class="text-decoration-none text-dark">{{ t.title }}</a></td>
+                    <td>{{ t.assigned_to.full_name|default:"Unassigned" }}</td>
+                    <td><span class="badge bg-secondary">{{ t.get_priority_display }}</span></td>
+                    <td><span class="ems-badge ems-badge-success">{{ t.get_status_display }}</span></td>
+                </tr>
+            {% empty %}<tr><td colspan="5" class="text-center text-muted py-3">No tasks created under this project.</td></tr>{% endfor %}</tbody>
+        </table></div></div></div>
+    </div>
+    <div class="col-12 col-lg-4">
+        <div class="ems-card"><div class="ems-card-header"><h5 class="ems-card-title">Project Milestones</h5></div>
+        <div class="ems-card-body">
+            {% for m in milestones %}
+            <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                <div>
+                    <div class="fw-bold small">{{ m.title }}</div>
+                    <div class="text-muted small">Due: {{ m.due_date }}</div>
+                </div>
+                <a href="{% url 'projects:toggle_milestone' m.id %}" class="btn btn-sm {% if m.is_completed %}btn-success{% else %}btn-outline-secondary{% endif %} py-0">
+                    {% if m.is_completed %}Completed{% else %}Mark Done{% endif %}
+                </a>
+            </div>
+            {% empty %}<p class="text-muted small">No milestones defined.</p>{% endfor %}
+            <form method="post" action="{% url 'projects:add_milestone' project.id %}" class="mt-3">{% csrf_token %}
+                <div class="mb-2">{{ milestone_form.title }}</div>
+                <div class="mb-2">{{ milestone_form.due_date }}</div>
+                <button type="submit" class="btn btn-sm btn-primary w-100">Add Milestone</button>
+            </form>
+        </div></div>
+    </div>
+</div>
+{% endblock %}

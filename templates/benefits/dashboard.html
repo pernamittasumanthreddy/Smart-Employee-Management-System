@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title %}Corporate Benefits & Insurance — Smart EMS{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div>
+        <h1 class="ems-page-heading"><i class="bi bi-heart-pulse-fill text-danger"></i> Corporate Benefits & Health Insurance</h1>
+        <p class="ems-page-subheading">Group mediclaim floater policies, dependent enrollments, claims & flexible benefit allowances</p>
+    </div>
+    <a href="{% url 'benefits:claims_list' %}" class="btn btn-primary"><i class="bi bi-receipt me-1"></i>Track Claims</a>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4"><div class="ems-card p-3"><div class="text-muted small">Corporate Policies</div><h3 class="fw-bold text-primary mb-0">{{ policies.count }} Active</h3></div></div>
+    <div class="col-md-4"><div class="ems-card p-3"><div class="text-muted small">Cashless Network Hospitals</div><h3 class="fw-bold text-success mb-0">12,000+ Nationwide</h3></div></div>
+    <div class="col-md-4"><div class="ems-card p-3"><div class="text-muted small">TPA Support</div><h3 class="fw-bold text-dark mb-0">1800-425-9449</h3></div></div>
+</div>
+
+<div class="ems-card">
+    <div class="ems-card-header"><h5 class="fw-bold mb-0">Active Group Insurance Policies</h5></div>
+    <div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+        <thead><tr><th>Policy Name</th><th>Policy No</th><th>Provider</th><th>Sum Insured</th><th>TPA Administrator</th><th>Status</th></tr></thead>
+        <tbody>{% for p in policies %}
+            <tr>
+                <td><strong>{{ p.name }}</strong></td>
+                <td><span class="badge bg-light text-dark border">{{ p.policy_number }}</span></td>
+                <td>{{ p.provider_name }}</td>
+                <td class="fw-bold text-success">₹{{ p.sum_insured|floatformat:0 }}</td>
+                <td>{{ p.tpa_name }}</td>
+                <td><span class="badge bg-success">Active</span></td>
+            </tr>
+        {% empty %}<tr><td colspan="6" class="text-center py-4 text-muted">No policies active.</td></tr>{% endfor %}</tbody>
+    </table></div></div>
+</div>
+{% endblock %}

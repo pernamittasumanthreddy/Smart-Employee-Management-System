@@ -1,0 +1,295 @@
+<aside class="ems-sidebar">
+    <!-- Brand Header -->
+    <div class="ems-brand">
+        <div class="ems-brand-logo">
+            <i class="bi bi-person-workspace"></i>
+        </div>
+        <div>
+            <div class="ems-brand-text">Smart EMS</div>
+            <div class="ems-brand-subtext">Enterprise Workforce</div>
+        </div>
+    </div>
+
+    <!-- Quick Role Switch / Dashboard Navigation -->
+    <ul class="ems-sidebar-menu mt-3">
+        <li class="ems-nav-item">
+            <a href="{% url 'authentication:dashboard' %}" class="ems-nav-link">
+                <i class="bi bi-speedometer2"></i>
+                <span>Main Dashboard</span>
+            </a>
+        </li>
+        <li class="ems-nav-item">
+            <a href="{% url 'employees:self_profile' %}" class="ems-nav-link">
+                <i class="bi bi-person-badge"></i>
+                <span>Employee 360° Hub</span>
+            </a>
+        </li>
+    </ul>
+
+    <!-- 1. Core & Security -->
+    <div class="ems-nav-group-title">1. Core & Security</div>
+    <ul class="ems-sidebar-menu">
+        <li class="ems-nav-item">
+            <a href="{% url 'employees:employee_list' %}" class="ems-nav-link">
+                <i class="bi bi-people"></i>
+                <span>Employee Management</span>
+            </a>
+        </li>
+        <li class="ems-nav-item">
+            <a href="{% url 'organization:department_list' %}" class="ems-nav-link">
+                <i class="bi bi-building"></i>
+                <span>Organization</span>
+            </a>
+        </li>
+        {% if is_admin %}
+        <li class="ems-nav-item">
+            <a href="{% url 'permissions:role_list' %}" class="ems-nav-link">
+                <i class="bi bi-shield-lock"></i>
+                <span>Roles & Permissions</span>
+            </a>
+        </li>
+        <li class="ems-nav-item">
+            <a href="{% url 'authentication:user_list' %}" class="ems-nav-link">
+                <i class="bi bi-person-gear"></i>
+                <span>User Accounts</span>
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+
+    <!-- 2. Time & Workforce -->
+    <div class="ems-nav-group-title">2. Time & Workforce</div>
+    <ul class="ems-sidebar-menu">
+        <li class="ems-nav-item">
+            <a href="{% url 'attendance:my_attendance' %}" class="ems-nav-link">
+                <i class="bi bi-clock-history"></i>
+                <span>Attendance</span>
+            </a>
+        </li>
+        <li class="ems-nav-item">
+            <a href="{% url 'leave_management:my_leaves' %}" class="ems-nav-link">
+                <i class="bi bi-calendar2-check"></i>
+                <span>Leave Management</span>
+            </a>
+        </li>
+        <li class="ems-nav-item">
+            <a href="{% url 'shifts:shift_list' %}" class="ems-nav-link">
+                <i class="bi bi-calendar-range"></i>
+                <span>Shifts & Holidays</span>
+            </a>
+        </li>
+        {% if is_manager_or_above %}
+        <li class="ems-nav-item">
+            <a href="{% url 'workload:dashboard' %}" class="ems-nav-link">
+                <i class="bi bi-pie-chart"></i>
+                <span>Workload Management</span>
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+
+    <!-- 3. Work & Productivity -->
+    <div class="ems-nav-group-title">3. Work & Productivity</div>
+    <ul class="ems-sidebar-menu">
+        <li class="ems-nav-item">
+            <a href="{% url 'projects:project_list' %}" class="ems-nav-link">
+                <i class="bi bi-kanban"></i>
+                <span>Project Management</span>
+            </a>
+        </li>
+        <li class="ems-nav-item">
+            <a href="{% url 'tasks:task_list' %}" class="ems-nav-link">
+                <i class="bi bi-check2-square"></i>
+                <span>Task Management</span>
+            </a>
+        </li>
+        <li class="ems-nav-item">
+            <a href="{% url 'skills:catalog' %}" class="ems-nav-link">
+                <i class="bi bi-award"></i>
+                <span>Skills & Matrix</span>
+            </a>
+        </li>
+        <li class="ems-nav-item">
+            <a href="{% url 'goals:goal_list' %}" class="ems-nav-link">
+                <i class="bi bi-bullseye"></i>
+                <span>Goals & OKRs</span>
+            </a>
+        </li>
+    </ul>
+
+    <!-- 4. Employee Development -->
+    <div class="ems-nav-group-title">4. Employee Development</div>
+    <ul class="ems-sidebar-menu">
+        <li class="ems-nav-item">
+            <a href="{% url 'performance:evaluation_list' %}" class="ems-nav-link">
+                <i class="bi bi-graph-up-arrow"></i>
+                <span>Performance Reviews</span>
+            </a>
+        </li>
+        <li class="ems-nav-item">
+            <a href="{% url 'training:catalog' %}" class="ems-nav-link">
+                <i class="bi bi-mortarboard"></i>
+                <span>Training & Courses</span>
+            </a>
+        </li>
+        <li class="ems-nav-item">
+            <a href="{% url 'recognition:wall' %}" class="ems-nav-link">
+                <i class="bi bi-trophy"></i>
+                <span>Recognition & Kudos</span>
+            </a>
+        </li>
+    </ul>
+
+    <!-- 5. Employee Services -->
+    <div class="ems-nav-group-title">5. Employee Services</div>
+    <ul class="ems-sidebar-menu">
+        <li class="ems-nav-item">
+            <a href="{% url 'assets:asset_list' %}" class="ems-nav-link">
+                <i class="bi bi-laptop"></i>
+                <span>Asset Management</span>
+            </a>
+        </li>
+        <li class="ems-nav-item">
+            <a href="{% url 'expenses:my_expenses' %}" class="ems-nav-link">
+                <i class="bi bi-receipt"></i>
+                <span>Expense Claims</span>
+            </a>
+        </li>
+        <li class="ems-nav-item">
+            <a href="{% url 'helpdesk:ticket_list' %}" class="ems-nav-link">
+                <i class="bi bi-headset"></i>
+                <span>Helpdesk Support</span>
+            </a>
+        </li>
+        <li class="ems-nav-item">
+            <a href="{% url 'documents:library' %}" class="ems-nav-link">
+                <i class="bi bi-file-earmark-text"></i>
+                <span>Document Center</span>
+            </a>
+        </li>
+        <li class="ems-nav-item">
+            <a href="{% url 'announcements:board' %}" class="ems-nav-link">
+                <i class="bi bi-megaphone"></i>
+                <span>Announcements</span>
+            </a>
+        </li>
+        <li class="ems-nav-item">
+            <a href="{% url 'notifications:center' %}" class="ems-nav-link">
+                <i class="bi bi-bell"></i>
+                <span>Notifications</span>
+                {% if unread_notifications_count > 0 %}
+                <span class="badge bg-danger ems-nav-badge">{{ unread_notifications_count }}</span>
+                {% endif %}
+            </a>
+        </li>
+    </ul>
+
+    <!-- 6. Intelligence & Administration -->
+    <div class="ems-nav-group-title">6. Intelligence & Admin</div>
+    <ul class="ems-sidebar-menu">
+        {% if is_manager_or_above %}
+        <li class="ems-nav-item">
+            <a href="{% url 'insights:dashboard' %}" class="ems-nav-link">
+                <i class="bi bi-cpu text-info"></i>
+                <span>Smart Insights (ML)</span>
+            </a>
+        </li>
+        <li class="ems-nav-item">
+            <a href="{% url 'reports:hub' %}" class="ems-nav-link">
+                <i class="bi bi-file-earmark-bar-graph"></i>
+                <span>Reports & Analytics</span>
+            </a>
+        </li>
+        {% endif %}
+        {% if is_admin %}
+        <li class="ems-nav-item">
+            <a href="{% url 'administration:security_compliance' %}" class="ems-nav-link">
+                <i class="bi bi-shield-check text-success"></i>
+                <span>Security & Compliance</span>
+            </a>
+        </li>
+        <li class="ems-nav-item">
+            <a href="{% url 'administration:audit_logs' %}" class="ems-nav-link">
+                <i class="bi bi-journal-text"></i>
+                <span>Audit Logs</span>
+            </a>
+        </li>
+        <li class="ems-nav-item">
+            <a href="{% url 'administration:settings' %}" class="ems-nav-link">
+                <i class="bi bi-sliders"></i>
+                <span>System Settings</span>
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+
+    <!-- 7. Compensation & Talent (Enterprise) -->
+    <div class="ems-nav-group-title">7. Compensation & Talent</div>
+    <ul class="ems-sidebar-menu">
+        <li class="ems-nav-item">
+            <a href="{% url 'payroll:dashboard' %}" class="ems-nav-link">
+                <i class="bi bi-cash-stack text-success"></i>
+                <span>Payroll & Wages</span>
+            </a>
+        </li>
+        <li class="ems-nav-item">
+            <a href="{% url 'recruitment:dashboard' %}" class="ems-nav-link">
+                <i class="bi bi-person-plus text-primary"></i>
+                <span>Recruitment & ATS</span>
+            </a>
+        </li>
+        <li class="ems-nav-item">
+            <a href="{% url 'lifecycle:dashboard' %}" class="ems-nav-link">
+                <i class="bi bi-arrows-fullscreen text-info"></i>
+                <span>Lifecycle & Clearances</span>
+            </a>
+        </li>
+        <li class="ems-nav-item">
+            <a href="{% url 'benefits:dashboard' %}" class="ems-nav-link">
+                <i class="bi bi-heart-pulse text-danger"></i>
+                <span>Benefits & Insurance</span>
+            </a>
+        </li>
+    </ul>
+
+    <!-- 8. Workplace, Governance & API -->
+    <div class="ems-nav-group-title">8. Workplace & Governance</div>
+    <ul class="ems-sidebar-menu mb-4">
+        <li class="ems-nav-item">
+            <a href="{% url 'timesheets:dashboard' %}" class="ems-nav-link">
+                <i class="bi bi-clock-history text-warning"></i>
+                <span>Timesheets & Billing</span>
+            </a>
+        </li>
+        <li class="ems-nav-item">
+            <a href="{% url 'surveys:dashboard' %}" class="ems-nav-link">
+                <i class="bi bi-chat-heart text-danger"></i>
+                <span>Surveys & eNPS</span>
+            </a>
+        </li>
+        <li class="ems-nav-item">
+            <a href="{% url 'compliance:dashboard' %}" class="ems-nav-link">
+                <i class="bi bi-shield-lock text-danger"></i>
+                <span>Statutory Compliance</span>
+            </a>
+        </li>
+        <li class="ems-nav-item">
+            <a href="{% url 'workplace:dashboard' %}" class="ems-nav-link">
+                <i class="bi bi-building-gear text-primary"></i>
+                <span>Workplace & Travel</span>
+            </a>
+        </li>
+        <li class="ems-nav-item">
+            <a href="{% url 'api:docs' %}" class="ems-nav-link">
+                <i class="bi bi-code-slash text-info"></i>
+                <span>Developer REST API</span>
+            </a>
+        </li>
+        <li class="ems-nav-item">
+            <a href="{% url 'automation:dashboard' %}" class="ems-nav-link">
+                <i class="bi bi-cpu text-warning"></i>
+                <span>Smart Automation</span>
+            </a>
+        </li>
+    </ul>
+</aside>

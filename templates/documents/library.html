@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Document Repository — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div><h1 class="ems-page-heading"><i class="bi bi-file-earmark-text text-primary"></i> Company Document Repository</h1></div>
+    <div>{% if is_hr_or_admin %}<a href="{% url 'documents:upload' %}" class="btn btn-primary btn-sm"><i class="bi bi-upload me-1"></i>Upload Document</a>{% endif %}</div>
+</div>
+<div class="ems-card"><div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+    <thead><tr><th>Document Title</th><th>Category</th><th>Associated Employee</th><th>Uploaded Date</th><th>Expiry</th><th>Action</th></tr></thead>
+    <tbody>{% for d in documents %}
+        <tr>
+            <td><strong>{{ d.title }}</strong></td>
+            <td>{{ d.category.name }}</td>
+            <td>{{ d.employee.full_name|default:"Company-Wide" }}</td>
+            <td>{{ d.created_at|date:'M d, Y' }}</td>
+            <td>{{ d.expiry_date|default:"Permanent" }}</td>
+            <td>{% if d.document_file %}<a href="{{ d.document_file.url }}" class="btn btn-sm btn-outline-primary py-0" download><i class="bi bi-download"></i></a>{% else %}<span class="badge bg-light text-muted">No File</span>{% endif %}</td>
+        </tr>
+    {% empty %}<tr><td colspan="6" class="text-center text-muted py-4">No documents found.</td></tr>{% endfor %}</tbody>
+</table></div></div></div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}Project & Task Tracking — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header"><div><h1 class="ems-page-heading">Project & Task Tracking Analytics</h1></div></div>
+<div class="row g-4 mb-4">
+    <div class="col-12 col-lg-6"><div class="ems-card p-3"><h5 class="fw-bold mb-3">Tasks by Status</h5><div style="height: 240px;"><canvas id="taskStatusChart"></canvas></div></div></div>
+    <div class="col-12 col-lg-6"><div class="ems-card p-3"><h5 class="fw-bold mb-3">Tasks by Priority</h5><div style="height: 240px;"><canvas id="taskPriorityChart"></canvas></div></div></div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    renderEMSChart('taskStatusChart', 'doughnut', {
+        labels: {{ status_labels_json|safe }},
+        datasets: [{
+            data: {{ status_data_json|safe }},
+            backgroundColor: ['#64748b', '#0284c7', '#f59e0b', '#10b981']
+        }]
+    });
+    renderEMSChart('taskPriorityChart', 'bar', {
+        labels: {{ priority_labels_json|safe }},
+        datasets: [{
+            label: 'Tasks Count',
+            data: {{ priority_data_json|safe }},
+            backgroundColor: ['#ef4444', '#f97316', '#3b82f6', '#94a3b8']
+        }]
+    });
+});
+</script>
+{% endblock %}

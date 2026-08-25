@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Goals & OKRs — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div><h1 class="ems-page-heading"><i class="bi bi-bullseye text-primary"></i> Company & Team OKRs / Goals</h1></div>
+    <div>{% if is_manager_or_above %}<a href="{% url 'goals:goal_create' %}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>New Goal</a>{% endif %}</div>
+</div>
+<div class="row g-4">
+    {% for g in goals %}
+    <div class="col-12 col-md-6 col-xl-4">
+        <div class="ems-card h-100 p-3">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="badge bg-light text-primary border">{% if g.employee %}{{ g.employee.full_name }}{% else %}Team {{ g.team.name }}{% endif %}</span>
+                <span class="ems-badge ems-badge-success">{{ g.get_status_display }}</span>
+            </div>
+            <h5 class="fw-bold text-dark mb-1"><a href="{% url 'goals:goal_detail' g.id %}" class="text-decoration-none text-dark">{{ g.title }}</a></h5>
+            <p class="text-muted small mb-2">{{ g.description|truncatewords:10 }}</p>
+            <div class="d-flex justify-content-between align-items-center mb-1 small">
+                <span class="text-muted">Progress</span>
+                <span class="fw-bold text-primary">{{ g.progress_percentage }}%</span>
+            </div>
+            <div class="progress mb-2" style="height: 6px;"><div class="progress-bar bg-primary" style="width: {{ g.progress_percentage }}%;"></div></div>
+            <div class="small text-muted border-top pt-2 mt-auto d-flex justify-content-between">
+                <span>Due: {{ g.due_date }}</span>
+                <a href="{% url 'goals:goal_detail' g.id %}" class="btn btn-sm btn-outline-primary py-0">Track</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}<div class="col-12 text-center text-muted py-5">No goals defined.</div>{% endfor %}
+</div>
+{% endblock %}

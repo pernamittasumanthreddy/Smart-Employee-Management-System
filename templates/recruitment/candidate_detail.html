@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}{{ candidate.full_name }} — Smart EMS{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div>
+        <h1 class="ems-page-heading"><i class="bi bi-person-badge-fill text-primary"></i> {{ candidate.full_name }}</h1>
+        <p class="ems-page-subheading">{{ candidate.current_designation|default:"Professional Candidate" }} at {{ candidate.current_company|default:"Industry" }}</p>
+    </div>
+    <a href="{% url 'recruitment:candidate_list' %}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i>Back</a>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-4">
+        <div class="ems-card p-4">
+            <h5 class="fw-bold mb-3">Contact Information</h5>
+            <div><strong>Email:</strong> {{ candidate.email }}</div>
+            <div><strong>Phone:</strong> {{ candidate.phone }}</div>
+            <div><strong>Location:</strong> {{ candidate.current_location }}</div>
+            <div><strong>Notice Period:</strong> {{ candidate.notice_period_days }} Days</div>
+            <div class="mt-3"><strong>Current CTC:</strong> ₹{{ candidate.current_ctc|floatformat:0 }}</div>
+            <div><strong>Expected CTC:</strong> ₹{{ candidate.expected_ctc|floatformat:0 }}</div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="ems-card p-4">
+            <h5 class="fw-bold mb-3">Application History</h5>
+            {% for app in applications %}
+                <div class="border rounded-3 p-3 mb-2 bg-light">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <strong class="text-primary">{{ app.job_requisition.title }}</strong>
+                        <span class="badge bg-primary">{{ app.get_stage_display }}</span>
+                    </div>
+                    <div class="text-muted small mt-1">Applied: {{ app.applied_at|date:"M d, Y" }} | Source: {{ app.get_source_display }}</div>
+                    <div class="mt-2 small"><strong>AI Match Score:</strong> {{ app.match_score_percentage }}%</div>
+                </div>
+            {% empty %}<p class="text-muted">No applications recorded.</p>{% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

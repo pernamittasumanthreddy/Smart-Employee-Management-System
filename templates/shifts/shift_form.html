@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header"><div><h1 class="ems-page-heading">{{ title }}</h1></div></div>
+<div class="ems-card"><div class="ems-card-body p-4"><form method="post">{% csrf_token %}
+    <div class="row g-3">
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Shift Name *</label>{{ form.name }}</div>
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Code *</label>{{ form.code }}</div>
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Start Time *</label>{{ form.start_time }}</div>
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">End Time *</label>{{ form.end_time }}</div>
+        <div class="col-12 col-md-4"><label class="form-label small fw-semibold">Grace Minutes</label>{{ form.grace_period_minutes }}</div>
+        <div class="col-12 col-md-4"><label class="form-label small fw-semibold">Half Day Hours</label>{{ form.half_day_hours }}</div>
+        <div class="col-12 col-md-4"><label class="form-label small fw-semibold">Full Day Hours</label>{{ form.full_day_hours }}</div>
+    </div>
+    <div class="d-flex justify-content-end gap-2 mt-4"><button type="submit" class="btn btn-primary px-4">Save Shift</button></div>
+</form></div></div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}{{ ticket.subject }} — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div><h1 class="ems-page-heading">[{{ ticket.ticket_number }}] {{ ticket.subject }}</h1><span class="text-muted small">By {{ ticket.creator.full_name }} &bull; Category: {{ ticket.category.name }}</span></div>
+    <div><span class="ems-badge ems-badge-success fs-6">{{ ticket.get_status_display }}</span></div>
+</div>
+<div class="row g-4">
+    <div class="col-12 col-lg-8">
+        <div class="ems-card mb-4"><div class="ems-card-header"><h5 class="ems-card-title">Issue Description</h5></div>
+        <div class="ems-card-body"><p>{{ ticket.description }}</p></div></div>
+
+        <!-- Message Thread -->
+        <div class="ems-card"><div class="ems-card-header"><h5 class="ems-card-title">Conversation Thread</h5></div>
+        <div class="ems-card-body">
+            {% for m in messages_list %}
+            <div class="p-3 bg-light rounded mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <strong>{{ m.sender.full_name }}</strong>
+                    <span class="text-muted small">{{ m.created_at }}</span>
+                </div>
+                <div class="small">{{ m.message }}</div>
+            </div>
+            {% endfor %}
+            <form method="post" action="{% url 'helpdesk:add_message' ticket.id %}">{% csrf_token %}
+                <div class="mb-2">{{ message_form.message }}</div>
+                <button type="submit" class="btn btn-sm btn-primary">Send Reply</button>
+            </form>
+        </div></div>
+    </div>
+    <div class="col-12 col-lg-4">
+        {% if ticket.status != 'RESOLVED' %}
+        <div class="ems-card"><div class="ems-card-header"><h5 class="ems-card-title">Resolve Ticket</h5></div>
+        <div class="ems-card-body"><form method="post" action="{% url 'helpdesk:resolve' ticket.id %}">{% csrf_token %}
+            <div class="mb-3">{{ resolve_form.resolution_notes }}</div>
+            <button type="submit" class="btn btn-success w-100">Mark as Resolved</button>
+        </form></div></div>
+        {% else %}
+        <div class="ems-card p-3 bg-light"><h6 class="fw-bold text-success">Resolution Documented</h6><p class="small text-muted mb-0">{{ ticket.resolution_notes }}</p></div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

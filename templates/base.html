@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Smart Employee Management System{% endblock %}</title>
+    
+    <!-- Google Fonts & Standalone CSS Bundles -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-icons.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/enterprise.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    {% if user.is_authenticated %}
+    <div class="ems-app-wrapper">
+        <!-- Sidebar Navigation -->
+        {% include 'layouts/sidebar.html' %}
+
+        <!-- Main Content Area -->
+        <div class="ems-main-wrapper">
+            <!-- Top Navbar -->
+            {% include 'layouts/navbar.html' %}
+
+            <!-- Flash Alert Banners -->
+            {% if messages %}
+            <div class="container-fluid px-4 pt-3">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show ems-card shadow-sm" role="alert">
+                    <div class="d-flex align-items-center gap-2">
+                        {% if message.tags == 'success' %}<i class="bi bi-check-circle-fill text-success fs-5"></i>
+                        {% elif message.tags == 'error' or message.tags == 'danger' %}<i class="bi bi-exclamation-triangle-fill text-danger fs-5"></i>
+                        {% elif message.tags == 'warning' %}<i class="bi bi-exclamation-circle-fill text-warning fs-5"></i>
+                        {% else %}<i class="bi bi-info-circle-fill text-info fs-5"></i>{% endif %}
+                        <div class="fw-semibold">{{ message }}</div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Page Body -->
+            <main class="ems-page-content">
+                {% block content %}{% endblock %}
+            </main>
+
+            <!-- Footer -->
+            {% include 'layouts/footer.html' %}
+        </div>
+    </div>
+
+    <!-- Floating Audio Quick Control Bar -->
+    <div class="ems-sound-bar">
+        <button type="button" class="btn btn-sm btn-outline-primary ems-sound-toggle-btn" title="Toggle Sound">
+            <i class="bi bi-volume-up-fill text-primary me-1"></i><span class="d-none d-md-inline small fw-semibold">Sound On</span>
+        </button>
+        <button type="button" class="btn btn-sm btn-primary rounded-pill ems-test-sound-btn" data-sound-type="chime" title="Test Notification Sound">
+            <i class="bi bi-bell-fill me-1"></i><span class="small">Test Chime</span>
+        </button>
+    </div>
+
+    {% else %}
+    <div class="min-vh-100 d-flex flex-column justify-content-center py-4 bg-light">
+        {% block auth_content %}{% endblock %}
+    </div>
+    {% endif %}
+
+    <!-- JavaScript Bundles & Audio Synthesizer -->
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/chart.umd.min.js' %}"></script>
+    <script src="{% static 'js/ems_audio.js' %}"></script>
+    <script src="{% static 'js/enterprise.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

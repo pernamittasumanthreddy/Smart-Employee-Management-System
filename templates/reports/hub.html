@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}Reports & Analytics Hub — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div>
+        <h1 class="ems-page-heading"><i class="bi bi-file-earmark-bar-graph-fill text-primary"></i> Reports & Analytics Center</h1>
+        <p class="ems-page-subheading">Access the 7 mandatory business output streams, chart analytics, and export tools</p>
+    </div>
+</div>
+<div class="row g-4">
+    <div class="col-12 col-md-6 col-lg-4">
+        <div class="ems-card h-100 p-4">
+            <h5 class="fw-bold text-primary"><i class="bi bi-person-badge me-2"></i>1. Employee 360° View</h5>
+            <p class="text-muted small">Complete unified pane of personal details, attendance, reviews, tasks, assets, and skills.</p>
+            <a href="{% url 'employees:employee_list' %}" class="btn btn-sm btn-outline-primary">Open Roster & 360°</a>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-4">
+        <div class="ems-card h-100 p-4">
+            <h5 class="fw-bold text-primary"><i class="bi bi-clock-history me-2"></i>2. Attendance & Leave Reports</h5>
+            <p class="text-muted small">Workforce presence ratios, tardiness clustering, leave balances, and department breakdowns.</p>
+            <a href="{% url 'reports:attendance_leave' %}" class="btn btn-sm btn-outline-primary">View Report</a>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-4">
+        <div class="ems-card h-100 p-4">
+            <h5 class="fw-bold text-primary"><i class="bi bi-graph-up me-2"></i>3. Performance Analytics</h5>
+            <p class="text-muted small">Multi-cycle appraisal rating distributions, skill radar charts, and regression trends.</p>
+            <a href="{% url 'reports:performance_analytics' %}" class="btn btn-sm btn-outline-primary">View Analytics</a>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-4">
+        <div class="ems-card h-100 p-4">
+            <h5 class="fw-bold text-primary"><i class="bi bi-kanban me-2"></i>4. Project & Task Tracking</h5>
+            <p class="text-muted small">Project progress burndown, milestone completion velocities, and overdue task monitoring.</p>
+            <a href="{% url 'reports:project_task_tracking' %}" class="btn btn-sm btn-outline-primary">Track Projects</a>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-4">
+        <div class="ems-card h-100 p-4">
+            <h5 class="fw-bold text-primary"><i class="bi bi-mortarboard me-2"></i>5. Skill & Training Insights</h5>
+            <p class="text-muted small">Competency matrices, training enrollments, compliance ratios, and skill gap staffing.</p>
+            <a href="{% url 'reports:skills_training' %}" class="btn btn-sm btn-outline-primary">View Insights</a>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-4">
+        <div class="ems-card h-100 p-4">
+            <h5 class="fw-bold text-primary"><i class="bi bi-receipt me-2"></i>6. Expense & Asset Tracking</h5>
+            <p class="text-muted small">Hardware allocation tracking, lifecycle deprecation, and departmental reimbursement burn.</p>
+            <a href="{% url 'reports:expense_assets' %}" class="btn btn-sm btn-outline-primary">Track Expenses</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

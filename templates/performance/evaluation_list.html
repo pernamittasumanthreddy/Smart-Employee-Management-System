@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Performance Reviews — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div><h1 class="ems-page-heading"><i class="bi bi-graph-up text-primary"></i> Performance Reviews & Evaluations</h1></div>
+    <div>{% if is_manager_or_above %}<a href="{% url 'performance:conduct' %}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>Conduct Review</a>{% endif %}</div>
+</div>
+<div class="ems-card"><div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+    <thead><tr><th>Employee</th><th>Department</th><th>Review Cycle</th><th>Evaluator</th><th>Technical</th><th>Comm.</th><th>Productivity</th><th>Leadership</th><th>Score</th></tr></thead>
+    <tbody>{% for e in evaluations %}
+        <tr>
+            <td><strong>{{ e.employee.full_name }}</strong></td>
+            <td>{{ e.employee.department.name|default:"--" }}</td>
+            <td>{{ e.cycle.title }}</td>
+            <td>{{ e.evaluator.full_name|default:"Manager" }}</td>
+            <td>{{ e.technical_skills_rating }}</td>
+            <td>{{ e.communication_rating }}</td>
+            <td>{{ e.productivity_rating }}</td>
+            <td>{{ e.leadership_rating }}</td>
+            <td><strong class="text-success fs-6">{{ e.final_score }} / 5.0</strong></td>
+        </tr>
+    {% empty %}<tr><td colspan="9" class="text-center text-muted py-4">No evaluations conducted.</td></tr>{% endfor %}</tbody>
+</table></div></div></div>
+{% endblock %}

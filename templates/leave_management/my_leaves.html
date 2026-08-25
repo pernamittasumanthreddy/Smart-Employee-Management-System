@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}My Leave Portal — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div><h1 class="ems-page-heading"><i class="bi bi-calendar2-check text-primary"></i> My Leave Portal & Balances</h1></div>
+    <a href="{% url 'leave_management:apply_leave' %}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>Apply for Leave</a>
+</div>
+<div class="row g-3 mb-4">
+    {% for bal in balances %}
+    <div class="col-12 col-md-4">
+        <div class="card p-3 border">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <strong>{{ bal.leave_type.name }}</strong>
+                <span class="badge bg-primary fs-6">{{ bal.remaining_days }} Days</span>
+            </div>
+            <div class="small text-muted">Allocated: {{ bal.total_allocated }} | Used: {{ bal.used_days }} | Pending: {{ bal.pending_days }}</div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<div class="ems-card"><div class="ems-card-header"><h5 class="ems-card-title">Leave History</h5></div>
+<div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+    <thead><tr><th>Leave Type</th><th>Start Date</th><th>End Date</th><th>Days</th><th>Status</th><th>Reviewer Notes</th></tr></thead>
+    <tbody>{% for r in requests %}
+        <tr>
+            <td><strong>{{ r.leave_type.name }}</strong></td>
+            <td>{{ r.start_date }}</td>
+            <td>{{ r.end_date }}</td>
+            <td>{{ r.total_days }}</td>
+            <td><span class="ems-badge {% if r.status == 'APPROVED' %}ems-badge-success{% elif r.status == 'REJECTED' %}ems-badge-danger{% else %}ems-badge-warning{% endif %}">{{ r.get_status_display }}</span></td>
+            <td>{{ r.rejection_reason|default:"--" }}</td>
+        </tr>
+    {% empty %}<tr><td colspan="6" class="text-center text-muted py-4">No leave requests.</td></tr>{% endfor %}</tbody>
+</table></div></div></div>
+{% endblock %}

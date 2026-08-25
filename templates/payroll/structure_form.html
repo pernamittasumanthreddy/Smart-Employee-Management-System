@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} — Smart EMS{% endblock %}
+{% block content %}
+<div class="ems-page-header"><div><h1 class="ems-page-heading">{{ title }}</h1><p class="ems-page-subheading">Configure grade-level compensation breakdown</p></div></div>
+<div class="ems-card"><div class="ems-card-body p-4"><form method="post">{% csrf_token %}
+    <div class="row g-3">
+        <div class="col-md-6"><label class="form-label small fw-semibold">Structure Name *</label>{{ form.name }}</div>
+        <div class="col-md-6"><label class="form-label small fw-semibold">Code *</label>{{ form.code }}</div>
+        <div class="col-md-6"><label class="form-label small fw-semibold">Annual CTC (₹) *</label>{{ form.annual_ctc }}</div>
+        <div class="col-md-6"><label class="form-label small fw-semibold">Currency</label>{{ form.currency }}</div>
+        <div class="col-md-4"><label class="form-label small fw-semibold">Basic % of CTC</label>{{ form.basic_percentage }}</div>
+        <div class="col-md-4"><label class="form-label small fw-semibold">HRA % of Basic</label>{{ form.hra_percentage }}</div>
+        <div class="col-md-4"><label class="form-label small fw-semibold">DA % of Basic</label>{{ form.da_percentage }}</div>
+        <div class="col-md-4"><label class="form-label small fw-semibold">Special Allowance / Mo</label>{{ form.special_allowance }}</div>
+        <div class="col-md-4"><label class="form-label small fw-semibold">Conveyance / Mo</label>{{ form.conveyance_allowance }}</div>
+        <div class="col-md-4"><label class="form-label small fw-semibold">Medical / Mo</label>{{ form.medical_allowance }}</div>
+        <div class="col-md-4"><label class="form-label small fw-semibold">PF Employee Rate %</label>{{ form.pf_employee_rate }}</div>
+        <div class="col-md-4"><label class="form-label small fw-semibold">PF Employer Rate %</label>{{ form.pf_employer_rate }}</div>
+        <div class="col-md-4"><label class="form-label small fw-semibold">Professional Tax / Mo</label>{{ form.professional_tax }}</div>
+        <div class="col-12"><label class="form-label small fw-semibold">Description</label>{{ form.description }}</div>
+    </div>
+    <div class="d-flex justify-content-end gap-2 mt-4">
+        <a href="{% url 'payroll:structure_list' %}" class="btn btn-outline-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary px-4">Save Structure</button>
+    </div>
+</form></div></div>
+{% endblock %}

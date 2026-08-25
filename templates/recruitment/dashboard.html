@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block title %}Recruitment & ATS — Smart EMS{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div>
+        <h1 class="ems-page-heading"><i class="bi bi-person-plus-fill text-primary"></i> Recruitment & Talent Acquisition (ATS)</h1>
+        <p class="ems-page-subheading">Job requisitions, candidate pipeline kanban, interview scheduling & offer management</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{% url 'recruitment:pipeline' %}" class="btn btn-primary"><i class="bi bi-kanban me-1"></i>Hiring Pipeline</a>
+        <a href="{% url 'recruitment:requisition_create' %}" class="btn btn-outline-primary"><i class="bi bi-plus-lg me-1"></i>Create Requisition</a>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-12 col-md-3">
+        <div class="ems-card p-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div><div class="text-muted small">Open Requisitions</div><h3 class="fw-bold mb-0 text-primary">{{ overview.total_open_positions }}</h3></div>
+                <div class="p-3 bg-primary-subtle text-primary rounded-3"><i class="bi bi-briefcase-fill fs-3"></i></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-3">
+        <div class="ems-card p-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div><div class="text-muted small">Candidate Pool</div><h3 class="fw-bold mb-0 text-success">{{ overview.total_candidates }}</h3></div>
+                <div class="p-3 bg-success-subtle text-success rounded-3"><i class="bi bi-people-fill fs-3"></i></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-3">
+        <div class="ems-card p-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div><div class="text-muted small">Active in Pipeline</div><h3 class="fw-bold mb-0 text-warning">{{ overview.active_applications }}</h3></div>
+                <div class="p-3 bg-warning-subtle text-warning rounded-3"><i class="bi bi-funnel-fill fs-3"></i></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-3">
+        <div class="ems-card p-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div><div class="text-muted small">Offers Extended</div><h3 class="fw-bold mb-0 text-info">{{ overview.offers_extended }}</h3></div>
+                <div class="p-3 bg-info-subtle text-info rounded-3"><i class="bi bi-envelope-paper-heart-fill fs-3"></i></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-12 col-lg-8">
+        <div class="ems-card">
+            <div class="ems-card-header d-flex justify-content-between align-items-center">
+                <h5 class="fw-bold mb-0">Open Job Requisitions</h5>
+                <a href="{% url 'recruitment:requisition_list' %}" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+                <thead><tr><th>Position Title</th><th>Code</th><th>Department</th><th>Headcount</th><th>Priority</th><th>Action</th></tr></thead>
+                <tbody>{% for r in open_requisitions %}
+                    <tr>
+                        <td><strong>{{ r.title }}</strong></td>
+                        <td><span class="badge bg-light text-dark border">{{ r.requisition_code }}</span></td>
+                        <td>{{ r.department.name }}</td>
+                        <td><span class="badge bg-primary">{{ r.headcount }} Open</span></td>
+                        <td><span class="badge bg-danger">{{ r.get_priority_display }}</span></td>
+                        <td><a href="{% url 'recruitment:pipeline' %}" class="btn btn-sm btn-outline-secondary">Pipeline</a></td>
+                    </tr>
+                {% empty %}<tr><td colspan="6" class="text-center py-4 text-muted">No open requisitions.</td></tr>{% endfor %}</tbody>
+            </table></div></div>
+        </div>
+    </div>
+    <div class="col-12 col-lg-4">
+        <div class="ems-card">
+            <div class="ems-card-header"><h5 class="fw-bold mb-0">Upcoming Interviews</h5></div>
+            <div class="ems-card-body p-3">
+                <div class="list-group list-group-flush">
+                    {% for iv in upcoming_interviews %}
+                        <div class="list-group-item px-0">
+                            <div class="fw-semibold">{{ iv.application.candidate.full_name }}</div>
+                            <div class="text-muted small">{{ iv.round_name }}</div>
+                            <div class="badge bg-primary-subtle text-primary mt-1">{{ iv.scheduled_start|date:"M d, H:i" }}</div>
+                        </div>
+                    {% empty %}<p class="text-muted small">No interviews scheduled today.</p>{% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

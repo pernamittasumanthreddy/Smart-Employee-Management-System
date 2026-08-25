@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}Daily Attendance Roster — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div><h1 class="ems-page-heading"><i class="bi bi-calendar2-range text-primary"></i> Daily Attendance Roster</h1></div>
+</div>
+<div class="ems-filter-bar mb-4">
+    <form method="get" class="d-flex flex-wrap gap-2 w-100 align-items-center">
+        <input type="date" name="date" class="form-control form-control-sm" style="width: auto;" value="{{ target_date|date:'Y-m-d' }}">
+        <select name="department" class="form-select form-select-sm" style="width: auto;">
+            <option value="">All Departments</option>
+            {% for d in departments %}<option value="{{ d.id }}" {% if selected_dept == d.id|stringformat:"i" %}selected{% endif %}>{{ d.name }}</option>{% endfor %}
+        </select>
+        <button type="submit" class="btn btn-sm btn-primary">Filter Roster</button>
+    </form>
+</div>
+<div class="ems-card"><div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+    <thead><tr><th>Employee</th><th>Department</th><th>Check In</th><th>Check Out</th><th>Hours</th><th>Status</th></tr></thead>
+    <tbody>{% for r in records %}
+        <tr>
+            <td><strong>{{ r.employee.full_name }}</strong></td>
+            <td>{{ r.employee.department.name|default:"--" }}</td>
+            <td>{{ r.check_in_time|default:"--" }} {% if r.is_late %}<span class="badge bg-warning text-dark small">Late</span>{% endif %}</td>
+            <td>{{ r.check_out_time|default:"--" }}</td>
+            <td>{{ r.total_working_hours }} hrs</td>
+            <td><span class="ems-badge {% if r.status == 'PRESENT' %}ems-badge-success{% else %}ems-badge-danger{% endif %}">{{ r.get_status_display }}</span></td>
+        </tr>
+    {% empty %}<tr><td colspan="6" class="text-center text-muted py-4">No records for this date.</td></tr>{% endfor %}</tbody>
+</table></div></div></div>
+{% endblock %}

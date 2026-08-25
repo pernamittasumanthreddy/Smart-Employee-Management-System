@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Expense Claims Approval Queue — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header"><div><h1 class="ems-page-heading"><i class="bi bi-receipt text-primary"></i> Expense Claims Approval Queue</h1></div></div>
+<div class="ems-card mb-4"><div class="ems-card-header"><h5 class="ems-card-title text-warning">Pending Claims</h5></div>
+<div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+    <thead><tr><th>Claim #</th><th>Employee</th><th>Category</th><th>Amount</th><th>Date</th><th>Action</th></tr></thead>
+    <tbody>{% for c in pending_claims %}
+        <tr>
+            <td><strong>{{ c.claim_number }}</strong></td>
+            <td>{{ c.employee.full_name }}</td>
+            <td>{{ c.category.name }}</td>
+            <td><strong class="text-success">${{ c.amount }}</strong></td>
+            <td>{{ c.expense_date }}</td>
+            <td>
+                <div class="d-flex gap-1">
+                    <a href="{% url 'expenses:approve' c.id %}" class="btn btn-sm btn-success py-0">Approve</a>
+                    <a href="{% url 'expenses:reimburse' c.id %}" class="btn btn-sm btn-primary py-0">Reimburse</a>
+                </div>
+            </td>
+        </tr>
+    {% empty %}<tr><td colspan="6" class="text-center text-muted py-4">No pending claims.</td></tr>{% endfor %}</tbody>
+</table></div></div></div>
+{% endblock %}

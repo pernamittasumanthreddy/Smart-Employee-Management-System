@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header"><div><h1 class="ems-page-heading">{{ title }}</h1></div></div>
+<div class="ems-card"><div class="ems-card-body p-4"><form method="post">{% csrf_token %}
+    <div class="row g-3">
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Course Title *</label>{{ form.title }}</div>
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Code *</label>{{ form.code }}</div>
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Category</label>{{ form.category }}</div>
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Provider</label>{{ form.provider }}</div>
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Duration Hours</label>{{ form.duration_hours }}</div>
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Pass Score %</label>{{ form.pass_score }}</div>
+        <div class="col-12"><label class="form-label small fw-semibold">Description</label>{{ form.description }}</div>
+    </div>
+    <div class="d-flex justify-content-end gap-2 mt-4"><button type="submit" class="btn btn-primary px-4">Save Course</button></div>
+</form></div></div>
+{% endblock %}

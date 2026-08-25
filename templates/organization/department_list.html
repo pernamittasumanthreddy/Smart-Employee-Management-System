@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Departments — Smart Employee Management System{% endblock %}
+
+{% block content %}
+<div class="ems-page-header">
+    <div>
+        <h1 class="ems-page-heading"><i class="bi bi-building text-primary"></i> Organization Departments</h1>
+        <p class="ems-page-subheading">Manage business units, department heads, budgets, and team allocations</p>
+    </div>
+    <div class="d-flex gap-2">
+        {% if is_hr_or_admin %}
+        <a href="{% url 'organization:department_create' %}" class="btn btn-primary btn-sm">
+            <i class="bi bi-plus-lg me-1"></i>Add Department
+        </a>
+        {% endif %}
+        <a href="{% url 'organization:org_chart' %}" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-diagram-3 me-1"></i>Organization Chart
+        </a>
+    </div>
+</div>
+
+<div class="ems-card">
+    <div class="ems-card-body p-0">
+        <div class="table-responsive">
+            <table class="ems-table">
+                <thead>
+                    <tr>
+                        <th>Department</th>
+                        <th>Code</th>
+                        <th>Head of Department</th>
+                        <th>Headcount</th>
+                        <th>Location</th>
+                        <th>Budget</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for dept in departments %}
+                    <tr>
+                        <td><strong>{{ dept.name }}</strong></td>
+                        <td><span class="badge bg-light text-dark border">{{ dept.code }}</span></td>
+                        <td>{{ dept.head_of_department.full_name|default:"Not Assigned" }}</td>
+                        <td><span class="badge bg-primary">{{ dept.total_employees }} Active</span></td>
+                        <td>{{ dept.location }}</td>
+                        <td>${{ dept.budget }}</td>
+                        <td><span class="ems-badge {% if dept.is_active %}ems-badge-success{% else %}ems-badge-secondary{% endif %}">{% if dept.is_active %}Active{% else %}Inactive{% endif %}</span></td>
+                        <td>
+                            {% if is_hr_or_admin %}
+                            <a href="{% url 'organization:department_update' dept.id %}" class="btn btn-sm btn-outline-secondary py-0 px-2"><i class="bi bi-pencil"></i></a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="8" class="text-center text-muted py-4">No departments created.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

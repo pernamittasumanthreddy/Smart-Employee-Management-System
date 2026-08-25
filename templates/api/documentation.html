@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Developer REST API Docs — Smart EMS{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div>
+        <h1 class="ems-page-heading"><i class="bi bi-code-slash text-primary"></i> Developer REST API & Webhooks Suite</h1>
+        <p class="ems-page-subheading">Integrate external biometric gates, ERPs, mobile clients & microservices via JSON REST APIs</p>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-12 col-lg-8">
+        <div class="ems-card p-4">
+            <h5 class="fw-bold mb-3">Available Core API Endpoints</h5>
+            <div class="d-flex flex-column gap-3">
+                {% for ep in endpoints %}
+                    <div class="p-3 border rounded-3 bg-light">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="badge {% if ep.method == 'GET' %}bg-success{% else %}bg-primary{% endif %} px-2 py-1">{{ ep.method }}</span>
+                            <code class="fw-bold text-dark fs-6">{{ ep.path }}</code>
+                        </div>
+                        <p class="text-muted small mb-0">{{ ep.desc }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-lg-4">
+        <div class="ems-card p-4">
+            <h5 class="fw-bold mb-3">Your API Keys</h5>
+            {% for k in api_keys %}
+                <div class="border rounded-3 p-2 mb-2 bg-light">
+                    <div class="fw-semibold small">{{ k.name }}</div>
+                    <code class="small text-break">{{ k.key }}</code>
+                </div>
+            {% empty %}<p class="text-muted small">No custom API keys registered for this session.</p>{% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

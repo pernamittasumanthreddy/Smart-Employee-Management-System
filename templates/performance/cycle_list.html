@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Review Cycles — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header"><div><h1 class="ems-page-heading">Appraisal Review Cycles</h1></div></div>
+<div class="ems-card mb-4"><div class="ems-card-body p-4"><h5 class="fw-bold mb-3">Create Review Cycle</h5>
+    <form method="post">{% csrf_token %}<div class="row g-3">
+        <div class="col-12 col-md-6"><label class="form-label small">Title</label>{{ form.title }}</div>
+        <div class="col-12 col-md-6"><label class="form-label small">Code</label>{{ form.code }}</div>
+        <div class="col-12 col-md-6"><label class="form-label small">Start Date</label>{{ form.start_date }}</div>
+        <div class="col-12 col-md-6"><label class="form-label small">End Date</label>{{ form.end_date }}</div>
+    </div><button type="submit" class="btn btn-primary mt-3">Add Cycle</button></form>
+</div></div>
+<div class="ems-card"><div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+    <thead><tr><th>Title</th><th>Code</th><th>Dates</th><th>Evaluations Conducted</th></tr></thead>
+    <tbody>{% for c in cycles %}
+        <tr>
+            <td><strong>{{ c.title }}</strong></td>
+            <td>{{ c.code }}</td>
+            <td>{{ c.start_date }} to {{ c.end_date }}</td>
+            <td>{{ c.evaluations.count }} Reviews</td>
+        </tr>
+    {% endfor %}</tbody>
+</table></div></div></div>
+{% endblock %}

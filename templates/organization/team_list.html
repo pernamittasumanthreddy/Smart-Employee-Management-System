@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Teams — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div>
+        <h1 class="ems-page-heading"><i class="bi bi-people-fill text-primary"></i> Organizational Teams & Squads</h1>
+        <p class="ems-page-subheading">Cross-functional and functional workforce team structures</p>
+    </div>
+    <div>{% if is_hr_or_admin %}<a href="{% url 'organization:team_create' %}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>Add Team</a>{% endif %}</div>
+</div>
+<div class="ems-card"><div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+    <thead><tr><th>Team</th><th>Code</th><th>Department</th><th>Team Lead</th><th>Members</th><th>Status</th><th>Action</th></tr></thead>
+    <tbody>{% for t in teams %}
+        <tr>
+            <td><strong>{{ t.name }}</strong></td>
+            <td><span class="badge bg-light text-dark border">{{ t.code }}</span></td>
+            <td>{{ t.department.name }}</td>
+            <td>{{ t.team_lead.full_name|default:"Not Assigned" }}</td>
+            <td><span class="badge bg-primary">{{ t.total_members }} Members</span></td>
+            <td><span class="ems-badge ems-badge-success">Active</span></td>
+            <td>{% if is_hr_or_admin %}<a href="{% url 'organization:team_update' t.id %}" class="btn btn-sm btn-outline-secondary py-0"><i class="bi bi-pencil"></i></a>{% endif %}</td>
+        </tr>
+    {% empty %}<tr><td colspan="7" class="text-center text-muted py-4">No teams created.</td></tr>{% endfor %}</tbody>
+</table></div></div></div>
+{% endblock %}

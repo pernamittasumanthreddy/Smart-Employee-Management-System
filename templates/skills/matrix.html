@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Skill Matrix Heatmap — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div>
+        <h1 class="ems-page-heading"><i class="bi bi-grid-3x3-gap-fill text-primary"></i> Workforce Skill Matrix Heatmap</h1>
+        <p class="ems-page-subheading">Cross-team competency evaluation and proficiency depth</p>
+    </div>
+</div>
+<div class="ems-card"><div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table table-bordered">
+    <thead>
+        <tr>
+            <th>Employee</th>
+            {% for s in skills %}
+            <th class="text-center small">{{ s.name }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in matrix_rows %}
+        <tr>
+            <td><strong>{{ row.employee.full_name }}</strong><div class="text-muted" style="font-size: 0.7rem;">{{ row.employee.department.name }}</div></td>
+            {% for item in row.skills %}
+            <td class="text-center">
+                {% if item.proficiency == 'EXPERT' %}<span class="badge bg-success">L4 Expert</span>
+                {% elif item.proficiency == 'ADVANCED' %}<span class="badge bg-primary">L3 Adv</span>
+                {% elif item.proficiency == 'INTERMEDIATE' %}<span class="badge bg-info text-dark">L2 Mid</span>
+                {% elif item.proficiency == 'BEGINNER' %}<span class="badge bg-secondary">L1 Beg</span>
+                {% else %}<span class="text-muted">--</span>{% endif %}
+            </td>
+            {% endfor %}
+        </tr>
+        {% empty %}<tr><td colspan="15" class="text-center text-muted py-4">No employees in matrix.</td></tr>{% endfor %}
+    </tbody>
+</table></div></div></div>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Leave Approval Center — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header"><div><h1 class="ems-page-heading"><i class="bi bi-check2-circle text-primary"></i> Leave Approval Center</h1></div></div>
+<div class="ems-card mb-4"><div class="ems-card-header"><h5 class="ems-card-title text-warning"><i class="bi bi-clock-history me-1"></i> Pending Approval Queue</h5></div>
+<div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+    <thead><tr><th>Employee</th><th>Department</th><th>Leave Type</th><th>Dates</th><th>Days</th><th>Reason</th><th>Actions</th></tr></thead>
+    <tbody>{% for r in pending_requests %}
+        <tr>
+            <td><strong>{{ r.employee.full_name }}</strong></td>
+            <td>{{ r.employee.department.name }}</td>
+            <td>{{ r.leave_type.name }}</td>
+            <td>{{ r.start_date }} to {{ r.end_date }}</td>
+            <td>{{ r.total_days }} days</td>
+            <td>{{ r.reason|truncatewords:8 }}</td>
+            <td>
+                <div class="d-flex gap-1">
+                    <a href="{% url 'leave_management:approve_leave' r.id %}" class="btn btn-sm btn-success py-0">Approve</a>
+                    <form method="post" action="{% url 'leave_management:reject_leave' r.id %}" class="d-inline">{% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-danger py-0">Reject</button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+    {% empty %}<tr><td colspan="7" class="text-center text-muted py-4">No pending leave requests in your queue.</td></tr>{% endfor %}</tbody>
+</table></div></div></div>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Asset Management — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div><h1 class="ems-page-heading"><i class="bi bi-laptop text-primary"></i> Corporate Asset Inventory</h1></div>
+    <div>{% if is_hr_or_admin %}<a href="{% url 'assets:create' %}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>Register Asset</a>{% endif %}</div>
+</div>
+<div class="ems-card"><div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+    <thead><tr><th>Asset ID</th><th>Item Name</th><th>Category</th><th>Serial No.</th><th>Assigned To</th><th>Status</th><th>Action</th></tr></thead>
+    <tbody>{% for a in assets %}
+        <tr>
+            <td><span class="badge bg-light text-dark border font-monospace">{{ a.asset_id }}</span></td>
+            <td><strong>{{ a.name }}</strong></td>
+            <td>{{ a.category.name }}</td>
+            <td class="font-monospace small">{{ a.serial_number }}</td>
+            <td>{{ a.assigned_to.full_name|default:"Unassigned" }}</td>
+            <td><span class="ems-badge {% if a.status == 'ASSIGNED' %}ems-badge-success{% elif a.status == 'AVAILABLE' %}ems-badge-info{% else %}ems-badge-warning{% endif %}">{{ a.get_status_display }}</span></td>
+            <td><a href="{% url 'assets:asset_detail' a.id %}" class="btn btn-sm btn-outline-primary py-0">View</a></td>
+        </tr>
+    {% empty %}<tr><td colspan="7" class="text-center text-muted py-4">No assets in inventory.</td></tr>{% endfor %}</tbody>
+</table></div></div></div>
+{% endblock %}

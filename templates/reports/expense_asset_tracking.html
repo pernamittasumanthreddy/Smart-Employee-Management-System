@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Expense & Asset Tracking — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header"><div><h1 class="ems-page-heading">Expense & Asset Tracking</h1></div></div>
+<div class="row g-4">
+    <div class="col-12 col-lg-6"><div class="ems-card p-3"><h5 class="fw-bold mb-3">Asset Allocation States</h5><div style="height: 240px;"><canvas id="assetChart"></canvas></div></div></div>
+    <div class="col-12 col-lg-6"><div class="ems-card p-3"><h5 class="fw-bold mb-3">Expense Claim Lifecycle</h5><div style="height: 240px;"><canvas id="expChart"></canvas></div></div></div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    renderEMSChart('assetChart', 'doughnut', {
+        labels: {{ asset_labels_json|safe }},
+        datasets: [{
+            data: {{ asset_data_json|safe }},
+            backgroundColor: ['#0284c7', '#10b981', '#f59e0b', '#64748b']
+        }]
+    });
+    renderEMSChart('expChart', 'doughnut', {
+        labels: {{ expense_labels_json|safe }},
+        datasets: [{
+            data: {{ expense_data_json|safe }},
+            backgroundColor: ['#f59e0b', '#0284c7', '#10b981', '#ef4444']
+        }]
+    });
+});
+</script>
+{% endblock %}

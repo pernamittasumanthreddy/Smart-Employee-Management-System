@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% block title %}Employee Roster — Smart Employee Management System{% endblock %}
+
+{% block content %}
+<div class="ems-page-header">
+    <div>
+        <h1 class="ems-page-heading"><i class="bi bi-people text-primary"></i> Employee Directory & Records</h1>
+        <p class="ems-page-subheading">Manage personnel records, organizational assignments, and 360-degree profiles</p>
+    </div>
+    <div class="d-flex gap-2">
+        {% if is_hr_or_admin %}
+        <a href="{% url 'employees:employee_create' %}" class="btn btn-primary btn-sm">
+            <i class="bi bi-person-plus-fill me-1"></i>Add Employee
+        </a>
+        <a href="{% url 'employees:employee_export' %}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-download me-1"></i>Export CSV
+        </a>
+        {% endif %}
+        <a href="{% url 'employees:directory' %}" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-grid-3x3-gap-fill me-1"></i>Directory Grid
+        </a>
+    </div>
+</div>
+
+<!-- Filters Bar -->
+<div class="ems-filter-bar">
+    <form method="get" class="d-flex flex-wrap gap-2 w-100 align-items-center">
+        <div class="ems-search-input flex-fill">
+            <input type="text" name="search" class="form-control form-control-sm" placeholder="Search by name, ID, or email..." value="{{ search }}">
+        </div>
+        <select name="department" class="form-select form-select-sm" style="width: auto;">
+            <option value="">All Departments</option>
+            {% for d in departments %}
+            <option value="{{ d.id }}" {% if selected_dept == d.id|stringformat:"i" %}selected{% endif %}>{{ d.name }}</option>
+            {% endfor %}
+        </select>
+        <select name="status" class="form-select form-select-sm" style="width: auto;">
+            <option value="">All Statuses</option>
+            <option value="ACTIVE" {% if selected_status == 'ACTIVE' %}selected{% endif %}>Active</option>
+            <option value="PROBATION" {% if selected_status == 'PROBATION' %}selected{% endif %}>Probation</option>
+            <option value="ON_LEAVE" {% if selected_status == 'ON_LEAVE' %}selected{% endif %}>On Leave</option>
+        </select>
+        <button type="submit" class="btn btn-sm btn-primary"><i class="bi bi-funnel me-1"></i>Filter</button>
+        {% if search or selected_dept or selected_status %}
+        <a href="{% url 'employees:employee_list' %}" class="btn btn-sm btn-light">Clear</a>
+        {% endif %}
+    </form>
+</div>
+
+<!-- Employee Table -->
+<div class="ems-card">
+    <div class="ems-card-body p-0">
+        <div class="table-responsive">
+            <table class="ems-table">
+                <thead>
+                    <tr>
+                        <th>Employee</th>
+                        <th>ID</th>
+                        <th>Department</th>
+                        <th>Designation</th>
+                        <th>Team</th>
+                        <th>Manager</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for emp in employees %}
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="ems-user-avatar" style="width: 32px; height: 32px; font-size: 0.8rem;">
+                                    {{ emp.initials }}
+                                </div>
+                                <div>
+                                    <a href="{% url 'employees:employee_360' emp.id %}" class="fw-bold text-decoration-none text-dark">{{ emp.full_name }}</a>
+                                    <div class="text-muted small">{{ emp.email }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="badge bg-light text-dark border font-monospace">{{ emp.employee_id }}</span></td>
+                        <td>{{ emp.department.name|default:"--" }}</td>
+                        <td>{{ emp.designation.title|default:"--" }}</td>
+                        <td>{{ emp.team.name|default:"--" }}</td>
+                        <td>{{ emp.reporting_manager.full_name|default:"--" }}</td>
+                        <td>
+                            <span class="ems-badge {% if emp.employment_status == 'ACTIVE' %}ems-badge-success{% elif emp.employment_status == 'PROBATION' %}ems-badge-info{% else %}ems-badge-warning{% endif %}">
+                                {{ emp.get_employment_status_display }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="d-flex gap-1">
+                                <a href="{% url 'employees:employee_360' emp.id %}" class="btn btn-sm btn-outline-primary py-0 px-2" title="Employee 360° View">
+                                    <i class="bi bi-person-badge"></i> 360°
+                                </a>
+                                {% if is_hr_or_admin %}
+                                <a href="{% url 'employees:employee_update' emp.id %}" class="btn btn-sm btn-outline-secondary py-0 px-2" title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-4">No employees matching search criteria.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

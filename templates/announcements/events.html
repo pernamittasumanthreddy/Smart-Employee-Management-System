@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Company Events — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header"><div><h1 class="ems-page-heading"><i class="bi bi-calendar-event text-primary"></i> Company Events & Town Halls</h1></div></div>
+<div class="row g-4">
+    {% for ev in events %}
+    <div class="col-12 col-md-6">
+        <div class="ems-card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <h5 class="fw-bold text-dark mb-0">{{ ev.title }}</h5>
+                <span class="badge bg-primary">{{ ev.registrations.count }} Registered</span>
+            </div>
+            <div class="text-primary small mb-2"><i class="bi bi-calendar me-1"></i>{{ ev.event_date }} &bull; Location: {{ ev.location }}</div>
+            <p class="text-muted small mb-3">{{ ev.description }}</p>
+            <a href="{% url 'announcements:register_event' ev.id %}" class="btn btn-sm btn-primary">RSVP / Register</a>
+        </div>
+    </div>
+    {% empty %}<div class="col-12 text-muted py-4">No upcoming events.</div>{% endfor %}
+</div>
+{% endblock %}

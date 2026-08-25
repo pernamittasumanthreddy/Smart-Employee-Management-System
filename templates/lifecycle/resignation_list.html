@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Resignations — Smart EMS{% endblock %}
+{% block content %}
+<div class="ems-page-header"><div><h1 class="ems-page-heading"><i class="bi bi-box-arrow-right text-danger"></i> Resignation & Offboarding Tracker</h1></div></div>
+<div class="ems-card"><div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+    <thead><tr><th>Employee</th><th>Resignation Date</th><th>Proposed Exit</th><th>Reason Category</th><th>Status</th><th>Action</th></tr></thead>
+    <tbody>{% for r in resignations %}
+        <tr>
+            <td><strong>{{ r.employee.full_name }}</strong></td>
+            <td>{{ r.resignation_date }}</td>
+            <td>{{ r.proposed_last_working_day }}</td>
+            <td>{{ r.get_reason_category_display }}</td>
+            <td><span class="badge bg-danger">{{ r.get_status_display }}</span></td>
+            <td><a href="{% url 'lifecycle:resignation_detail' r.id %}" class="btn btn-sm btn-outline-danger">Clearances</a></td>
+        </tr>
+    {% empty %}<tr><td colspan="6" class="text-center py-4 text-muted">No resignations.</td></tr>{% endfor %}</tbody>
+</table></div></div></div>
+{% endblock %}

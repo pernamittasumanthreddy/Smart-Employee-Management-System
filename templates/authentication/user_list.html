@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}User Accounts — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div><h1 class="ems-page-heading"><i class="bi bi-person-gear text-primary"></i> User Access & Authentication Accounts</h1></div>
+</div>
+<div class="ems-card"><div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+    <thead><tr><th>Username</th><th>Email</th><th>Role</th><th>Status</th><th>Failed Logins</th><th>Action</th></tr></thead>
+    <tbody>{% for u in users %}
+        <tr>
+            <td><strong>{{ u.username }}</strong></td>
+            <td>{{ u.email }}</td>
+            <td><span class="badge bg-light text-dark border">{{ u.get_role_display }}</span></td>
+            <td><span class="ems-badge {% if u.is_active %}ems-badge-success{% else %}ems-badge-danger{% endif %}">{% if u.is_active %}Active{% else %}Deactivated{% endif %}</span></td>
+            <td>{{ u.failed_login_attempts }}</td>
+            <td>
+                {% if u != user %}
+                <a href="{% url 'authentication:user_toggle_status' u.id %}" class="btn btn-sm {% if u.is_active %}btn-outline-danger{% else %}btn-outline-success{% endif %} py-0">
+                    {% if u.is_active %}Deactivate{% else %}Activate{% endif %}
+                </a>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}</tbody>
+</table></div></div></div>
+{% endblock %}

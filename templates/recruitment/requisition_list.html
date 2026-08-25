@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Job Requisitions — Smart EMS{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div>
+        <h1 class="ems-page-heading"><i class="bi bi-briefcase-fill text-primary"></i> Job Requisitions & Vacancies</h1>
+        <p class="ems-page-subheading">Enterprise workforce hiring approvals and job requisitions</p>
+    </div>
+    <div><a href="{% url 'recruitment:requisition_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>New Requisition</a></div>
+</div>
+<div class="ems-card"><div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+    <thead><tr><th>Job Title</th><th>Code</th><th>Department</th><th>Headcount</th><th>Experience</th><th>Budget Range</th><th>Status</th></tr></thead>
+    <tbody>{% for r in requisitions %}
+        <tr>
+            <td><strong>{{ r.title }}</strong></td>
+            <td><span class="badge bg-light text-dark border">{{ r.requisition_code }}</span></td>
+            <td>{{ r.department.name }}</td>
+            <td>{{ r.headcount }}</td>
+            <td>{{ r.min_experience_years }} - {{ r.max_experience_years }} yrs</td>
+            <td>₹{{ r.budget_min|floatformat:0 }} - ₹{{ r.budget_max|floatformat:0 }}</td>
+            <td><span class="badge bg-success">{{ r.get_status_display }}</span></td>
+        </tr>
+    {% empty %}<tr><td colspan="7" class="text-center py-4 text-muted">No requisitions created.</td></tr>{% endfor %}</tbody>
+</table></div></div></div>
+{% endblock %}

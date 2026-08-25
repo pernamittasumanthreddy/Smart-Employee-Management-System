@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Helpdesk Support — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div><h1 class="ems-page-heading"><i class="bi bi-headset text-primary"></i> Helpdesk & Internal Support Queue</h1></div>
+    <div><a href="{% url 'helpdesk:create' %}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>Create Ticket</a></div>
+</div>
+<div class="ems-card"><div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+    <thead><tr><th>Ticket #</th><th>Subject</th><th>Requester</th><th>Category</th><th>Priority</th><th>Status</th><th>Action</th></tr></thead>
+    <tbody>{% for t in tickets %}
+        <tr>
+            <td><span class="badge bg-light text-dark border font-monospace">{{ t.ticket_number }}</span></td>
+            <td><strong>{{ t.subject }}</strong></td>
+            <td>{{ t.creator.full_name }}</td>
+            <td>{{ t.category.name }}</td>
+            <td><span class="badge {% if t.priority == 'URGENT' %}bg-danger{% elif t.priority == 'HIGH' %}bg-warning text-dark{% else %}bg-secondary{% endif %}">{{ t.get_priority_display }}</span></td>
+            <td><span class="ems-badge {% if t.status == 'RESOLVED' %}ems-badge-success{% else %}ems-badge-warning{% endif %}">{{ t.get_status_display }}</span></td>
+            <td><a href="{% url 'helpdesk:ticket_detail' t.id %}" class="btn btn-sm btn-outline-primary py-0">Open</a></td>
+        </tr>
+    {% empty %}<tr><td colspan="7" class="text-center text-muted py-4">No support tickets.</td></tr>{% endfor %}</tbody>
+</table></div></div></div>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Desk Reservations — Smart EMS{% endblock %}
+{% block content %}
+<div class="ems-page-header"><div><h1 class="ems-page-heading"><i class="bi bi-laptop text-primary"></i> Hot-Desking & Workstation Reservations</h1></div></div>
+<div class="ems-card"><div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+    <thead><tr><th>Desk No</th><th>Employee</th><th>Building / Floor</th><th>Date</th><th>Slot</th><th>Status</th></tr></thead>
+    <tbody>{% for b in bookings %}
+        <tr>
+            <td><strong>{{ b.desk_number }}</strong></td>
+            <td>{{ b.employee.full_name }}</td>
+            <td>{{ b.building }} - {{ b.floor }}</td>
+            <td>{{ b.booking_date }}</td>
+            <td>{{ b.get_time_slot_display }}</td>
+            <td><span class="badge bg-success">Checked In</span></td>
+        </tr>
+    {% empty %}<tr><td colspan="6" class="text-center py-4 text-muted">No bookings.</td></tr>{% endfor %}</tbody>
+</table></div></div></div>
+{% endblock %}

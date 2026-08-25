@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Smart Workplace & Desks — Smart EMS{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div>
+        <h1 class="ems-page-heading"><i class="bi bi-building-gear text-primary"></i> Smart Workplace & Travel Management</h1>
+        <p class="ems-page-subheading">Hot-desking reservations, meeting room calendars, visitor passes & corporate travel authorizations</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{% url 'workplace:desk_booking' %}" class="btn btn-primary"><i class="bi bi-laptop me-1"></i>Book Desk</a>
+        <a href="{% url 'workplace:travel_list' %}" class="btn btn-outline-primary"><i class="bi bi-airplane me-1"></i>Travel Requests</a>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-12 col-lg-6">
+        <div class="ems-card">
+            <div class="ems-card-header"><h5 class="fw-bold mb-0">Meeting Rooms & Pods</h5></div>
+            <div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+                <thead><tr><th>Room Name</th><th>Floor</th><th>Seats</th><th>VC Equipped</th></tr></thead>
+                <tbody>{% for r in meeting_rooms %}
+                    <tr>
+                        <td><strong>{{ r.name }}</strong></td>
+                        <td>{{ r.floor }}</td>
+                        <td>{{ r.capacity_seats }} Seats</td>
+                        <td><span class="badge bg-success">Zoom / Meet Enabled</span></td>
+                    </tr>
+                {% empty %}<tr><td colspan="4" class="text-center py-4 text-muted">No rooms configured.</td></tr>{% endfor %}</tbody>
+            </table></div></div>
+        </div>
+    </div>
+    <div class="col-12 col-lg-6">
+        <div class="ems-card">
+            <div class="ems-card-header"><h5 class="fw-bold mb-0">Corporate Travel Authorizations</h5></div>
+            <div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+                <thead><tr><th>Traveler</th><th>Destination</th><th>Departure</th><th>Status</th></tr></thead>
+                <tbody>{% for t in travel_requests %}
+                    <tr>
+                        <td><strong>{{ t.employee.full_name }}</strong></td>
+                        <td>{{ t.destination_city }}</td>
+                        <td>{{ t.departure_date }}</td>
+                        <td><span class="badge bg-success">{{ t.get_status_display }}</span></td>
+                    </tr>
+                {% empty %}<tr><td colspan="4" class="text-center py-4 text-muted">No travel requests.</td></tr>{% endfor %}</tbody>
+            </table></div></div>
+        </div>
+    </div>
+</div>
+{% endblock %}

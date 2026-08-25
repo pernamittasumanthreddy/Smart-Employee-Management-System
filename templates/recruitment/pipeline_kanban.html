@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Hiring Pipeline Kanban — Smart EMS{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div>
+        <h1 class="ems-page-heading"><i class="bi bi-kanban text-primary"></i> Candidate Pipeline Kanban Board</h1>
+        <p class="ems-page-subheading">Track candidates across recruitment stages from application to offer acceptance</p>
+    </div>
+</div>
+
+<div class="row g-3 overflow-auto flex-nowrap pb-3">
+    {% for stage_name, apps in pipeline_by_stage.items %}
+        <div class="col-12 col-md-4 col-lg-3" style="min-width: 280px;">
+            <div class="card bg-light border-0 shadow-sm rounded-3 h-100">
+                <div class="card-header bg-white border-0 fw-bold d-flex justify-content-between align-items-center py-3">
+                    <span class="small text-uppercase">{{ stage_name }}</span>
+                    <span class="badge bg-primary rounded-pill">{{ apps|length }}</span>
+                </div>
+                <div class="card-body p-2 d-flex flex-column gap-2">
+                    {% for app in apps %}
+                        <div class="card border shadow-sm p-3 bg-white rounded-3">
+                            <div class="fw-bold text-dark">{{ app.candidate.full_name }}</div>
+                            <div class="text-muted small">{{ app.job_requisition.title }}</div>
+                            <div class="d-flex justify-content-between align-items-center mt-2 small">
+                                <span class="badge bg-success-subtle text-success border">Match: {{ app.match_score_percentage }}%</span>
+                                <a href="{% url 'recruitment:candidate_detail' app.candidate.id %}" class="btn btn-sm btn-outline-secondary py-0">Profile</a>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="text-center text-muted small py-4">No candidates</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

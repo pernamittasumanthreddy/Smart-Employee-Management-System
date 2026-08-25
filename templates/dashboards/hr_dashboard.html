@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+{% block title %}HR Manager Dashboard — Smart Employee Management System{% endblock %}
+
+{% block content %}
+<div class="ems-page-header">
+    <div>
+        <h1 class="ems-page-heading">
+            <i class="bi bi-people-fill text-primary"></i> HR Workforce Management Portal
+        </h1>
+        <p class="ems-page-subheading">Personnel operations, attendance tracking, leave requests, and training compliance</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{% url 'employees:employee_create' %}" class="btn btn-primary btn-sm">
+            <i class="bi bi-person-plus-fill me-1"></i>Add New Employee
+        </a>
+        <a href="{% url 'leave_management:approval_list' %}" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-check-circle me-1"></i>Review Leave Requests
+        </a>
+    </div>
+</div>
+
+<!-- HR Stat KPI Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="ems-stat-card">
+            <div class="ems-stat-icon primary"><i class="bi bi-person-check"></i></div>
+            <div class="ems-stat-content">
+                <div class="ems-stat-label">Total Staff</div>
+                <div class="ems-stat-value">28</div>
+                <div class="ems-stat-sub text-muted">Across 5 Departments</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="ems-stat-card">
+            <div class="ems-stat-icon warning"><i class="bi bi-calendar2-event"></i></div>
+            <div class="ems-stat-content">
+                <div class="ems-stat-label">Pending Leave Claims</div>
+                <div class="ems-stat-value">3</div>
+                <div class="ems-stat-sub text-warning"><i class="bi bi-clock"></i> Requires Approval</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="ems-stat-card">
+            <div class="ems-stat-icon info"><i class="bi bi-mortarboard"></i></div>
+            <div class="ems-stat-content">
+                <div class="ems-stat-label">Active Enrollments</div>
+                <div class="ems-stat-value">14</div>
+                <div class="ems-stat-sub text-success">88% Course Completion</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="ems-stat-card">
+            <div class="ems-stat-icon danger"><i class="bi bi-file-earmark-exclamation"></i></div>
+            <div class="ems-stat-content">
+                <div class="ems-stat-label">Expiring Documents</div>
+                <div class="ems-stat-value">2</div>
+                <div class="ems-stat-sub text-danger">Within 30 Days</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Middle Row: Attendance Roster Chart & HR Smart Insights -->
+<div class="row g-4 mb-4">
+    <div class="col-12 col-lg-7">
+        <div class="ems-card h-100">
+            <div class="ems-card-header">
+                <h5 class="ems-card-title"><i class="bi bi-bar-chart-fill text-primary"></i> Monthly Attendance & Presence Rate</h5>
+                <a href="{% url 'attendance:department_summary' %}" class="small text-decoration-none">Dept Summary</a>
+            </div>
+            <div class="ems-card-body">
+                <div style="height: 270px;">
+                    <canvas id="hrAttendanceChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-lg-5">
+        <div class="ems-card h-100">
+            <div class="ems-card-header">
+                <h5 class="ems-card-title"><i class="bi bi-cpu-fill text-info"></i> Smart HR Insights</h5>
+                <a href="{% url 'insights:dashboard' %}?category=ATTENDANCE" class="small text-decoration-none">Attendance Insights</a>
+            </div>
+            <div class="ems-card-body">
+                <div class="ems-insight-card high-priority">
+                    <div class="ems-insight-title">
+                        <span>Repeated Tardiness Cluster</span>
+                        <span class="badge bg-danger">Attendance</span>
+                    </div>
+                    <div class="ems-insight-reason">3 team members in Sales arrived late > 25% of morning shifts over the last 30 days.</div>
+                    <div class="ems-insight-recommendation">Action: Review commute flexibility or schedule adjust.</div>
+                </div>
+
+                <div class="ems-insight-card positive mb-0">
+                    <div class="ems-insight-title">
+                        <span>Upskilling Milestone Reached</span>
+                        <span class="badge bg-success">Training</span>
+                    </div>
+                    <div class="ems-insight-reason">Engineering department achieved 95% completion rate on Security Awareness 2026.</div>
+                    <div class="ems-insight-recommendation">Action: Issue official compliance certificates.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Pending HR Action Items -->
+<div class="row g-4">
+    <div class="col-12 col-lg-6">
+        <div class="ems-card">
+            <div class="ems-card-header">
+                <h5 class="ems-card-title"><i class="bi bi-calendar-check text-primary"></i> Pending Leave Requests</h5>
+                <a href="{% url 'leave_management:approval_list' %}" class="small text-decoration-none">Open Approvals</a>
+            </div>
+            <div class="ems-card-body p-0">
+                <div class="table-responsive">
+                    <table class="ems-table">
+                        <thead>
+                            <tr>
+                                <th>Employee</th>
+                                <th>Type</th>
+                                <th>Dates</th>
+                                <th>Days</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Marcus Vance</strong><div class="text-muted small">Engineering</div></td>
+                                <td>Casual Leave</td>
+                                <td>Aug 28 - Aug 30</td>
+                                <td>3.0 days</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Elena Rostova</strong><div class="text-muted small">Product</div></td>
+                                <td>Sick Leave</td>
+                                <td>Sep 01 - Sep 02</td>
+                                <td>2.0 days</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-lg-6">
+        <div class="ems-card">
+            <div class="ems-card-header">
+                <h5 class="ems-card-title"><i class="bi bi-award-fill text-warning"></i> Recent Appraisal Reviews</h5>
+                <a href="{% url 'performance:evaluation_list' %}" class="small text-decoration-none">All Reviews</a>
+            </div>
+            <div class="ems-card-body p-0">
+                <div class="table-responsive">
+                    <table class="ems-table">
+                        <thead>
+                            <tr>
+                                <th>Employee</th>
+                                <th>Review Cycle</th>
+                                <th>Score</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Rachel Green</strong></td>
+                                <td>Q1 2026 Appraisal</td>
+                                <td><span class="fw-bold text-success">4.8 / 5.0</span></td>
+                                <td><span class="ems-badge ems-badge-success">Submitted</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Daniel Kim</strong></td>
+                                <td>Q1 2026 Appraisal</td>
+                                <td><span class="fw-bold text-primary">4.2 / 5.0</span></td>
+                                <td><span class="ems-badge ems-badge-success">Submitted</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    renderEMSChart('hrAttendanceChart', 'bar', {
+        labels: ['Engineering', 'HR', 'Sales', 'Product', 'Finance'],
+        datasets: [
+            {
+                label: 'Present %',
+                data: [94, 98, 88, 92, 96],
+                backgroundColor: '#1e3a8a',
+                borderRadius: 4
+            },
+            {
+                label: 'On-Time %',
+                data: [88, 95, 76, 89, 92],
+                backgroundColor: '#0284c7',
+                borderRadius: 4
+            }
+        ]
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Training Catalog — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div><h1 class="ems-page-heading"><i class="bi bi-mortarboard-fill text-primary"></i> Internal Training & Certification Courses</h1></div>
+    <div>{% if is_hr_or_admin %}<a href="{% url 'training:create' %}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>Add Course</a>{% endif %}</div>
+</div>
+<div class="row g-4">
+    {% for c in courses %}
+    <div class="col-12 col-md-6 col-xl-4">
+        <div class="ems-card h-100 p-3">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="badge bg-light text-dark border font-monospace">{{ c.code }}</span>
+                <span class="badge bg-primary">{{ c.duration_hours }} hrs</span>
+            </div>
+            <h5 class="fw-bold text-dark mb-1">{{ c.title }}</h5>
+            <div class="text-muted small mb-2">{{ c.category.name }} &bull; Provider: {{ c.provider }}</div>
+            <p class="text-muted small mb-3">{{ c.description|truncatewords:15 }}</p>
+            <div class="border-top pt-2 mt-auto d-flex justify-content-between align-items-center">
+                <span class="small text-muted">{{ c.total_enrolled }} Enrolled</span>
+                <a href="{% url 'training:enroll' c.id %}" class="btn btn-sm btn-primary">Enroll Now</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}<div class="col-12 text-muted py-4">No courses in catalog.</div>{% endfor %}
+</div>
+{% endblock %}

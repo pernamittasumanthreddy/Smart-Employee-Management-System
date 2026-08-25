@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Audit Logs & Activity Trails — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div><h1 class="ems-page-heading"><i class="bi bi-journal-text text-primary"></i> System Audit Logs & Activity Trails</h1></div>
+    <div><a href="{% url 'administration:export_audit_logs' %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-download me-1"></i>Export Logs</a></div>
+</div>
+<div class="ems-card"><div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+    <thead><tr><th>Timestamp</th><th>User</th><th>Action</th><th>Module</th><th>IP Address</th><th>Description</th></tr></thead>
+    <tbody>{% for l in logs %}
+        <tr>
+            <td class="text-muted small">{{ l.timestamp|date:'Y-m-d H:i:s' }}</td>
+            <td><strong>{{ l.username|default:"System" }}</strong></td>
+            <td><span class="badge {% if l.action == 'CREATE' %}bg-success{% elif l.action == 'DELETE' %}bg-danger{% elif l.action == 'APPROVE' %}bg-primary{% else %}bg-secondary{% endif %}">{{ l.action }}</span></td>
+            <td><span class="font-monospace small">{{ l.module }}</span></td>
+            <td class="font-monospace small text-muted">{{ l.ip_address|default:"127.0.0.1" }}</td>
+            <td class="small">{{ l.description }}</td>
+        </tr>
+    {% empty %}<tr><td colspan="6" class="text-center text-muted py-4">No audit logs recorded.</td></tr>{% endfor %}</tbody>
+</table></div></div></div>
+{% endblock %}

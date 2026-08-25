@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Tax Exemptions Declaration — Smart EMS{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div>
+        <h1 class="ems-page-heading"><i class="bi bi-calculator text-primary"></i> Income Tax Exemptions & Declarations</h1>
+        <p class="ems-page-subheading">Financial Year {{ declaration.financial_year }} | Tax Regime: {{ declaration.get_regime_display }}</p>
+    </div>
+</div>
+
+<div class="ems-card"><div class="ems-card-body p-4"><form method="post">{% csrf_token %}
+    <div class="row g-3">
+        <div class="col-md-6"><label class="form-label small fw-semibold">Financial Year</label>{{ form.financial_year }}</div>
+        <div class="col-md-6"><label class="form-label small fw-semibold">Tax Regime</label>{{ form.regime }}</div>
+        
+        <h6 class="fw-bold text-primary mt-4 border-bottom pb-2">Section 80C Deductions (Max Limit ₹1,50,000)</h6>
+        <div class="col-md-3"><label class="form-label small fw-semibold">Life Insurance (LIC)</label>{{ form.section_80c_lic }}</div>
+        <div class="col-md-3"><label class="form-label small fw-semibold">Public PF (PPF)</label>{{ form.section_80c_ppf }}</div>
+        <div class="col-md-3"><label class="form-label small fw-semibold">ELSS Mutual Funds</label>{{ form.section_80c_elss }}</div>
+        <div class="col-md-3"><label class="form-label small fw-semibold">Children Tuition Fees</label>{{ form.section_80c_tuition }}</div>
+
+        <h6 class="fw-bold text-primary mt-4 border-bottom pb-2">Section 80D & Home Loan (Section 24)</h6>
+        <div class="col-md-4"><label class="form-label small fw-semibold">Mediclaim (Self & Family)</label>{{ form.section_80d_self }}</div>
+        <div class="col-md-4"><label class="form-label small fw-semibold">Mediclaim (Senior Parents)</label>{{ form.section_80d_parents }}</div>
+        <div class="col-md-4"><label class="form-label small fw-semibold">Home Loan Interest</label>{{ form.home_loan_interest }}</div>
+        <div class="col-md-6"><label class="form-label small fw-semibold">House Rent Paid (Annual)</label>{{ form.house_rent_paid_annual }}</div>
+        <div class="col-md-6"><label class="form-label small fw-semibold">NPS 80CCD(1B) Contribution</label>{{ form.nps_additional }}</div>
+    </div>
+    <div class="d-flex justify-content-end gap-2 mt-4">
+        <button type="submit" class="btn btn-primary px-4">Submit Tax Declaration</button>
+    </div>
+</form></div></div>
+{% endblock %}

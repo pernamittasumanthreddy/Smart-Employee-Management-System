@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Payroll Runs — Smart EMS{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div>
+        <h1 class="ems-page-heading"><i class="bi bi-cash-coin text-success"></i> Monthly Payroll Runs & Cycles</h1>
+        <p class="ems-page-subheading">Generate, calculate, review, and disburse monthly workforce wages</p>
+    </div>
+</div>
+<div class="ems-card"><div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+    <thead><tr><th>Run Title</th><th>Month / Year</th><th>Start Date</th><th>End Date</th><th>Employees</th><th>Gross Total</th><th>Net Disbursed</th><th>Status</th><th>Action</th></tr></thead>
+    <tbody>{% for r in runs %}
+        <tr>
+            <td><strong>{{ r.title }}</strong></td>
+            <td>{{ r.payroll_month }}/{{ r.payroll_year }}</td>
+            <td>{{ r.start_date }}</td>
+            <td>{{ r.end_date }}</td>
+            <td><span class="badge bg-light text-dark border">{{ r.total_employees }}</span></td>
+            <td>₹{{ r.total_gross_pay|floatformat:2 }}</td>
+            <td class="fw-bold text-success">₹{{ r.total_net_pay|floatformat:2 }}</td>
+            <td><span class="badge bg-success">{{ r.get_status_display }}</span></td>
+            <td><a href="{% url 'payroll:run_detail' r.id %}" class="btn btn-sm btn-outline-primary">View / Process</a></td>
+        </tr>
+    {% empty %}<tr><td colspan="9" class="text-center py-4 text-muted">No payroll runs found.</td></tr>{% endfor %}</tbody>
+</table></div></div></div>
+{% endblock %}

@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Sign In — Smart Employee Management System{% endblock %}
+
+{% block auth_content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-9 col-lg-6 col-xl-5">
+            <!-- Brand Logo Header -->
+            <div class="text-center mb-4">
+                <div class="d-inline-flex p-3.5 bg-primary rounded-4 shadow-lg mb-3" style="background: var(--ems-grad-primary); box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4);">
+                    <i class="bi bi-buildings-fill fs-1 text-white"></i>
+                </div>
+                <h2 class="fw-bold text-dark mb-1" style="font-family: var(--ems-font-heading); letter-spacing: -0.02em;">Smart EMS Portal</h2>
+                <p class="text-muted small mb-0">Bharat Enterprise Solutions Workforce Platform</p>
+            </div>
+
+            <!-- Login Card -->
+            <div class="card border-0 shadow-lg rounded-4 p-4 p-md-5 bg-white position-relative overflow-hidden" style="border: 1px solid rgba(226, 232, 240, 0.9);">
+                <div style="position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--ems-grad-primary);"></div>
+
+                {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags|default:'danger' }} small py-2 mb-3 d-flex align-items-center rounded-3">
+                        <i class="bi bi-exclamation-circle-fill me-2 fs-6"></i>
+                        <div class="fw-semibold">{{ message }}</div>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="post" action="{% url 'authentication:login' %}" id="loginForm">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-secondary small" for="id_username">
+                            <i class="bi bi-person-fill text-primary me-1"></i>Username or Email
+                        </label>
+                        {{ form.username }}
+                        {% if form.username.errors %}
+                        <div class="text-danger small mt-1">{{ form.username.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label class="form-label fw-semibold text-secondary small mb-0" for="id_password">
+                                <i class="bi bi-key-fill text-primary me-1"></i>Password
+                            </label>
+                            <a href="{% url 'authentication:password_reset_request' %}" class="small text-decoration-none text-primary fw-semibold">Forgot password?</a>
+                        </div>
+                        <div class="input-group">
+                            {{ form.password }}
+                            <button class="btn btn-outline-secondary" type="button" id="togglePasswordBtn" title="Show/Hide Password">
+                                <i class="bi bi-eye" id="togglePasswordIcon"></i>
+                            </button>
+                        </div>
+                        {% if form.password.errors %}
+                        <div class="text-danger small mt-1">{{ form.password.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4 form-check">
+                        {{ form.remember_me }}
+                        <label class="form-check-label text-muted small" for="id_remember_me">
+                            Keep me signed in on this workstation
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-2.5 fw-bold rounded-3 shadow-md fs-6" onclick="if(window.emsAudio) window.emsAudio.playChime();">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>Sign In to Workspace
+                    </button>
+                </form>
+
+                <!-- 1-Click Fast Login Grid -->
+                <div class="mt-4 pt-3 border-top">
+                    <div class="d-flex align-items-center justify-content-between mb-2.5">
+                        <span class="text-muted small fw-bold text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                            <i class="bi bi-lightning-charge-fill text-warning me-1"></i>1-Click Demo Login
+                        </span>
+                        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-0.5" style="font-size: 0.7rem;">Password: Admin@12345</span>
+                    </div>
+
+                    <div class="row g-2 mb-2">
+                        <!-- Admin -->
+                        <div class="col-6">
+                            <button type="button" class="btn btn-outline-danger w-100 text-start p-2.5 rounded-3 shadow-none btn-quick-login" onclick="quickFillAndLogin('aarav.sharma', 'Admin@12345')">
+                                <div class="fw-bold small d-flex align-items-center"><i class="bi bi-shield-lock-fill text-danger me-1.5"></i>Admin</div>
+                                <div class="text-muted" style="font-size: 0.72rem;">aarav.sharma</div>
+                            </button>
+                        </div>
+                        <!-- HR Manager -->
+                        <div class="col-6">
+                            <button type="button" class="btn btn-outline-primary w-100 text-start p-2.5 rounded-3 shadow-none btn-quick-login" onclick="quickFillAndLogin('priya.patel', 'Admin@12345')">
+                                <div class="fw-bold small d-flex align-items-center"><i class="bi bi-people-fill text-primary me-1.5"></i>HR Manager</div>
+                                <div class="text-muted" style="font-size: 0.72rem;">priya.patel</div>
+                            </button>
+                        </div>
+                        <!-- Team Manager -->
+                        <div class="col-6">
+                            <button type="button" class="btn btn-outline-success w-100 text-start p-2.5 rounded-3 shadow-none btn-quick-login" onclick="quickFillAndLogin('rajesh.kumar', 'Admin@12345')">
+                                <div class="fw-bold small d-flex align-items-center"><i class="bi bi-person-workspace text-success me-1.5"></i>Manager</div>
+                                <div class="text-muted" style="font-size: 0.72rem;">rajesh.kumar</div>
+                            </button>
+                        </div>
+                        <!-- Employee -->
+                        <div class="col-6">
+                            <button type="button" class="btn btn-outline-secondary w-100 text-start p-2.5 rounded-3 shadow-none btn-quick-login" onclick="quickFillAndLogin('sneha.iyer', 'Admin@12345')">
+                                <div class="fw-bold small d-flex align-items-center"><i class="bi bi-person-badge text-secondary me-1.5"></i>Staff</div>
+                                <div class="text-muted" style="font-size: 0.72rem;">sneha.iyer</div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Security Badge -->
+            <div class="text-center mt-3 text-muted small">
+                <i class="bi bi-shield-check text-success me-1"></i> Enterprise RBAC & Zero-Trust Architecture Active
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function quickFillAndLogin(username, password) {
+        if (window.emsAudio) window.emsAudio.playPop();
+        var userField = document.getElementById('id_username');
+        var passField = document.getElementById('id_password');
+        if (userField && passField) {
+            userField.value = username;
+            passField.value = password;
+            document.getElementById('loginForm').submit();
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var toggleBtn = document.getElementById('togglePasswordBtn');
+        var passField = document.getElementById('id_password');
+        var icon = document.getElementById('togglePasswordIcon');
+        if (toggleBtn && passField && icon) {
+            toggleBtn.addEventListener('click', function() {
+                if (window.emsAudio) window.emsAudio.playPop();
+                if (passField.type === 'password') {
+                    passField.type = 'text';
+                    icon.classList.remove('bi-eye');
+                    icon.classList.add('bi-eye-slash');
+                } else {
+                    passField.type = 'password';
+                    icon.classList.remove('bi-eye-slash');
+                    icon.classList.add('bi-eye');
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

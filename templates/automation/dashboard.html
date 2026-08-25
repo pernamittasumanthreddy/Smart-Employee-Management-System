@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Smart Automation Engine — Smart EMS{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div>
+        <h1 class="ems-page-heading"><i class="bi bi-cpu-fill text-warning"></i> Event-Driven Workflow Automation Engine</h1>
+        <p class="ems-page-subheading">Build event-condition-action triggers across employee milestones, leave approvals & alerts</p>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-6"><div class="ems-card p-3"><div class="text-muted small">Active Automation Rules</div><h3 class="fw-bold text-primary mb-0">{{ active_count }} Rules</h3></div></div>
+    <div class="col-md-6"><div class="ems-card p-3"><div class="text-muted small">Total Triggered Actions</div><h3 class="fw-bold text-success mb-0">{{ total_runs }} Dispatches</h3></div></div>
+</div>
+
+<div class="row g-3">
+    <div class="col-12 col-lg-7">
+        <div class="ems-card">
+            <div class="ems-card-header"><h5 class="fw-bold mb-0">Active Automation Rules</h5></div>
+            <div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+                <thead><tr><th>Rule Name</th><th>Trigger Event</th><th>Action</th><th>Runs</th><th>Action</th></tr></thead>
+                <tbody>{% for r in rules %}
+                    <tr>
+                        <td><strong>{{ r.name }}</strong></td>
+                        <td><span class="badge bg-light text-dark border">{{ r.get_trigger_event_display }}</span></td>
+                        <td><span class="badge bg-primary-subtle text-primary">{{ r.get_action_type_display }}</span></td>
+                        <td>{{ r.total_executions }}</td>
+                        <td><a href="{% url 'automation:trigger_rule' r.id %}" class="btn btn-sm btn-outline-success">Simulate</a></td>
+                    </tr>
+                {% empty %}<tr><td colspan="5" class="text-center py-4 text-muted">No rules.</td></tr>{% endfor %}</tbody>
+            </table></div></div>
+        </div>
+    </div>
+    <div class="col-12 col-lg-5">
+        <div class="ems-card">
+            <div class="ems-card-header"><h5 class="fw-bold mb-0">Recent Execution Logs</h5></div>
+            <div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+                <thead><tr><th>Rule</th><th>Time</th><th>Status</th></tr></thead>
+                <tbody>{% for l in logs %}
+                    <tr>
+                        <td><strong>{{ l.rule.name }}</strong></td>
+                        <td class="small text-muted">{{ l.executed_at|date:"M d, H:i" }}</td>
+                        <td><span class="badge bg-success">{{ l.status }}</span></td>
+                    </tr>
+                {% empty %}<tr><td colspan="3" class="text-center py-4 text-muted">No executions.</td></tr>{% endfor %}</tbody>
+            </table></div></div>
+        </div>
+    </div>
+</div>
+{% endblock %}

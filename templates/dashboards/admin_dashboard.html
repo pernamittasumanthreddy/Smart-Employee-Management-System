@@ -1,0 +1,246 @@
+{% extends 'base.html' %}
+{% block title %}Administrator Dashboard — Smart Employee Management System{% endblock %}
+
+{% block content %}
+<div class="ems-page-header">
+    <div>
+        <h1 class="ems-page-heading">
+            <i class="bi bi-speedometer2 text-primary"></i> Administrator Platform Operations
+        </h1>
+        <p class="ems-page-subheading">Centralized governance, workforce metrics, security alerts, and system health</p>
+    </div>
+    <div class="d-flex flex-wrap gap-2 align-items-center">
+        <button type="button" class="btn btn-outline-primary btn-sm ems-test-sound-btn" data-sound-type="chime" onclick="if(window.emsToast) window.emsToast('System Notification', 'Welcome to Bharat Enterprise Solutions Smart EMS!', 'success');">
+            <i class="bi bi-bell-fill text-warning me-1"></i>Test Audio Chime
+        </button>
+        <a href="{% url 'insights:dashboard' %}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-cpu me-1"></i>Smart Insights
+        </a>
+        <a href="{% url 'administration:security_compliance' %}" class="btn btn-primary btn-sm">
+            <i class="bi bi-shield-check me-1"></i>Security & Compliance
+        </a>
+    </div>
+</div>
+
+<!-- Stat KPI Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="ems-stat-card">
+            <div class="ems-stat-icon primary"><i class="bi bi-people"></i></div>
+            <div class="ems-stat-content">
+                <div class="ems-stat-label">Active Workforce</div>
+                <div class="ems-stat-value">28</div>
+                <div class="ems-stat-sub text-success"><i class="bi bi-arrow-up-right"></i> 100% Onboarded</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="ems-stat-card">
+            <div class="ems-stat-icon success"><i class="bi bi-clock-history"></i></div>
+            <div class="ems-stat-content">
+                <div class="ems-stat-label">Today's Presence</div>
+                <div class="ems-stat-value">92.8%</div>
+                <div class="ems-stat-sub text-muted">26 Present / 2 On Leave</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="ems-stat-card">
+            <div class="ems-stat-icon warning"><i class="bi bi-kanban"></i></div>
+            <div class="ems-stat-content">
+                <div class="ems-stat-label">Active Projects</div>
+                <div class="ems-stat-value">6</div>
+                <div class="ems-stat-sub text-muted">45 Active Tasks Tracking</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="ems-stat-card">
+            <div class="ems-stat-icon danger"><i class="bi bi-headset"></i></div>
+            <div class="ems-stat-content">
+                <div class="ems-stat-label">Open Support Tickets</div>
+                <div class="ems-stat-value">4</div>
+                <div class="ems-stat-sub text-danger"><i class="bi bi-exclamation-circle"></i> 1 Urgent SLA</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Row: Charts & Smart Insights Overview -->
+<div class="row g-4 mb-4">
+    <!-- Workforce Distribution by Department -->
+    <div class="col-12 col-lg-7">
+        <div class="ems-card h-100">
+            <div class="ems-card-header">
+                <h5 class="ems-card-title"><i class="bi bi-pie-chart text-primary"></i> Departmental Workforce Distribution</h5>
+                <a href="{% url 'organization:department_list' %}" class="small text-decoration-none">Manage Depts</a>
+            </div>
+            <div class="ems-card-body">
+                <div style="height: 280px;">
+                    <canvas id="adminDeptChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Smart Intelligence Highlights -->
+    <div class="col-12 col-lg-5">
+        <div class="ems-card h-100">
+            <div class="ems-card-header">
+                <h5 class="ems-card-title"><i class="bi bi-cpu-fill text-info"></i> Local Smart Insights</h5>
+                <a href="{% url 'insights:dashboard' %}" class="small text-decoration-none">View All</a>
+            </div>
+            <div class="ems-card-body">
+                <div class="ems-insight-card high-priority">
+                    <div class="ems-insight-title">
+                        <span>Workload Burnout Alert</span>
+                        <span class="badge bg-danger">Critical</span>
+                    </div>
+                    <div class="ems-insight-reason">2 senior engineers in Engineering exceed 88% capacity index with 3 imminent deadlines.</div>
+                    <div class="ems-insight-recommendation">Action: Reallocate 4 pending tasks to available peers.</div>
+                </div>
+
+                <div class="ems-insight-card medium-priority mb-0">
+                    <div class="ems-insight-title">
+                        <span>Skill Gap in Cloud Infrastructure</span>
+                        <span class="badge bg-warning text-dark">Staffing</span>
+                    </div>
+                    <div class="ems-insight-reason">Project 'FinTech Core Migration' requires Advanced Kubernetes proficiency.</div>
+                    <div class="ems-insight-recommendation">Action: Enroll 2 backend developers in internal certification course.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Secondary Operational Modules Grid -->
+<div class="row g-4">
+    <!-- Active Projects & Milestones -->
+    <div class="col-12 col-lg-6">
+        <div class="ems-card">
+            <div class="ems-card-header">
+                <h5 class="ems-card-title"><i class="bi bi-folder-check text-primary"></i> Key Projects Progress</h5>
+                <a href="{% url 'projects:project_list' %}" class="small text-decoration-none">View All Projects</a>
+            </div>
+            <div class="ems-card-body p-0">
+                <div class="table-responsive">
+                    <table class="ems-table">
+                        <thead>
+                            <tr>
+                                <th>Project</th>
+                                <th>Manager</th>
+                                <th>Progress</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Cloud Infrastructure Modernization</strong><div class="text-muted small">PRJ-2026-001</div></td>
+                                <td>Alex Morgan</td>
+                                <td>
+                                    <div class="progress" style="height: 6px; width: 100px;">
+                                        <div class="progress-bar bg-primary" style="width: 75%;"></div>
+                                    </div>
+                                    <div class="small text-muted mt-1">75%</div>
+                                </td>
+                                <td><span class="ems-badge ems-badge-success">Active</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Global Payroll & Tax Automation</strong><div class="text-muted small">PRJ-2026-002</div></td>
+                                <td>Sarah Jenkins</td>
+                                <td>
+                                    <div class="progress" style="height: 6px; width: 100px;">
+                                        <div class="progress-bar bg-info" style="width: 50%;"></div>
+                                    </div>
+                                    <div class="small text-muted mt-1">50%</div>
+                                </td>
+                                <td><span class="ems-badge ems-badge-success">Active</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Enterprise Mobile App 2.0</strong><div class="text-muted small">PRJ-2026-003</div></td>
+                                <td>David Chen</td>
+                                <td>
+                                    <div class="progress" style="height: 6px; width: 100px;">
+                                        <div class="progress-bar bg-warning" style="width: 35%;"></div>
+                                    </div>
+                                    <div class="small text-muted mt-1">35%</div>
+                                </td>
+                                <td><span class="ems-badge ems-badge-warning">In Progress</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Security & Audit Activity Trail -->
+    <div class="col-12 col-lg-6">
+        <div class="ems-card">
+            <div class="ems-card-header">
+                <h5 class="ems-card-title"><i class="bi bi-shield-check text-success"></i> Security & Audit Trail</h5>
+                <a href="{% url 'administration:audit_logs' %}" class="small text-decoration-none">Full Audit Log</a>
+            </div>
+            <div class="ems-card-body p-0">
+                <div class="table-responsive">
+                    <table class="ems-table">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>User</th>
+                                <th>Action</th>
+                                <th>Module</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-muted small">Just now</td>
+                                <td><strong>admin</strong></td>
+                                <td><span class="badge bg-success">LOGIN</span></td>
+                                <td>AUTHENTICATION</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted small">15 mins ago</td>
+                                <td><strong>hrmanager</strong></td>
+                                <td><span class="badge bg-primary">APPROVE</span></td>
+                                <td>LEAVE_MANAGEMENT</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted small">1 hour ago</td>
+                                <td><strong>manager</strong></td>
+                                <td><span class="badge bg-info text-dark">UPDATE</span></td>
+                                <td>TASK_MANAGEMENT</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted small">3 hours ago</td>
+                                <td><strong>system</strong></td>
+                                <td><span class="badge bg-secondary">ANALYSIS</span></td>
+                                <td>SMART_INSIGHTS</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    renderEMSChart('adminDeptChart', 'doughnut', {
+        labels: ['Engineering', 'Human Resources', 'Sales & Marketing', 'Product & Design', 'Finance & Ops'],
+        datasets: [{
+            data: [12, 4, 5, 4, 3],
+            backgroundColor: ['#1e3a8a', '#0284c7', '#10b981', '#f59e0b', '#8b5cf6'],
+            borderWidth: 1
+        }]
+    }, {
+        plugins: {
+            legend: { position: 'right' }
+        }
+    });
+});
+</script>
+{% endblock %}

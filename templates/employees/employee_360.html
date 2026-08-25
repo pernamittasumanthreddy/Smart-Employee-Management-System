@@ -1,0 +1,533 @@
+{% extends 'base.html' %}
+{% block title %}Employee 360° View — {{ employee.full_name }}{% endblock %}
+
+{% block content %}
+<!-- Top 360° Header Banner -->
+<div class="ems-360-header mb-4">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+        <div class="d-flex align-items-center gap-3">
+            <div class="ems-360-avatar">
+                {% if employee.profile_photo %}
+                <img src="{{ employee.profile_photo.url }}" alt="{{ employee.full_name }}" class="w-100 h-100 rounded-circle" style="object-fit: cover;">
+                {% else %}
+                <div class="w-100 h-100 rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fs-2 font-bold shadow">{{ employee.first_name|first }}{{ employee.last_name|first }}</div>
+                {% endif %}
+            </div>
+            <div>
+                <div class="d-flex align-items-center gap-2">
+                    <h2 class="fw-bold mb-0 text-white">{{ employee.full_name }}</h2>
+                    <span class="badge bg-light text-primary font-monospace">{{ employee.employee_id }}</span>
+                    <span class="badge bg-success">{{ employee.get_employment_status_display }}</span>
+                </div>
+                <div class="text-white-50 mt-1">
+                    <span>{{ employee.designation.title|default:"Staff Member" }}</span> &bull;
+                    <span>{{ employee.department.name|default:"General" }}</span> &bull;
+                    <span>Team: {{ employee.team.name|default:"Core" }}</span>
+                </div>
+                <div class="d-flex flex-wrap gap-3 mt-2 text-white-50 small">
+                    <span><i class="bi bi-envelope me-1"></i>{{ employee.email }}</span>
+                    <span><i class="bi bi-telephone me-1"></i>{{ employee.phone }}</span>
+                    <span><i class="bi bi-calendar-event me-1"></i>Joined: {{ employee.date_of_joining }}</span>
+                    {% if employee.reporting_manager %}
+                    <span><i class="bi bi-person-up me-1"></i>Manager: {{ employee.reporting_manager.full_name }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex gap-2">
+            {% if is_hr_or_admin %}
+            <a href="{% url 'employees:employee_update' employee.id %}" class="btn btn-light btn-sm fw-semibold">
+                <i class="bi bi-pencil-square me-1"></i>Edit Profile
+            </a>
+            {% endif %}
+            <a href="{% url 'recognition:send' %}" class="btn btn-outline-light btn-sm fw-semibold">
+                <i class="bi bi-trophy me-1"></i>Send Kudos
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- 360° Tabbed Navigation Navigation Hub -->
+<div class="ems-card">
+    <div class="ems-card-header p-0 border-bottom">
+        <ul class="nav nav-tabs ems-360-tabs border-0" id="emp360Tabs" role="tablist">
+            <li class="nav-item">
+                <button class="nav-link active" id="personal-tab" data-bs-toggle="tab" data-bs-target="#personal" type="button">
+                    <i class="bi bi-person me-1"></i>Personal Info
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="attendance-tab" data-bs-toggle="tab" data-bs-target="#attendance" type="button">
+                    <i class="bi bi-clock-history me-1"></i>Attendance ({{ attendance.present }})
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="leaves-tab" data-bs-toggle="tab" data-bs-target="#leaves" type="button">
+                    <i class="bi bi-calendar-check me-1"></i>Leaves
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="tasks-tab" data-bs-toggle="tab" data-bs-target="#tasks" type="button">
+                    <i class="bi bi-kanban me-1"></i>Tasks ({{ tasks.total }})
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="skills-tab" data-bs-toggle="tab" data-bs-target="#skills" type="button">
+                    <i class="bi bi-award me-1"></i>Skills ({{ skills|length }})
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="goals-tab" data-bs-toggle="tab" data-bs-target="#goals" type="button">
+                    <i class="bi bi-bullseye me-1"></i>Goals ({{ goals.list|length }})
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="performance-tab" data-bs-toggle="tab" data-bs-target="#performance" type="button">
+                    <i class="bi bi-graph-up me-1"></i>Performance
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="training-tab" data-bs-toggle="tab" data-bs-target="#training" type="button">
+                    <i class="bi bi-mortarboard me-1"></i>Training ({{ training|length }})
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="assets-tab" data-bs-toggle="tab" data-bs-target="#assets" type="button">
+                    <i class="bi bi-laptop me-1"></i>Assets ({{ assets|length }})
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="expenses-tab" data-bs-toggle="tab" data-bs-target="#expenses" type="button">
+                    <i class="bi bi-receipt me-1"></i>Expenses
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="documents-tab" data-bs-toggle="tab" data-bs-target="#documents" type="button">
+                    <i class="bi bi-file-earmark-text me-1"></i>Documents ({{ documents|length }})
+                </button>
+            </li>
+        </ul>
+    </div>
+
+    <div class="ems-card-body p-4">
+        <div class="tab-content" id="emp360TabsContent">
+            <!-- 1. Personal & Contact Details Tab -->
+            <div class="tab-pane fade show active" id="personal" role="tabpanel">
+                <div class="row g-4">
+                    <div class="col-12 col-md-6">
+                        <h6 class="fw-bold text-primary mb-3"><i class="bi bi-info-circle me-1"></i> Demographics & Contact Information</h6>
+                        <table class="table table-sm border">
+                            <tr><th class="bg-light w-40">Date of Birth</th><td>{{ employee.date_of_birth|default:"Not specified" }}</td></tr>
+                            <tr><th class="bg-light">Gender</th><td>{{ employee.get_gender_display }}</td></tr>
+                            <tr><th class="bg-light">Marital Status</th><td>{{ employee.get_marital_status_display }}</td></tr>
+                            <tr><th class="bg-light">Blood Group</th><td>{{ employee.blood_group|default:"O+" }}</td></tr>
+                            <tr><th class="bg-light">Personal Email</th><td>{{ employee.personal_email|default:"N/A" }}</td></tr>
+                            <tr><th class="bg-light">Current Address</th><td>{{ employee.current_address }}, {{ employee.city }}, {{ employee.state }} {{ employee.postal_code }}</td></tr>
+                        </table>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <h6 class="fw-bold text-primary mb-3"><i class="bi bi-telephone-plus me-1"></i> Emergency Contact & Financial Details</h6>
+                        <table class="table table-sm border">
+                            <tr><th class="bg-light w-40">Emergency Contact</th><td>{{ employee.emergency_contact_name|default:"Not provided" }}</td></tr>
+                            <tr><th class="bg-light">Relationship</th><td>{{ employee.emergency_contact_relation|default:"N/A" }}</td></tr>
+                            <tr><th class="bg-light">Emergency Phone</th><td>{{ employee.emergency_contact_phone|default:"N/A" }}</td></tr>
+                            {% if bank %}
+                            <tr><th class="bg-light">Bank Name</th><td>{{ bank.bank_name }}</td></tr>
+                            <tr><th class="bg-light">Account Number</th><td>****{{ bank.account_number|slice:"-4:" }}</td></tr>
+                            <tr><th class="bg-light">Routing / IFSC</th><td>{{ bank.routing_or_ifsc_code }}</td></tr>
+                            {% endif %}
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Education & Experience Timeline -->
+                <div class="row g-4 mt-2">
+                    <div class="col-12 col-md-6">
+                        <h6 class="fw-bold text-primary mb-3"><i class="bi bi-mortarboard me-1"></i> Educational Background</h6>
+                        {% if employee.educations.all %}
+                            <div class="list-group list-group-flush border rounded">
+                                {% for edu in employee.educations.all %}
+                                <div class="list-group-item">
+                                    <div class="fw-bold">{{ edu.degree }} in {{ edu.field_of_study }}</div>
+                                    <div class="text-muted small">{{ edu.institution }} &bull; {{ edu.start_year }} - {{ edu.end_year|default:"Present" }}</div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="text-muted small">No education records added.</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <h6 class="fw-bold text-primary mb-3"><i class="bi bi-briefcase me-1"></i> Prior Work Experience</h6>
+                        {% if employee.experiences.all %}
+                            <div class="list-group list-group-flush border rounded">
+                                {% for exp in employee.experiences.all %}
+                                <div class="list-group-item">
+                                    <div class="fw-bold">{{ exp.job_title }} at {{ exp.company_name }}</div>
+                                    <div class="text-muted small">{{ exp.start_date }} to {% if exp.is_current %}Present{% else %}{{ exp.end_date }}{% endif %}</div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="text-muted small">No prior experience listed.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Attendance & Timesheets Tab -->
+            <div class="tab-pane fade" id="attendance" role="tabpanel">
+                <div class="row g-3 mb-4">
+                    <div class="col-6 col-md-3">
+                        <div class="p-3 bg-light rounded text-center border">
+                            <div class="text-muted small text-uppercase">Present Days</div>
+                            <h3 class="fw-bold text-success mb-0">{{ attendance.present }}</h3>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="p-3 bg-light rounded text-center border">
+                            <div class="text-muted small text-uppercase">Late Arrivals</div>
+                            <h3 class="fw-bold text-warning mb-0">{{ attendance.late }}</h3>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="p-3 bg-light rounded text-center border">
+                            <div class="text-muted small text-uppercase">Unplanned Absences</div>
+                            <h3 class="fw-bold text-danger mb-0">{{ attendance.absent }}</h3>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="p-3 bg-light rounded text-center border">
+                            <div class="text-muted small text-uppercase">Punctuality Score</div>
+                            <h3 class="fw-bold text-primary mb-0">{{ attendance.punctuality_rate }}%</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <h6 class="fw-bold mb-3">Recent Attendance Logs</h6>
+                <div class="table-responsive">
+                    <table class="ems-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Check In</th>
+                                <th>Check Out</th>
+                                <th>Working Hours</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for rec in attendance.recent %}
+                            <tr>
+                                <td><strong>{{ rec.date }}</strong></td>
+                                <td>{{ rec.check_in_time|default:"--" }} {% if rec.is_late %}<span class="badge bg-warning text-dark small">Late (+{{ rec.late_minutes }}m)</span>{% endif %}</td>
+                                <td>{{ rec.check_out_time|default:"--" }}</td>
+                                <td>{{ rec.total_working_hours }} hrs</td>
+                                <td><span class="ems-badge {% if rec.status == 'PRESENT' %}ems-badge-success{% elif rec.status == 'ABSENT' %}ems-badge-danger{% else %}ems-badge-warning{% endif %}">{{ rec.get_status_display }}</span></td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="5" class="text-center text-muted py-3">No recent attendance records.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 3. Leaves Tab -->
+            <div class="tab-pane fade" id="leaves" role="tabpanel">
+                <h6 class="fw-bold text-primary mb-3">Current Leave Balances</h6>
+                <div class="row g-3 mb-4">
+                    {% for bal in leave.balances %}
+                    <div class="col-12 col-md-4">
+                        <div class="card p-3 border">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="fw-bold">{{ bal.leave_type.name }}</span>
+                                <span class="badge bg-primary">{{ bal.remaining_days }} Left</span>
+                            </div>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar bg-success" style="width: 70%;"></div>
+                            </div>
+                            <div class="small text-muted mt-2">Allocated: {{ bal.total_allocated }} | Used: {{ bal.used_days }}</div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12"><p class="text-muted small">No active leave balances allocated.</p></div>
+                    {% endfor %}
+                </div>
+
+                <h6 class="fw-bold mb-3">Recent Leave Application History</h6>
+                <div class="table-responsive">
+                    <table class="ems-table">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Days</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for lr in leave.recent %}
+                            <tr>
+                                <td><strong>{{ lr.leave_type.name }}</strong></td>
+                                <td>{{ lr.start_date }}</td>
+                                <td>{{ lr.end_date }}</td>
+                                <td>{{ lr.total_days }}</td>
+                                <td><span class="ems-badge {% if lr.status == 'APPROVED' %}ems-badge-success{% elif lr.status == 'REJECTED' %}ems-badge-danger{% else %}ems-badge-warning{% endif %}">{{ lr.get_status_display }}</span></td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="5" class="text-center text-muted py-3">No leave requests found.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 4. Tasks Tab -->
+            <div class="tab-pane fade" id="tasks" role="tabpanel">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="fw-bold mb-0">Assigned Tasks (Total: {{ tasks.total }} | Completed: {{ tasks.completed }})</h6>
+                    <span class="badge bg-primary">Workload Score: {{ workload_score }}%</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="ems-table">
+                        <thead>
+                            <tr>
+                                <th>Task Code</th>
+                                <th>Title</th>
+                                <th>Project</th>
+                                <th>Due Date</th>
+                                <th>Priority</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for t in tasks.list %}
+                            <tr>
+                                <td><strong>{{ t.code }}</strong></td>
+                                <td>{{ t.title }}</td>
+                                <td>{{ t.project.name }}</td>
+                                <td>{{ t.due_date }}</td>
+                                <td><span class="badge {% if t.priority == 'URGENT' %}bg-danger{% elif t.priority == 'HIGH' %}bg-warning text-dark{% else %}bg-secondary{% endif %}">{{ t.get_priority_display }}</span></td>
+                                <td><span class="ems-badge {% if t.status == 'COMPLETED' %}ems-badge-success{% else %}ems-badge-warning{% endif %}">{{ t.get_status_display }}</span></td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="6" class="text-center text-muted py-3">No tasks assigned.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 5. Skills Tab -->
+            <div class="tab-pane fade" id="skills" role="tabpanel">
+                <h6 class="fw-bold text-primary mb-3">Verified Skills & Proficiency Matrix</h6>
+                <div class="row g-3">
+                    {% for s in skills %}
+                    <div class="col-12 col-md-4">
+                        <div class="p-3 border rounded">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="fw-bold">{{ s.skill.name }}</span>
+                                <span class="badge bg-info text-dark">{{ s.get_proficiency_level_display }}</span>
+                            </div>
+                            <div class="small text-muted">{{ s.skill.category.name }} &bull; {{ s.years_of_experience }} yrs exp</div>
+                            {% if s.is_verified %}
+                            <div class="small text-success mt-1"><i class="bi bi-patch-check-fill me-1"></i>Verified by Manager</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12"><p class="text-muted small">No skill competencies recorded.</p></div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- 6. Goals Tab -->
+            <div class="tab-pane fade" id="goals" role="tabpanel">
+                <h6 class="fw-bold text-primary mb-3">Target OKRs & Progress (Average: {{ goals.avg_progress }}%)</h6>
+                {% for g in goals.list %}
+                <div class="p-3 border rounded mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="fw-bold">{{ g.title }}</span>
+                        <span class="fw-bold text-primary">{{ g.progress_percentage }}%</span>
+                    </div>
+                    <div class="progress mb-2" style="height: 6px;">
+                        <div class="progress-bar bg-primary" style="width: {{ g.progress_percentage }}%;"></div>
+                    </div>
+                    <div class="small text-muted">Target: {{ g.target_value }} {{ g.unit }} | Due: {{ g.due_date }} | Status: {{ g.get_status_display }}</div>
+                </div>
+                {% empty %}
+                <p class="text-muted small">No goals recorded for this employee.</p>
+                {% endfor %}
+            </div>
+
+            <!-- 7. Performance Reviews Tab -->
+            <div class="tab-pane fade" id="performance" role="tabpanel">
+                <h6 class="fw-bold text-primary mb-3">Appraisal Evaluation History</h6>
+                {% for rev in performance.reviews %}
+                <div class="p-3 border rounded mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="fw-bold mb-0">{{ rev.cycle.title }}</h6>
+                            <span class="small text-muted">Evaluated by: {{ rev.evaluator.full_name|default:"Manager" }}</span>
+                        </div>
+                        <div class="text-end">
+                            <span class="fs-4 fw-bold text-success">{{ rev.final_score }}</span>
+                            <span class="text-muted small">/ 5.0</span>
+                        </div>
+                    </div>
+                    <hr class="my-2">
+                    <div class="row g-2 small">
+                        <div class="col-6 col-md-3">Technical: <strong>{{ rev.technical_skills_rating }}/5.0</strong></div>
+                        <div class="col-6 col-md-3">Communication: <strong>{{ rev.communication_rating }}/5.0</strong></div>
+                        <div class="col-6 col-md-3">Productivity: <strong>{{ rev.productivity_rating }}/5.0</strong></div>
+                        <div class="col-6 col-md-3">Leadership: <strong>{{ rev.leadership_rating }}/5.0</strong></div>
+                    </div>
+                    {% if rev.manager_comments %}
+                    <p class="small text-muted mt-2 mb-0"><strong>Manager Feedback:</strong> {{ rev.manager_comments }}</p>
+                    {% endif %}
+                </div>
+                {% empty %}
+                <p class="text-muted small">No submitted performance evaluations found.</p>
+                {% endfor %}
+            </div>
+
+            <!-- 8. Training & Certifications Tab -->
+            <div class="tab-pane fade" id="training" role="tabpanel">
+                <h6 class="fw-bold text-primary mb-3">Completed & Enrolled Courses</h6>
+                <div class="table-responsive">
+                    <table class="ems-table">
+                        <thead>
+                            <tr>
+                                <th>Course Title</th>
+                                <th>Provider</th>
+                                <th>Status</th>
+                                <th>Score</th>
+                                <th>Completion Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for tr in training %}
+                            <tr>
+                                <td><strong>{{ tr.course.title }}</strong></td>
+                                <td>{{ tr.course.provider }}</td>
+                                <td><span class="ems-badge {% if tr.status == 'COMPLETED' %}ems-badge-success{% else %}ems-badge-warning{% endif %}">{{ tr.get_status_display }}</span></td>
+                                <td>{{ tr.score|default:"--" }}%</td>
+                                <td>{{ tr.completion_date|default:"In Progress" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="5" class="text-center text-muted py-3">No course enrollments found.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 9. Assets Tab -->
+            <div class="tab-pane fade" id="assets" role="tabpanel">
+                <h6 class="fw-bold text-primary mb-3">Assigned Hardware & IT Assets</h6>
+                <div class="table-responsive">
+                    <table class="ems-table">
+                        <thead>
+                            <tr>
+                                <th>Asset ID</th>
+                                <th>Item</th>
+                                <th>Category</th>
+                                <th>Serial Number</th>
+                                <th>Assigned Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for a in assets %}
+                            <tr>
+                                <td><strong>{{ a.asset_id }}</strong></td>
+                                <td>{{ a.name }}</td>
+                                <td>{{ a.category.name }}</td>
+                                <td class="font-monospace small">{{ a.serial_number }}</td>
+                                <td>{{ a.assigned_date }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="5" class="text-center text-muted py-3">No hardware assets currently assigned.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 10. Expenses Tab -->
+            <div class="tab-pane fade" id="expenses" role="tabpanel">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="fw-bold mb-0">Expense Claims (Reimbursed: ${{ expenses.total_reimbursed }})</h6>
+                </div>
+                <div class="table-responsive">
+                    <table class="ems-table">
+                        <thead>
+                            <tr>
+                                <th>Claim #</th>
+                                <th>Title</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for e in expenses.list %}
+                            <tr>
+                                <td><strong>{{ e.claim_number }}</strong></td>
+                                <td>{{ e.title }}</td>
+                                <td>${{ e.amount }}</td>
+                                <td>{{ e.expense_date }}</td>
+                                <td><span class="ems-badge {% if e.status == 'REIMBURSED' %}ems-badge-success{% elif e.status == 'REJECTED' %}ems-badge-danger{% else %}ems-badge-warning{% endif %}">{{ e.get_status_display }}</span></td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="5" class="text-center text-muted py-3">No expense claims recorded.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 11. Documents Tab -->
+            <div class="tab-pane fade" id="documents" role="tabpanel">
+                <h6 class="fw-bold text-primary mb-3">Employee Documents & Compliance Records</h6>
+                <div class="table-responsive">
+                    <table class="ems-table">
+                        <thead>
+                            <tr>
+                                <th>Document Title</th>
+                                <th>Category</th>
+                                <th>Doc Number</th>
+                                <th>Expiry Date</th>
+                                <th>Download</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for doc in documents %}
+                            <tr>
+                                <td><strong>{{ doc.title }}</strong></td>
+                                <td>{{ doc.category.name }}</td>
+                                <td>{{ doc.document_number|default:"--" }}</td>
+                                <td>{{ doc.expiry_date|default:"Does not expire" }}</td>
+                                <td>
+                                    {% if doc.document_file %}
+                                    <a href="{{ doc.document_file.url }}" class="btn btn-sm btn-outline-primary py-0" download>
+                                        <i class="bi bi-download me-1"></i>Download
+                                    </a>
+                                    {% else %}--{% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="5" class="text-center text-muted py-3">No documents uploaded.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

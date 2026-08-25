@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}{{ goal.title }} — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header"><div><h1 class="ems-page-heading">{{ goal.title }}</h1></div></div>
+<div class="row g-4">
+    <div class="col-12 col-md-7">
+        <div class="ems-card p-4">
+            <h5 class="fw-bold text-primary mb-3">Goal Details</h5>
+            <p>{{ goal.description|default:"No description provided." }}</p>
+            <table class="table table-sm border mt-3">
+                <tr><th class="bg-light w-40">Target Metric</th><td>{{ goal.target_metric }}</td></tr>
+                <tr><th class="bg-light">Target Value</th><td>{{ goal.target_value }} {{ goal.unit }}</td></tr>
+                <tr><th class="bg-light">Current Progress</th><td><strong class="text-primary">{{ goal.progress_percentage }}%</strong></td></tr>
+                <tr><th class="bg-light">Deadline</th><td>{{ goal.due_date }}</td></tr>
+            </table>
+        </div>
+    </div>
+    <div class="col-12 col-md-5">
+        <div class="ems-card p-4">
+            <h5 class="fw-bold mb-3">Update Progress</h5>
+            <form method="post">{% csrf_token %}
+                <div class="mb-3"><label class="form-label small fw-semibold">Progress Percentage (0-100) *</label>{{ form.progress_percentage }}</div>
+                <div class="mb-3"><label class="form-label small fw-semibold">Current Value</label>{{ form.current_value }}</div>
+                <div class="mb-3"><label class="form-label small fw-semibold">Progress Notes</label>{{ form.notes }}</div>
+                <button type="submit" class="btn btn-primary w-100">Save Progress</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

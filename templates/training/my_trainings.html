@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}My Courses — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header"><div><h1 class="ems-page-heading"><i class="bi bi-mortarboard text-primary"></i> My Training Enrollments</h1></div></div>
+<div class="ems-card"><div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+    <thead><tr><th>Course</th><th>Provider</th><th>Enrolled Date</th><th>Score</th><th>Status</th><th>Certificate Expiry</th></tr></thead>
+    <tbody>{% for e in enrollments %}
+        <tr>
+            <td><strong>{{ e.course.title }}</strong></td>
+            <td>{{ e.course.provider }}</td>
+            <td>{{ e.enrollment_date }}</td>
+            <td>{{ e.score|default:"--" }}%</td>
+            <td><span class="ems-badge {% if e.status == 'COMPLETED' %}ems-badge-success{% else %}ems-badge-warning{% endif %}">{{ e.get_status_display }}</span></td>
+            <td>{{ e.certificate_expiry_date|default:"N/A" }}</td>
+        </tr>
+    {% empty %}<tr><td colspan="6" class="text-center text-muted py-4">No enrollments.</td></tr>{% endfor %}</tbody>
+</table></div></div></div>
+{% endblock %}

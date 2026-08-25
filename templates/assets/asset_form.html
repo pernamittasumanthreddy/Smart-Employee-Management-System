@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header"><div><h1 class="ems-page-heading">{{ title }}</h1></div></div>
+<div class="ems-card"><div class="ems-card-body p-4"><form method="post">{% csrf_token %}
+    <div class="row g-3">
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Asset ID *</label>{{ form.asset_id }}</div>
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Asset Name *</label>{{ form.name }}</div>
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Category *</label>{{ form.category }}</div>
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Serial Number *</label>{{ form.serial_number }}</div>
+        <div class="col-12 col-md-4"><label class="form-label small fw-semibold">Purchase Date *</label>{{ form.purchase_date }}</div>
+        <div class="col-12 col-md-4"><label class="form-label small fw-semibold">Purchase Cost ($)</label>{{ form.purchase_cost }}</div>
+        <div class="col-12 col-md-4"><label class="form-label small fw-semibold">Warranty Expiry</label>{{ form.warranty_expiry_date }}</div>
+        <div class="col-12"><label class="form-label small fw-semibold">Notes</label>{{ form.notes }}</div>
+    </div>
+    <div class="d-flex justify-content-end gap-2 mt-4"><button type="submit" class="btn btn-primary px-4">Register Asset</button></div>
+</form></div></div>
+{% endblock %}

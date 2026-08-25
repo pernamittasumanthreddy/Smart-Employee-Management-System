@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}{{ survey.title }} — Smart EMS{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div>
+        <h1 class="ems-page-heading"><i class="bi bi-ui-checks text-primary"></i> {{ survey.title }}</h1>
+        <p class="ems-page-subheading">{{ survey.description }}</p>
+    </div>
+    <a href="{% url 'surveys:dashboard' %}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i>Back</a>
+</div>
+
+<div class="ems-card p-4">
+    <h5 class="fw-bold mb-3">Survey Questionnaire</h5>
+    {% for q in questions %}
+        <div class="p-3 border rounded-3 mb-3 bg-light">
+            <div class="fw-bold text-dark">{{ forloop.counter }}. {{ q.prompt_text }}</div>
+            <div class="text-muted small mt-1">Scale: {{ q.get_question_type_display }}</div>
+        </div>
+    {% empty %}<p class="text-muted">No questions configured.</p>{% endfor %}
+</div>
+{% endblock %}

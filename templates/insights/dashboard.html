@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}Smart Insights Engine — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div>
+        <h1 class="ems-page-heading"><i class="bi bi-cpu-fill text-info"></i> Local Smart Insights Intelligence Hub</h1>
+        <p class="ems-page-subheading">100% local mathematical, statistical, and ML workforce analysis — Zero external AI APIs</p>
+    </div>
+    <div>
+        <a href="{% url 'insights:trigger_analysis' %}" class="btn btn-primary btn-sm">
+            <i class="bi bi-play-fill me-1"></i>Run Local Intelligence Engine
+        </a>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3"><div class="ems-stat-card"><div class="ems-stat-content"><div class="ems-stat-label">Total Signals Detected</div><div class="ems-stat-value text-dark">{{ total_count }}</div></div></div></div>
+    <div class="col-6 col-md-3"><div class="ems-stat-card"><div class="ems-stat-content"><div class="ems-stat-label">High Priority / Critical</div><div class="ems-stat-value text-danger">{{ high_priority }}</div></div></div></div>
+    <div class="col-6 col-md-3"><div class="ems-stat-card"><div class="ems-stat-content"><div class="ems-stat-label">Medium Priority</div><div class="ems-stat-value text-warning">{{ medium_priority }}</div></div></div></div>
+    <div class="col-6 col-md-3"><div class="ems-stat-card"><div class="ems-stat-content"><div class="ems-stat-label">Positive Achievements</div><div class="ems-stat-value text-success">{{ positive_trends }}</div></div></div></div>
+</div>
+
+<div class="row g-4">
+    {% for ins in insights %}
+    <div class="col-12 col-lg-6">
+        <div class="ems-insight-card {% if ins.severity == 'HIGH' %}high-priority{% elif ins.severity == 'POSITIVE' %}positive{% else %}medium-priority{% endif %} h-100">
+            <div class="ems-insight-title mb-2">
+                <span>{{ ins.title }}</span>
+                <span class="badge {% if ins.severity == 'HIGH' %}bg-danger{% elif ins.severity == 'POSITIVE' %}bg-success{% else %}bg-warning text-dark{% endif %}">
+                    {{ ins.get_severity_display }}
+                </span>
+            </div>
+            <div class="small text-muted mb-2">
+                <strong>Target:</strong> {{ ins.employee.full_name|default:ins.department.name|default:"System-Wide" }} &bull;
+                <strong>Category:</strong> {{ ins.get_category_display }} &bull;
+                <strong>Confidence:</strong> {{ ins.confidence_score }}
+            </div>
+            <div class="small text-dark mb-2"><strong>What Detected:</strong> {{ ins.what_detected }}</div>
+            <div class="ems-insight-reason mb-3"><strong>Why Detected (Explainable):</strong> {{ ins.why_detected }}</div>
+            <div class="ems-insight-recommendation">
+                <i class="bi bi-lightbulb-fill me-1 text-primary"></i> <strong>Recommendation:</strong> {{ ins.recommendation }}
+            </div>
+            <div class="d-flex justify-content-end mt-2">
+                <a href="{% url 'insights:dismiss' ins.id %}" class="btn btn-sm btn-link text-muted p-0" style="font-size: 0.75rem;">Dismiss</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center text-muted py-5">
+        <h5>No active insights generated.</h5>
+        <p class="small">Click "Run Local Intelligence Engine" above to trigger mathematical, statistical, and ML analysis across the system.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

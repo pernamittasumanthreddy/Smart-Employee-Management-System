@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Backup & Recovery — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div><h1 class="ems-page-heading"><i class="bi bi-database-check text-primary"></i> Database Backup & Recovery</h1></div>
+    <div><a href="{% url 'administration:trigger_backup' %}" class="btn btn-primary btn-sm"><i class="bi bi-hdd-stack me-1"></i>Execute Manual Snapshot</a></div>
+</div>
+<div class="ems-card"><div class="ems-card-body p-4"><form method="post">{% csrf_token %}
+    <div class="row g-3">
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Backup Strategy</label>{{ form.backup_type }}</div>
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Frequency</label>{{ form.frequency }}</div>
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Storage Location</label>{{ form.storage_location }}</div>
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Retention Days</label>{{ form.retention_days }}</div>
+    </div>
+    <div class="d-flex justify-content-end gap-2 mt-4"><button type="submit" class="btn btn-primary px-4">Update Configuration</button></div>
+</form></div></div>
+{% endblock %}

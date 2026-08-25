@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Compliance Audits — Smart EMS{% endblock %}
+{% block content %}
+<div class="ems-page-header"><div><h1 class="ems-page-heading"><i class="bi bi-clipboard2-check text-primary"></i> External & Internal Audits</h1></div></div>
+<div class="ems-card"><div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+    <thead><tr><th>Audit Title</th><th>Date</th><th>Agency</th><th>Lead Auditor</th><th>Compliance Score</th><th>Status</th></tr></thead>
+    <tbody>{% for a in audits %}
+        <tr>
+            <td><strong>{{ a.title }}</strong></td>
+            <td>{{ a.audit_date }}</td>
+            <td>{{ a.auditor_agency }}</td>
+            <td>{{ a.lead_auditor }}</td>
+            <td class="fw-bold text-success">{{ a.score_percentage }}%</td>
+            <td><span class="badge bg-success">{{ a.get_status_display }}</span></td>
+        </tr>
+    {% empty %}<tr><td colspan="6" class="text-center py-4 text-muted">No audits.</td></tr>{% endfor %}</tbody>
+</table></div></div></div>
+{% endblock %}

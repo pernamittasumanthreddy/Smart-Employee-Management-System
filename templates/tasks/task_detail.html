@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %}{{ task.title }} — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div>
+        <h1 class="ems-page-heading"><i class="bi bi-check2-circle text-primary"></i> [{{ task.code }}] {{ task.title }}</h1>
+        <p class="ems-page-subheading">Project: {{ task.project.name }} | Assigned to: {{ task.assigned_to.full_name|default:"Unassigned" }}</p>
+    </div>
+    <form method="post" action="{% url 'tasks:update_status' task.id %}" class="d-flex gap-2 align-items-center">{% csrf_token %}
+        <select name="status" class="form-select form-select-sm" style="width: auto;">
+            <option value="TODO" {% if task.status == 'TODO' %}selected{% endif %}>To Do</option>
+            <option value="IN_PROGRESS" {% if task.status == 'IN_PROGRESS' %}selected{% endif %}>In Progress</option>
+            <option value="REVIEW" {% if task.status == 'REVIEW' %}selected{% endif %}>In Review</option>
+            <option value="COMPLETED" {% if task.status == 'COMPLETED' %}selected{% endif %}>Completed</option>
+        </select>
+        <button type="submit" class="btn btn-sm btn-primary">Update Status</button>
+    </form>
+</div>
+<div class="row g-4">
+    <div class="col-12 col-lg-8">
+        <div class="ems-card mb-4"><div class="ems-card-header"><h5 class="ems-card-title">Task Description</h5></div>
+        <div class="ems-card-body"><p>{{ task.description|default:"No detailed description provided." }}</p></div></div>
+
+        <!-- Comments -->
+        <div class="ems-card"><div class="ems-card-header"><h5 class="ems-card-title">Discussion & Updates</h5></div>
+        <div class="ems-card-body">
+            {% for c in comments %}
+            <div class="d-flex gap-2 mb-3 pb-2 border-bottom">
+                <div class="ems-user-avatar" style="width: 32px; height: 32px; font-size: 0.8rem;">{{ c.author.initials }}</div>
+                <div>
+                    <div class="small fw-bold">{{ c.author.full_name }} <span class="text-muted fw-normal">({{ c.created_at }})</span></div>
+                    <div class="small text-dark">{{ c.content }}</div>
+                </div>
+            </div>
+            {% endfor %}
+            <form method="post" action="{% url 'tasks:add_comment' task.id %}">{% csrf_token %}
+                <div class="mb-2">{{ comment_form.content }}</div>
+                <button type="submit" class="btn btn-sm btn-primary">Post Comment</button>
+            </form>
+        </div></div>
+    </div>
+
+    <div class="col-12 col-lg-4">
+        <div class="ems-card mb-4"><div class="ems-card-header"><h5 class="ems-card-title">Subtasks Checklist</h5></div>
+        <div class="ems-card-body">
+            {% for s in subtasks %}
+            <div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom">
+                <span class="small {% if s.is_completed %}text-decoration-line-through text-muted{% endif %}">{{ s.title }}</span>
+                <a href="{% url 'tasks:toggle_subtask' s.id %}" class="btn btn-sm btn-outline-secondary py-0">{% if s.is_completed %}Done{% else %}Check{% endif %}</a>
+            </div>
+            {% endfor %}
+            <form method="post" action="{% url 'tasks:add_subtask' task.id %}" class="mt-3">{% csrf_token %}
+                <div class="mb-2">{{ subtask_form.title }}</div>
+                <button type="submit" class="btn btn-sm btn-outline-primary w-100">Add Subtask</button>
+            </form>
+        </div></div>
+    </div>
+</div>
+{% endblock %}

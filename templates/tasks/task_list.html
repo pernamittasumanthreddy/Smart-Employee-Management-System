@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Task Management — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div><h1 class="ems-page-heading"><i class="bi bi-check2-square text-primary"></i> Task Management</h1></div>
+    <div>{% if is_manager_or_above %}<a href="{% url 'tasks:task_create' %}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>New Task</a>{% endif %} <a href="{% url 'tasks:my_tasks_kanban' %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-kanban me-1"></i>Kanban</a></div>
+</div>
+<div class="ems-card"><div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+    <thead><tr><th>Code</th><th>Task Title</th><th>Project</th><th>Assignee</th><th>Due Date</th><th>Priority</th><th>Status</th></tr></thead>
+    <tbody>{% for t in tasks %}
+        <tr>
+            <td><strong>{{ t.code }}</strong></td>
+            <td><a href="{% url 'tasks:task_detail' t.id %}" class="fw-bold text-decoration-none text-dark">{{ t.title }}</a></td>
+            <td>{{ t.project.name }}</td>
+            <td>{{ t.assigned_to.full_name|default:"Unassigned" }}</td>
+            <td>{{ t.due_date }}</td>
+            <td><span class="badge {% if t.priority == 'URGENT' %}bg-danger{% elif t.priority == 'HIGH' %}bg-warning text-dark{% else %}bg-secondary{% endif %}">{{ t.get_priority_display }}</span></td>
+            <td><span class="ems-badge {% if t.status == 'COMPLETED' %}ems-badge-success{% else %}ems-badge-warning{% endif %}">{{ t.get_status_display }}</span></td>
+        </tr>
+    {% empty %}<tr><td colspan="7" class="text-center text-muted py-4">No tasks found.</td></tr>{% endfor %}</tbody>
+</table></div></div></div>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}My Skills — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header"><div><h1 class="ems-page-heading"><i class="bi bi-award text-primary"></i> My Skills & Competency Profile</h1></div></div>
+<div class="row g-4">
+    <div class="col-12 col-lg-8">
+        <div class="ems-card"><div class="ems-card-header"><h5 class="ems-card-title">My Recorded Skills</h5></div>
+        <div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+            <thead><tr><th>Skill</th><th>Category</th><th>Proficiency</th><th>Experience</th><th>Verification</th></tr></thead>
+            <tbody>{% for s in my_skills %}
+                <tr>
+                    <td><strong>{{ s.skill.name }}</strong></td>
+                    <td>{{ s.skill.category.name }}</td>
+                    <td><span class="badge bg-info text-dark">{{ s.get_proficiency_level_display }}</span></td>
+                    <td>{{ s.years_of_experience }} yrs</td>
+                    <td>{% if s.is_verified %}<span class="badge bg-success">Verified</span>{% else %}<span class="badge bg-secondary">Pending</span>{% endif %}</td>
+                </tr>
+            {% empty %}<tr><td colspan="5" class="text-center text-muted py-4">No skills recorded.</td></tr>{% endfor %}</tbody>
+        </table></div></div></div>
+    </div>
+    <div class="col-12 col-lg-4">
+        <div class="ems-card"><div class="ems-card-header"><h5 class="ems-card-title">Add Skill</h5></div>
+        <div class="ems-card-body"><form method="post">{% csrf_token %}
+            <div class="mb-3"><label class="form-label small fw-semibold">Skill</label>{{ form.skill }}</div>
+            <div class="mb-3"><label class="form-label small fw-semibold">Proficiency</label>{{ form.proficiency_level }}</div>
+            <div class="mb-3"><label class="form-label small fw-semibold">Years of Experience</label>{{ form.years_of_experience }}</div>
+            <button type="submit" class="btn btn-primary w-100">Add to Profile</button>
+        </form></div></div>
+    </div>
+</div>
+{% endblock %}

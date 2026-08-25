@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Workload Management — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div>
+        <h1 class="ems-page-heading"><i class="bi bi-pie-chart-fill text-primary"></i> Workforce Workload & Capacity Management</h1>
+        <p class="ems-page-subheading">Algorithmic load scoring combining active tasks, priority weights, estimated hours, and deadlines</p>
+    </div>
+    <div>
+        <a href="{% url 'workload:recalculate' %}" class="btn btn-primary btn-sm">
+            <i class="bi bi-arrow-repeat me-1"></i>Recalculate All Workloads
+        </a>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3"><div class="ems-stat-card"><div class="ems-stat-content"><div class="ems-stat-label">Average Load</div><div class="ems-stat-value text-primary">{{ avg_score }}%</div></div></div></div>
+    <div class="col-6 col-md-3"><div class="ems-stat-card"><div class="ems-stat-content"><div class="ems-stat-label">Overloaded (>85%)</div><div class="ems-stat-value text-danger">{{ overloaded_count }}</div></div></div></div>
+    <div class="col-6 col-md-3"><div class="ems-stat-card"><div class="ems-stat-content"><div class="ems-stat-label">Balanced / Optimal</div><div class="ems-stat-value text-success">{{ optimal_count }}</div></div></div></div>
+    <div class="col-6 col-md-3"><div class="ems-stat-card"><div class="ems-stat-content"><div class="ems-stat-label">Underutilized (&lt;35%)</div><div class="ems-stat-value text-info">{{ underutilized_count }}</div></div></div></div>
+</div>
+
+<div class="ems-card"><div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+    <thead><tr><th>Employee</th><th>Department</th><th>Active Tasks</th><th>Allocated Hours</th><th>Overdue</th><th>Workload Score</th><th>Status</th></tr></thead>
+    <tbody>{% for m in metrics %}
+        <tr>
+            <td><strong>{{ m.employee.full_name }}</strong></td>
+            <td>{{ m.employee.department.name|default:"--" }}</td>
+            <td>{{ m.active_tasks_count }}</td>
+            <td>{{ m.estimated_task_hours }} hrs</td>
+            <td>{% if m.overdue_tasks_count > 0 %}<span class="badge bg-danger">{{ m.overdue_tasks_count }}</span>{% else %}0{% endif %}</td>
+            <td>
+                <div class="d-flex align-items-center gap-2">
+                    <div class="progress flex-fill" style="height: 6px; width: 80px;">
+                        <div class="progress-bar {% if m.workload_score >= 85 %}bg-danger{% elif m.workload_score <= 35 %}bg-info{% else %}bg-primary{% endif %}" style="width: {{ m.workload_score }}%;"></div>
+                    </div>
+                    <span class="small fw-bold">{{ m.workload_score }}%</span>
+                </div>
+            </td>
+            <td><span class="ems-badge {% if m.utilization_status == 'OVERLOADED' %}ems-badge-danger{% elif m.utilization_status == 'UNDERUTILIZED' %}ems-badge-info{% else %}ems-badge-success{% endif %}">{{ m.get_utilization_status_display }}</span></td>
+        </tr>
+    {% empty %}<tr><td colspan="7" class="text-center text-muted py-4">No workload data calculated. Click 'Recalculate All Workloads' above.</td></tr>{% endfor %}</tbody>
+</table></div></div></div>
+{% endblock %}

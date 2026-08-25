@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Expiring Documents — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header"><div><h1 class="ems-page-heading"><i class="bi bi-file-earmark-exclamation text-danger"></i> Expiring Compliance Documents (Next 60 Days)</h1></div></div>
+<div class="ems-card"><div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+    <thead><tr><th>Document</th><th>Employee</th><th>Category</th><th>Expiry Date</th></tr></thead>
+    <tbody>{% for d in expiring %}
+        <tr>
+            <td><strong>{{ d.title }}</strong></td>
+            <td>{{ d.employee.full_name|default:"Company" }}</td>
+            <td>{{ d.category.name }}</td>
+            <td><strong class="text-danger">{{ d.expiry_date }}</strong></td>
+        </tr>
+    {% empty %}<tr><td colspan="4" class="text-center text-muted py-4">No expiring documents.</td></tr>{% endfor %}</tbody>
+</table></div></div></div>
+{% endblock %}

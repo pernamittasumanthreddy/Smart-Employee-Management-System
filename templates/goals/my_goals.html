@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}My Goals — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header"><div><h1 class="ems-page-heading"><i class="bi bi-bullseye text-primary"></i> My Individual Goals & OKRs</h1></div></div>
+<div class="row g-4">
+    {% for g in goals %}
+    <div class="col-12 col-md-6">
+        <div class="ems-card p-3">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <h5 class="fw-bold text-dark mb-0">{{ g.title }}</h5>
+                <span class="badge bg-primary">{{ g.progress_percentage }}%</span>
+            </div>
+            <p class="text-muted small mb-2">{{ g.description }}</p>
+            <div class="progress mb-3" style="height: 6px;"><div class="progress-bar bg-primary" style="width: {{ g.progress_percentage }}%;"></div></div>
+            <div class="d-flex justify-content-between align-items-center small text-muted">
+                <span>Target: {{ g.target_value }} {{ g.unit }} | Due: {{ g.due_date }}</span>
+                <a href="{% url 'goals:goal_detail' g.id %}" class="btn btn-sm btn-primary py-0">Update Progress</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}<div class="col-12 text-muted py-4">No active goals assigned.</div>{% endfor %}
+</div>
+{% endblock %}

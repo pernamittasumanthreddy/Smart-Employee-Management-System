@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}Task Kanban Board — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header"><div><h1 class="ems-page-heading"><i class="bi bi-kanban text-primary"></i> Task Kanban Board</h1></div></div>
+<div class="row g-3">
+    <div class="col-12 col-md-3">
+        <div class="p-2 bg-light border rounded"><h6 class="fw-bold p-2 mb-2 border-bottom">To Do ({{ todo_tasks.count }})</h6>
+        {% for t in todo_tasks %}
+        <div class="ems-card p-2 mb-2 bg-white shadow-sm">
+            <div class="small fw-bold">{{ t.title }}</div>
+            <div class="text-muted" style="font-size: 0.75rem;">{{ t.project.code }} &bull; Due: {{ t.due_date }}</div>
+            <a href="{% url 'tasks:task_detail' t.id %}" class="btn btn-sm btn-link p-0 mt-1" style="font-size: 0.75rem;">View Details</a>
+        </div>
+        {% endfor %}</div>
+    </div>
+    <div class="col-12 col-md-3">
+        <div class="p-2 bg-light border rounded"><h6 class="fw-bold p-2 mb-2 border-bottom text-primary">In Progress ({{ inprogress_tasks.count }})</h6>
+        {% for t in inprogress_tasks %}
+        <div class="ems-card p-2 mb-2 bg-white shadow-sm border-primary">
+            <div class="small fw-bold">{{ t.title }}</div>
+            <div class="text-muted" style="font-size: 0.75rem;">{{ t.project.code }} &bull; Due: {{ t.due_date }}</div>
+            <a href="{% url 'tasks:task_detail' t.id %}" class="btn btn-sm btn-link p-0 mt-1" style="font-size: 0.75rem;">View Details</a>
+        </div>
+        {% endfor %}</div>
+    </div>
+    <div class="col-12 col-md-3">
+        <div class="p-2 bg-light border rounded"><h6 class="fw-bold p-2 mb-2 border-bottom text-warning">In Review ({{ review_tasks.count }})</h6>
+        {% for t in review_tasks %}
+        <div class="ems-card p-2 mb-2 bg-white shadow-sm">
+            <div class="small fw-bold">{{ t.title }}</div>
+            <div class="text-muted" style="font-size: 0.75rem;">{{ t.project.code }} &bull; Due: {{ t.due_date }}</div>
+            <a href="{% url 'tasks:task_detail' t.id %}" class="btn btn-sm btn-link p-0 mt-1" style="font-size: 0.75rem;">View Details</a>
+        </div>
+        {% endfor %}</div>
+    </div>
+    <div class="col-12 col-md-3">
+        <div class="p-2 bg-light border rounded"><h6 class="fw-bold p-2 mb-2 border-bottom text-success">Completed ({{ completed_tasks.count }})</h6>
+        {% for t in completed_tasks %}
+        <div class="ems-card p-2 mb-2 bg-white shadow-sm">
+            <div class="small fw-bold text-decoration-line-through text-muted">{{ t.title }}</div>
+            <div class="text-muted" style="font-size: 0.75rem;">{{ t.project.code }}</div>
+            <a href="{% url 'tasks:task_detail' t.id %}" class="btn btn-sm btn-link p-0 mt-1" style="font-size: 0.75rem;">View Details</a>
+        </div>
+        {% endfor %}</div>
+    </div>
+</div>
+{% endblock %}

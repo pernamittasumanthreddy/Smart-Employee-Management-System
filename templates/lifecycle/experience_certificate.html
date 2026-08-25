@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Experience Certificate — Smart EMS{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <a href="{% url 'lifecycle:dashboard' %}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i>Back</a>
+    <button onclick="window.print()" class="btn btn-primary"><i class="bi bi-printer me-1"></i>Print Certificate</button>
+</div>
+
+<div class="card border shadow-sm p-5 bg-white rounded-4" style="max-width: 800px; margin: 0 auto;">
+    <div class="text-center border-bottom pb-4 mb-4">
+        <h2 class="fw-bold text-primary mb-1">BHARAT ENTERPRISE SOLUTIONS</h2>
+        <p class="text-muted small mb-0">Corporate Headquarters | Human Resources & Workforce Division</p>
+    </div>
+
+    <div class="text-center my-4">
+        <h4 class="fw-bold text-uppercase text-dark text-decoration-underline">EXPERIENCE & RELIEVING CERTIFICATE</h4>
+        <div class="text-muted small mt-1">Certificate Ref No: {{ cert.certificate_number }}</div>
+    </div>
+
+    <div class="lead fs-6 lh-lg my-4 text-dark">
+        <p>This is to certify that <strong>{{ cert.employee.full_name }}</strong> (Employee ID: <strong>{{ cert.employee.employee_id }}</strong>) was employed with Bharat Enterprise Solutions from <strong>{{ cert.joining_date }}</strong> to <strong>{{ cert.relieving_date }}</strong>.</p>
+        <p>During their tenure, they served in the capacity of <strong>{{ cert.last_designation }}</strong>. Their conduct and performance throughout their service were found to be <strong>{{ cert.conduct_remarks }}</strong>.</p>
+        <p>We thank them for their valuable contributions and wish them the very best in all their future professional endeavors.</p>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-end mt-5 pt-5">
+        <div>
+            <div>Date of Issue: {{ cert.issued_date }}</div>
+            <div>Place: Bengaluru, India</div>
+        </div>
+        <div class="text-end">
+            <div class="fw-bold text-primary">{{ cert.authorized_signatory_name }}</div>
+            <div class="text-muted small">Authorized Signatory, Human Resources</div>
+        </div>
+    </div>
+</div>
+{% endblock %}

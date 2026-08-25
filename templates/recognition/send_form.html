@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Send Kudos — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header"><div><h1 class="ems-page-heading"><i class="bi bi-heart-fill text-danger"></i> Send Colleague Kudos & Recognition</h1></div></div>
+<div class="ems-card"><div class="ems-card-body p-4"><form method="post">{% csrf_token %}
+    <div class="row g-3">
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Recognize Colleague *</label>{{ form.recipient }}</div>
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Recognition Category *</label>{{ form.category }}</div>
+        <div class="col-12"><label class="form-label small fw-semibold">Recognition Headline *</label>{{ form.title }}</div>
+        <div class="col-12"><label class="form-label small fw-semibold">Appreciation Message *</label>{{ form.message }}</div>
+    </div>
+    <div class="d-flex justify-content-end gap-2 mt-4"><button type="submit" class="btn btn-primary px-4"><i class="bi bi-send me-1"></i>Publish Kudos</button></div>
+</form></div></div>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}My Documents — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header"><div><h1 class="ems-page-heading"><i class="bi bi-file-earmark-text text-primary"></i> My Personal & Compliance Documents</h1></div></div>
+<div class="row g-4">
+    {% for d in personal_docs %}
+    <div class="col-12 col-md-4">
+        <div class="ems-card p-3">
+            <h5 class="fw-bold mb-1">{{ d.title }}</h5>
+            <span class="badge bg-light text-dark border mb-2">{{ d.category.name }}</span>
+            <div class="small text-muted mb-3">Uploaded: {{ d.created_at|date:'M d, Y' }}</div>
+            {% if d.document_file %}<a href="{{ d.document_file.url }}" class="btn btn-sm btn-primary w-100" download><i class="bi bi-download me-1"></i>Download</a>{% else %}<span class="badge bg-light text-muted w-100 d-block text-center py-2">No File Attached</span>{% endif %}
+        </div>
+    </div>
+    {% empty %}<div class="col-12 text-muted py-4">No personal documents.</div>{% endfor %}
+</div>
+{% endblock %}

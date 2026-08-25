@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Designations — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div><h1 class="ems-page-heading"><i class="bi bi-award-fill text-primary"></i> Job Titles & Designations</h1></div>
+    <div>{% if is_hr_or_admin %}<a href="{% url 'organization:designation_create' %}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>Add Designation</a>{% endif %}</div>
+</div>
+<div class="ems-card"><div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+    <thead><tr><th>Designation Title</th><th>Code</th><th>Department</th><th>Grade</th><th>Salary Band</th></tr></thead>
+    <tbody>{% for d in designations %}
+        <tr>
+            <td><strong>{{ d.title }}</strong></td>
+            <td><span class="badge bg-light text-dark border">{{ d.code }}</span></td>
+            <td>{{ d.department.name }}</td>
+            <td><span class="badge bg-secondary">{{ d.grade_level }}</span></td>
+            <td>${{ d.min_salary }} - ${{ d.max_salary }}</td>
+        </tr>
+    {% empty %}<tr><td colspan="5" class="text-center text-muted py-4">No designations found.</td></tr>{% endfor %}</tbody>
+</table></div></div></div>
+{% endblock %}

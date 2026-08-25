@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header"><div><h1 class="ems-page-heading">{{ title }}</h1></div></div>
+<div class="ems-card"><div class="ems-card-body p-4"><form method="post">{% csrf_token %}
+    <div class="row g-3">
+        <div class="col-12"><label class="form-label small fw-semibold">Goal Title *</label>{{ form.title }}</div>
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Assigned Employee</label>{{ form.employee }}</div>
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Assigned Team</label>{{ form.team }}</div>
+        <div class="col-12 col-md-4"><label class="form-label small fw-semibold">Target Metric</label>{{ form.target_metric }}</div>
+        <div class="col-12 col-md-4"><label class="form-label small fw-semibold">Target Value</label>{{ form.target_value }}</div>
+        <div class="col-12 col-md-4"><label class="form-label small fw-semibold">Unit</label>{{ form.unit }}</div>
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Start Date</label>{{ form.start_date }}</div>
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Due Date *</label>{{ form.due_date }}</div>
+        <div class="col-12"><label class="form-label small fw-semibold">Description</label>{{ form.description }}</div>
+    </div>
+    <div class="d-flex justify-content-end gap-2 mt-4"><button type="submit" class="btn btn-primary px-4">Create Goal</button></div>
+</form></div></div>
+{% endblock %}

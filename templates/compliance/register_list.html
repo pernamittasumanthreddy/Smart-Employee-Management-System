@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Statutory Registers — Smart EMS{% endblock %}
+{% block content %}
+<div class="ems-page-header"><div><h1 class="ems-page-heading"><i class="bi bi-file-earmark-ruled text-primary"></i> Statutory Labor Registers</h1></div></div>
+<div class="ems-card"><div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+    <thead><tr><th>Register Title</th><th>Type</th><th>Period</th><th>Verified By</th><th>Status</th></tr></thead>
+    <tbody>{% for r in registers %}
+        <tr>
+            <td><strong>{{ r.title }}</strong></td>
+            <td><span class="badge bg-light text-dark border">{{ r.get_register_type_display }}</span></td>
+            <td>{{ r.period_year }}/{{ r.period_month }}</td>
+            <td>{{ r.verified_by_officer }}</td>
+            <td><span class="badge bg-success">Compliant & Archived</span></td>
+        </tr>
+    {% empty %}<tr><td colspan="5" class="text-center py-4 text-muted">No registers.</td></tr>{% endfor %}</tbody>
+</table></div></div></div>
+{% endblock %}

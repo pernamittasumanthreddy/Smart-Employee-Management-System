@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Offer Letters — Smart EMS{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div>
+        <h1 class="ems-page-heading"><i class="bi bi-envelope-paper-heart-fill text-success"></i> Extended Offer Letters</h1>
+        <p class="ems-page-subheading">Track formal candidate offers, CTC agreements, and digital signatures</p>
+    </div>
+</div>
+<div class="ems-card"><div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+    <thead><tr><th>Offer Code</th><th>Candidate</th><th>Department</th><th>Offered Annual CTC</th><th>Target Joining</th><th>Status</th></tr></thead>
+    <tbody>{% for o in offers %}
+        <tr>
+            <td><span class="badge bg-light text-dark border">{{ o.offer_code }}</span></td>
+            <td><strong>{{ o.application.candidate.full_name }}</strong></td>
+            <td>{{ o.department.name }}</td>
+            <td class="fw-bold text-success">₹{{ o.offered_ctc_annual|floatformat:2 }}</td>
+            <td>{{ o.joining_date }}</td>
+            <td><span class="badge bg-success">{{ o.get_status_display }}</span></td>
+        </tr>
+    {% empty %}<tr><td colspan="6" class="text-center py-4 text-muted">No offers recorded.</td></tr>{% endfor %}</tbody>
+</table></div></div></div>
+{% endblock %}

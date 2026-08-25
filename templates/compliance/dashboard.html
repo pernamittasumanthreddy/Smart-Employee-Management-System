@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}Compliance & Legal — Smart EMS{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div>
+        <h1 class="ems-page-heading"><i class="bi bi-shield-lock-fill text-danger"></i> Statutory & Labor Law Compliance</h1>
+        <p class="ems-page-subheading">Labor law registers (Form A, B, C, D), statutory audits, POSH committee & corporate policy adherence</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{% url 'compliance:register_list' %}" class="btn btn-outline-primary"><i class="bi bi-file-earmark-spreadsheet me-1"></i>Statutory Registers</a>
+        <a href="{% url 'compliance:posh_portal' %}" class="btn btn-outline-danger"><i class="bi bi-shield-heart me-1"></i>POSH Committee</a>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3"><div class="ems-card p-3"><div class="text-muted small">Statutory Registers</div><h3 class="fw-bold text-success mb-0">100% Up to Date</h3></div></div>
+    <div class="col-md-3"><div class="ems-card p-3"><div class="text-muted small">Audit Compliance Score</div><h3 class="fw-bold text-primary mb-0">98% Grade A</h3></div></div>
+    <div class="col-md-3"><div class="ems-card p-3"><div class="text-muted small">Policy Acknowledgments</div><h3 class="fw-bold text-info mb-0">{{ total_acks }} Signed</h3></div></div>
+    <div class="col-md-3"><div class="ems-card p-3"><div class="text-muted small">POSH IC Members</div><h3 class="fw-bold text-danger mb-0">{{ posh_members.count }} Active</h3></div></div>
+</div>
+
+<div class="row g-3">
+    <div class="col-12 col-lg-7">
+        <div class="ems-card">
+            <div class="ems-card-header"><h5 class="fw-bold mb-0">Mandatory Statutory Registers (Labor Bureau)</h5></div>
+            <div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+                <thead><tr><th>Register Name</th><th>Period</th><th>Verification Officer</th><th>Status</th></tr></thead>
+                <tbody>{% for r in registers %}
+                    <tr>
+                        <td><strong>{{ r.title }}</strong></td>
+                        <td>{{ r.period_year }}/{{ r.period_month }}</td>
+                        <td>{{ r.verified_by_officer }}</td>
+                        <td><span class="badge bg-success">Certified & Signed</span></td>
+                    </tr>
+                {% empty %}<tr><td colspan="4" class="text-center py-4 text-muted">No statutory registers.</td></tr>{% endfor %}</tbody>
+            </table></div></div>
+        </div>
+    </div>
+    <div class="col-12 col-lg-5">
+        <div class="ems-card">
+            <div class="ems-card-header"><h5 class="fw-bold mb-0">Statutory Audits History</h5></div>
+            <div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+                <thead><tr><th>Audit</th><th>Score</th><th>Status</th></tr></thead>
+                <tbody>{% for a in audits %}
+                    <tr>
+                        <td><strong>{{ a.title }}</strong><div class="text-muted small">{{ a.auditor_agency }}</div></td>
+                        <td class="fw-bold text-success">{{ a.score_percentage }}%</td>
+                        <td><span class="badge bg-success">{{ a.get_status_display }}</span></td>
+                    </tr>
+                {% empty %}<tr><td colspan="3" class="text-center py-4 text-muted">No audits recorded.</td></tr>{% endfor %}</tbody>
+            </table></div></div>
+        </div>
+    </div>
+</div>
+{% endblock %}

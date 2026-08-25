@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Salary Structures — Smart EMS{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div>
+        <h1 class="ems-page-heading"><i class="bi bi-diagram-3-fill text-primary"></i> Salary Structures & Compensation Bands</h1>
+        <p class="ems-page-subheading">Define grade-wise CTC allocations, Basic, HRA, DA, PF & ESI formulas</p>
+    </div>
+    <div><a href="{% url 'payroll:structure_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Add Structure</a></div>
+</div>
+<div class="ems-card"><div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+    <thead><tr><th>Structure Name</th><th>Code</th><th>Annual CTC</th><th>Monthly Basic</th><th>Monthly HRA</th><th>PF Deduct %</th><th>Net Est / Mo</th><th>Status</th></tr></thead>
+    <tbody>{% for s in structures %}
+        <tr>
+            <td><strong>{{ s.name }}</strong></td>
+            <td><span class="badge bg-light text-dark border">{{ s.code }}</span></td>
+            <td class="fw-bold">₹{{ s.annual_ctc|floatformat:2 }}</td>
+            <td>₹{{ s.monthly_basic|floatformat:2 }}</td>
+            <td>₹{{ s.monthly_hra|floatformat:2 }}</td>
+            <td>{{ s.pf_employee_rate }}%</td>
+            <td class="text-success fw-bold">₹{{ s.monthly_net_pay|floatformat:2 }}</td>
+            <td><span class="badge bg-success">Active</span></td>
+        </tr>
+    {% empty %}<tr><td colspan="8" class="text-center py-4 text-muted">No structures configured.</td></tr>{% endfor %}</tbody>
+</table></div></div></div>
+{% endblock %}

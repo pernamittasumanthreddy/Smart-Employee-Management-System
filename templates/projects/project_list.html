@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Project Management — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div><h1 class="ems-page-heading"><i class="bi bi-kanban-fill text-primary"></i> Projects Directory</h1></div>
+    <div>{% if is_manager_or_above %}<a href="{% url 'projects:project_create' %}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>New Project</a>{% endif %}</div>
+</div>
+<div class="row g-4">
+    {% for p in projects %}
+    <div class="col-12 col-md-6 col-xl-4">
+        <div class="ems-card h-100 p-3">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="badge bg-light text-dark border font-monospace">{{ p.code }}</span>
+                <span class="ems-badge ems-badge-success">{{ p.get_status_display }}</span>
+            </div>
+            <h5 class="fw-bold text-dark mb-1"><a href="{% url 'projects:project_detail' p.id %}" class="text-decoration-none text-dark">{{ p.name }}</a></h5>
+            <p class="text-muted small mb-2">{{ p.description|truncatewords:15 }}</p>
+            <div class="d-flex justify-content-between align-items-center mb-1 small">
+                <span class="text-muted">Progress</span>
+                <span class="fw-bold text-primary">{{ p.progress_percentage }}%</span>
+            </div>
+            <div class="progress mb-3" style="height: 6px;"><div class="progress-bar bg-primary" style="width: {{ p.progress_percentage }}%;"></div></div>
+            <div class="border-top pt-2 mt-auto d-flex justify-content-between align-items-center small text-muted">
+                <span>Manager: {{ p.manager.full_name|default:"Unassigned" }}</span>
+                <a href="{% url 'projects:project_detail' p.id %}" class="btn btn-sm btn-outline-primary py-0">Details</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}<div class="col-12 text-center text-muted py-5">No projects created.</div>{% endfor %}
+</div>
+{% endblock %}

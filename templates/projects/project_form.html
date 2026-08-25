@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header"><div><h1 class="ems-page-heading">{{ title }}</h1></div></div>
+<div class="ems-card"><div class="ems-card-body p-4"><form method="post">{% csrf_token %}
+    <div class="row g-3">
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Project Name *</label>{{ form.name }}</div>
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Project Code *</label>{{ form.code }}</div>
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Project Manager</label>{{ form.manager }}</div>
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Project Status</label>{{ form.status }}</div>
+        <div class="col-12 col-md-4"><label class="form-label small fw-semibold">Start Date *</label>{{ form.start_date }}</div>
+        <div class="col-12 col-md-4"><label class="form-label small fw-semibold">Target End Date</label>{{ form.end_date }}</div>
+        <div class="col-12 col-md-4"><label class="form-label small fw-semibold">Project Budget ($)</label>{{ form.budget }}</div>
+        <div class="col-12"><label class="form-label small fw-semibold">Assigned Team Members</label>{{ form.members }}</div>
+        <div class="col-12"><label class="form-label small fw-semibold">Project Description</label>{{ form.description }}</div>
+    </div>
+    <div class="d-flex justify-content-end gap-2 mt-4"><button type="submit" class="btn btn-primary px-4">Save Project</button></div>
+</form></div></div>
+{% endblock %}

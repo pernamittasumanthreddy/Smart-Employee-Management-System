@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Organization Profile — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div><h1 class="ems-page-heading"><i class="bi bi-building-gear text-primary"></i> Company & Corporate Profile</h1></div>
+</div>
+<div class="ems-card"><div class="ems-card-body p-4"><form method="post">{% csrf_token %}
+    <div class="row g-3">
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Company Legal Name</label>{{ form.name }}</div>
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Tax ID / EIN</label>{{ form.tax_id }}</div>
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Corporate Email</label>{{ form.email }}</div>
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Phone</label>{{ form.phone }}</div>
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Website</label>{{ form.website }}</div>
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Primary Currency</label>{{ form.currency }}</div>
+        <div class="col-12"><label class="form-label small fw-semibold">Headquarters Address</label>{{ form.address }}</div>
+        <div class="col-12 col-md-4"><label class="form-label small fw-semibold">City</label>{{ form.city }}</div>
+        <div class="col-12 col-md-4"><label class="form-label small fw-semibold">State</label>{{ form.state }}</div>
+        <div class="col-12 col-md-4"><label class="form-label small fw-semibold">Country</label>{{ form.country }}</div>
+    </div>
+    <div class="d-flex justify-content-end mt-4"><button type="submit" class="btn btn-primary px-4">Update Profile</button></div>
+</form></div></div>
+{% endblock %}

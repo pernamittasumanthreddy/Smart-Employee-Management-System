@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Onboardings — Smart EMS{% endblock %}
+{% block content %}
+<div class="ems-page-header"><div><h1 class="ems-page-heading"><i class="bi bi-person-check-fill text-primary"></i> New Hire Onboardings</h1></div></div>
+<div class="ems-card"><div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+    <thead><tr><th>Employee</th><th>Mentor</th><th>Joining Date</th><th>IT Assets</th><th>HR Orientation</th><th>Action</th></tr></thead>
+    <tbody>{% for ob in onboardings %}
+        <tr>
+            <td><strong>{{ ob.employee.full_name }}</strong></td>
+            <td>{{ ob.mentor_buddy.full_name|default:"Assigned" }}</td>
+            <td>{{ ob.joining_date }}</td>
+            <td><span class="badge {% if ob.it_assets_assigned %}bg-success{% else %}bg-secondary{% endif %}">{% if ob.it_assets_assigned %}Issued{% else %}Pending{% endif %}</span></td>
+            <td><span class="badge {% if ob.hr_orientation_completed %}bg-success{% else %}bg-secondary{% endif %}">{% if ob.hr_orientation_completed %}Completed{% else %}Pending{% endif %}</span></td>
+            <td><a href="{% url 'lifecycle:onboarding_detail' ob.id %}" class="btn btn-sm btn-outline-primary">Tasks</a></td>
+        </tr>
+    {% empty %}<tr><td colspan="6" class="text-center py-4 text-muted">No active onboardings.</td></tr>{% endfor %}</tbody>
+</table></div></div></div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}Security & Compliance — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div>
+        <h1 class="ems-page-heading"><i class="bi bi-shield-check text-success"></i> Security & Compliance Center</h1>
+        <p class="ems-page-subheading">Enterprise governance, RBAC enforcement, data protection, and disaster recovery</p>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <!-- 1. RBAC -->
+    <div class="col-12 col-md-6">
+        <div class="ems-card h-100 p-4">
+            <h5 class="fw-bold text-primary mb-2"><i class="bi bi-shield-lock me-2"></i>1. Role-Based Access Control (RBAC)</h5>
+            <p class="text-muted small">Granular permission matrix enforced on every view and database operation.</p>
+            <div class="d-flex gap-2">
+                <span class="badge bg-primary fs-6">{{ roles_count }} Active Roles</span>
+                <span class="badge bg-light text-dark border fs-6">{{ permissions_count }} Module Rules</span>
+            </div>
+            <div class="mt-3"><a href="{% url 'permissions:role_list' %}" class="btn btn-sm btn-outline-primary">Manage Permissions</a></div>
+        </div>
+    </div>
+
+    <!-- 2. Data Protection -->
+    <div class="col-12 col-md-6">
+        <div class="ems-card h-100 p-4">
+            <h5 class="fw-bold text-success mb-2"><i class="bi bi-lock-fill me-2"></i>2. Data Protection & Encryption</h5>
+            <p class="text-muted small">Passwords hashed with PBKDF2/Argon2. CSRF tokens enforced on all POST forms. Local secure file validation.</p>
+            <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Compliant</span>
+        </div>
+    </div>
+
+    <!-- 3. Audit Logging -->
+    <div class="col-12 col-md-6">
+        <div class="ems-card h-100 p-4">
+            <h5 class="fw-bold text-info mb-2"><i class="bi bi-journal-check me-2"></i>3. Immutable Audit Logging</h5>
+            <p class="text-muted small">Automatic tracking of user actions, timestamps, and IP addresses for full non-repudiation.</p>
+            <a href="{% url 'administration:audit_logs' %}" class="btn btn-sm btn-outline-info">View Logs</a>
+        </div>
+    </div>
+
+    <!-- 4. Backup & Disaster Recovery -->
+    <div class="col-12 col-md-6">
+        <div class="ems-card h-100 p-4">
+            <h5 class="fw-bold text-warning mb-2"><i class="bi bi-database-check me-2"></i>4. Backup & Disaster Recovery</h5>
+            <p class="text-muted small">Automated database snapshot configuration and storage retention rules.</p>
+            <span class="badge bg-light text-dark border mb-2 font-monospace">{{ backup_config.status|default:"HEALTHY" }}</span>
+            <div><a href="{% url 'administration:backups' %}" class="btn btn-sm btn-outline-warning text-dark">Backup Dashboard</a></div>
+        </div>
+    </div>
+</div>
+{% endblock %}

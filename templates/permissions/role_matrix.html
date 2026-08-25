@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Permission Matrix: {{ role.name }} — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div>
+        <h1 class="ems-page-heading"><i class="bi bi-grid-3x3-gap-fill text-primary"></i> Permission Matrix: {{ role.name }}</h1>
+        <p class="ems-page-subheading">Define Create, Read, Update, Delete, and Approval rights per module</p>
+    </div>
+    <a href="{% url 'permissions:role_list' %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to Roles</a>
+</div>
+<div class="ems-card"><div class="ems-card-body p-0"><form method="post">{% csrf_token %}
+    <div class="table-responsive"><table class="ems-table">
+        <thead>
+            <tr>
+                <th>Module</th>
+                <th class="text-center">Create</th>
+                <th class="text-center">Read</th>
+                <th class="text-center">Update</th>
+                <th class="text-center">Delete</th>
+                <th class="text-center">Approve</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in matrix_data %}
+            <tr>
+                <td><strong>{{ item.name }}</strong> ({{ item.code }})</td>
+                <td class="text-center"><input type="checkbox" name="create_{{ item.code }}" class="form-check-input" {% if item.can_create %}checked{% endif %}></td>
+                <td class="text-center"><input type="checkbox" name="read_{{ item.code }}" class="form-check-input" {% if item.can_read %}checked{% endif %}></td>
+                <td class="text-center"><input type="checkbox" name="update_{{ item.code }}" class="form-check-input" {% if item.can_update %}checked{% endif %}></td>
+                <td class="text-center"><input type="checkbox" name="delete_{{ item.code }}" class="form-check-input" {% if item.can_delete %}checked{% endif %}></td>
+                <td class="text-center"><input type="checkbox" name="approve_{{ item.code }}" class="form-check-input" {% if item.can_approve %}checked{% endif %}></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table></div>
+    <div class="p-3 bg-light border-top d-flex justify-content-end gap-2">
+        <a href="{% url 'permissions:role_list' %}" class="btn btn-outline-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary px-4">Save Matrix Configuration</button>
+    </div>
+</form></div></div>
+{% endblock %}

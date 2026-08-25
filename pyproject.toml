@@ -1,0 +1,18 @@
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+ignore = [
+    "RUF012",  # Mutable default for class attributes in Django Models and Migrations
+    "E501",    # Line too long
+    "E402",    # Module level import not at top of file (used after django.setup())
+    "W291",    # Trailing whitespace
+    "W293",    # Blank line contains whitespace
+]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+]

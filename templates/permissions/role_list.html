@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Roles & Permissions — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div>
+        <h1 class="ems-page-heading"><i class="bi bi-shield-lock-fill text-primary"></i> Role-Based Access Control (RBAC)</h1>
+        <p class="ems-page-subheading">Fine-grained module permissions across Administrator, HR Manager, Team Manager, and Employee</p>
+    </div>
+</div>
+<div class="row g-4">
+    {% for role in roles %}
+    <div class="col-12 col-md-6">
+        <div class="ems-card h-100">
+            <div class="ems-card-header">
+                <div>
+                    <h5 class="fw-bold mb-0 text-dark">{{ role.name }}</h5>
+                    <span class="badge bg-light text-primary border font-monospace">{{ role.code }}</span>
+                </div>
+                <a href="{% url 'permissions:role_matrix' role.id %}" class="btn btn-sm btn-primary">
+                    <i class="bi bi-grid-3x3 me-1"></i>Configure Matrix
+                </a>
+            </div>
+            <div class="ems-card-body">
+                <p class="text-muted small mb-3">{{ role.description }}</p>
+                <h6 class="fw-bold small text-uppercase text-secondary">Active Module Permissions:</h6>
+                <div class="d-flex flex-wrap gap-1">
+                    {% for perm in role.permissions.all %}
+                        {% if perm.can_read %}
+                        <span class="badge bg-light text-dark border small">{{ perm.get_module_display }}</span>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,98 @@
+<header class="ems-navbar">
+    <div class="ems-navbar-title">
+        <div class="d-flex align-items-center gap-2">
+            <span class="text-primary fw-bold fs-5">Smart EMS</span>
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2.5 py-1 small d-none d-lg-inline">
+                <i class="bi bi-patch-check-fill text-primary me-1"></i>Enterprise V2
+            </span>
+        </div>
+        <span class="text-muted fw-normal fs-6 d-none d-xl-inline ps-2 border-start">Workforce, HR & Operations</span>
+    </div>
+
+    <div class="ems-navbar-right">
+        <!-- Quick Sound Toggle with Audio Feedback -->
+        <button type="button" class="btn btn-sm btn-outline-primary ems-sound-toggle-btn rounded-pill px-3 py-1.5" title="Toggle Notification Chime">
+            <i class="bi bi-volume-up-fill text-primary me-1"></i>
+            <span class="d-none d-md-inline small fw-semibold">Sound On</span>
+        </button>
+
+        <!-- Role Badge -->
+        <span class="ems-role-badge {% if is_admin %}ems-role-admin{% elif is_hr %}ems-role-hr{% elif is_manager %}ems-role-manager{% else %}ems-role-employee{% endif %}">
+            <i class="bi bi-shield-check me-1"></i>{{ user_role_display }}
+        </span>
+
+        <!-- Notification Bell Dropdown with Sound & Preview -->
+        <div class="dropdown">
+            <a href="#" class="btn btn-light rounded-circle position-relative p-2.5 border shadow-sm" id="notifDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Notifications">
+                <i class="bi bi-bell fs-5 text-secondary"></i>
+                {% if unread_notifications_count > 0 %}
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-white">
+                    {{ unread_notifications_count }}
+                </span>
+                {% endif %}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 p-0" style="width: 360px; border-radius: 16px; overflow: hidden;" aria-labelledby="notifDropdown">
+                <li class="p-3 bg-light border-bottom d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-bell-fill text-primary"></i>
+                        <span class="fw-bold">Notifications</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <button type="button" class="btn btn-xs btn-outline-secondary rounded-pill py-0 px-2 ems-test-sound-btn" data-sound-type="chime" title="Play Chime">
+                            <i class="bi bi-play-circle me-1"></i>Chime
+                        </button>
+                        <a href="{% url 'notifications:center' %}" class="text-decoration-none small text-primary fw-semibold">View All</a>
+                    </div>
+                </li>
+                {% if recent_notifications %}
+                    {% for n in recent_notifications %}
+                    <li class="border-bottom">
+                        <a class="dropdown-item py-2.5 px-3 text-wrap d-flex gap-2.5 align-items-start" href="{% url 'notifications:mark_read' n.id %}">
+                            <div class="p-1.5 rounded-circle bg-primary-subtle text-primary mt-1">
+                                <i class="bi bi-bell-fill" style="font-size: 0.8rem;"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="fw-bold small text-dark">{{ n.title }}</div>
+                                <div class="text-muted" style="font-size: 0.775rem;">{{ n.message|truncatewords:8 }}</div>
+                            </div>
+                        </a>
+                    </li>
+                    {% endfor %}
+                {% else %}
+                    <li class="dropdown-item text-center text-muted small py-4">
+                        <i class="bi bi-check2-circle text-success fs-3 d-block mb-1"></i>
+                        All caught up! No unread notifications
+                    </li>
+                {% endif %}
+                <li class="p-2 text-center bg-light">
+                    <a href="{% url 'notifications:center' %}" class="text-decoration-none small text-muted">Manage notification settings &rarr;</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- User Profile Dropdown -->
+        <div class="dropdown">
+            <a class="ems-user-dropdown-btn dropdown-toggle" href="#" id="userMenuDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <div class="ems-user-avatar">
+                    {% if user.employee_profile %}
+                        {{ user.employee_profile.initials }}
+                    {% else %}
+                        {{ user.username|slice:":2"|upper }}
+                    {% endif %}
+                    <span class="beacon-pulse" title="Status: Active Online"></span>
+                </div>
+                <span class="fw-semibold d-none d-sm-inline">{{ user.get_full_name|default:user.username }}</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 p-2" style="border-radius: 14px; min-width: 220px;" aria-labelledby="userMenuDropdown">
+                <li class="px-3 py-2 border-bottom mb-1">
+                    <div class="fw-bold text-dark">{{ user.get_full_name|default:user.username }}</div>
+                    <div class="text-muted small text-truncate">{{ user.email }}</div>
+                </li>
+                <li><a class="dropdown-item rounded-2 py-2" href="{% url 'employees:self_profile' %}"><i class="bi bi-person-badge text-primary me-2"></i>My 360° Profile</a></li>
+                <li><a class="dropdown-item rounded-2 py-2" href="{% url 'authentication:change_password' %}"><i class="bi bi-key text-warning me-2"></i>Change Password</a></li>
+                <li><hr class="dropdown-divider my-1"></li>
+                <li><a class="dropdown-item rounded-2 py-2 text-danger" href="{% url 'authentication:logout' %}"><i class="bi bi-box-arrow-right me-2"></i>Sign Out</a></li>
+            </ul>
+        </div>
+    </div>
+</header>

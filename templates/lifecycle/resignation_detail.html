@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Exit Clearances {{ resignation.employee.full_name }} — Smart EMS{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div>
+        <h1 class="ems-page-heading"><i class="bi bi-shield-x text-danger"></i> Exit Clearances: {{ resignation.employee.full_name }}</h1>
+        <p class="ems-page-subheading">Notice Date: {{ resignation.resignation_date }} | Status: {{ resignation.get_status_display }}</p>
+    </div>
+    <a href="{% url 'lifecycle:resignation_list' %}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i>Back</a>
+</div>
+
+<div class="ems-card p-4">
+    <h5 class="fw-bold mb-3">Multi-Department Exit Clearance Sign-offs</h5>
+    <div class="table-responsive">
+        <table class="ems-table">
+            <thead><tr><th>Department</th><th>Status</th><th>Pending Items / Assets</th><th>Cleared By</th></tr></thead>
+            <tbody>{% for cl in clearances %}
+                <tr>
+                    <td><strong>{{ cl.get_department_name_display }}</strong></td>
+                    <td><span class="badge {% if cl.is_cleared %}bg-success{% else %}bg-warning text-dark{% endif %}">{% if cl.is_cleared %}Cleared{% else %}Pending Return{% endif %}</span></td>
+                    <td>{{ cl.pending_items|default:"None" }}</td>
+                    <td>{{ cl.cleared_by.first_name|default:"Department Lead" }}</td>
+                </tr>
+            {% empty %}<tr><td colspan="4" class="text-center py-3 text-muted">All department clearances initialized.</td></tr>{% endfor %}</tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

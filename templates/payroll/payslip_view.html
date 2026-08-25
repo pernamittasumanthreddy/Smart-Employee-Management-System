@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block title %}Payslip {{ payslip.employee.full_name }} — Smart EMS{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <a href="{% url 'payroll:my_payslips' %}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i>Back to Payslips</a>
+    <button onclick="window.print()" class="btn btn-primary"><i class="bi bi-printer me-1"></i>Print Payslip</button>
+</div>
+
+<div class="card border shadow-sm p-4 bg-white rounded-4" style="max-width: 850px; margin: 0 auto;">
+    <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
+        <div>
+            <h3 class="fw-bold text-primary mb-0">BHARAT ENTERPRISE SOLUTIONS</h3>
+            <p class="text-muted small mb-0">Workforce & Human Resources Platform | Confidential Payslip</p>
+        </div>
+        <div class="text-end">
+            <span class="badge bg-success-subtle text-success border fs-6">CONFIRMED & PAID</span>
+            <div class="text-muted small mt-1">Period: {{ payslip.payroll_run.title }}</div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4 small">
+        <div class="col-6">
+            <div><strong>Employee Name:</strong> {{ payslip.employee.full_name }}</div>
+            <div><strong>Employee ID:</strong> {{ payslip.employee.employee_id }}</div>
+            <div><strong>Designation:</strong> {{ payslip.employee.designation.title|default:"Staff" }}</div>
+            <div><strong>Department:</strong> {{ payslip.employee.department.name|default:"Corporate" }}</div>
+        </div>
+        <div class="col-6">
+            <div><strong>Bank Name:</strong> State Bank of India</div>
+            <div><strong>Account No:</strong> ************1012</div>
+            <div><strong>Payment Mode:</strong> {{ payslip.payment_mode }}</div>
+            <div><strong>Working Days:</strong> {{ payslip.days_present }} / {{ payslip.total_working_days }}</div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-6">
+            <div class="border rounded-3 p-3 bg-light">
+                <h6 class="fw-bold text-success border-bottom pb-2 mb-2">EARNINGS</h6>
+                <div class="d-flex justify-content-between py-1"><span>Basic Pay</span><span>₹{{ payslip.basic_pay|floatformat:2 }}</span></div>
+                <div class="d-flex justify-content-between py-1"><span>House Rent Allowance (HRA)</span><span>₹{{ payslip.hra|floatformat:2 }}</span></div>
+                <div class="d-flex justify-content-between py-1"><span>Dearness Allowance (DA)</span><span>₹{{ payslip.da|floatformat:2 }}</span></div>
+                <div class="d-flex justify-content-between py-1"><span>Special Allowance</span><span>₹{{ payslip.special_allowance|floatformat:2 }}</span></div>
+                <div class="d-flex justify-content-between py-1"><span>Conveyance Allowance</span><span>₹{{ payslip.conveyance_allowance|floatformat:2 }}</span></div>
+                <div class="d-flex justify-content-between py-1"><span>Medical Allowance</span><span>₹{{ payslip.medical_allowance|floatformat:2 }}</span></div>
+                <div class="d-flex justify-content-between py-1 border-top fw-bold"><span>Gross Earnings</span><span class="text-success">₹{{ payslip.gross_earnings|floatformat:2 }}</span></div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="border rounded-3 p-3 bg-light">
+                <h6 class="fw-bold text-danger border-bottom pb-2 mb-2">DEDUCTIONS</h6>
+                <div class="d-flex justify-content-between py-1"><span>Provident Fund (PF)</span><span>₹{{ payslip.pf_employee|floatformat:2 }}</span></div>
+                <div class="d-flex justify-content-between py-1"><span>Professional Tax (PT)</span><span>₹{{ payslip.professional_tax|floatformat:2 }}</span></div>
+                <div class="d-flex justify-content-between py-1"><span>Income Tax (TDS)</span><span>₹{{ payslip.income_tax_tds|floatformat:2 }}</span></div>
+                <div class="d-flex justify-content-between py-1"><span>Loss of Pay (LOP)</span><span>₹{{ payslip.lop_deduction|floatformat:2 }}</span></div>
+                <div class="d-flex justify-content-between py-1 border-top fw-bold"><span>Total Deductions</span><span class="text-danger">₹{{ payslip.total_deductions|floatformat:2 }}</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-3 bg-success-subtle border border-success rounded-3 text-center mb-3">
+        <div class="text-muted small">NET SALARY PAYABLE (CREDITED TO ACCOUNT)</div>
+        <h2 class="fw-bold text-success mb-0">₹{{ payslip.net_salary|floatformat:2 }}</h2>
+    </div>
+
+    <div class="text-center text-muted small mt-4">
+        This is a computer-generated official payslip issued under Bharat Enterprise Solutions Smart EMS.
+    </div>
+</div>
+{% endblock %}

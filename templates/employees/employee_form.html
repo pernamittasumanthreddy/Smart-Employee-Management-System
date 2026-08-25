@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} — Smart Employee Management System{% endblock %}
+
+{% block content %}
+<div class="ems-page-header">
+    <div>
+        <h1 class="ems-page-heading"><i class="bi bi-person-lines-fill text-primary"></i> {{ title }}</h1>
+        <p class="ems-page-subheading">Fill in mandatory organizational and personal information</p>
+    </div>
+    <div>
+        <a href="{% url 'employees:employee_list' %}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i>Back to Roster
+        </a>
+    </div>
+</div>
+
+<div class="ems-card">
+    <div class="ems-card-body p-4">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <h5 class="fw-bold text-primary border-bottom pb-2 mb-3">1. Identification & Organizational Placement</h5>
+            <div class="row g-3 mb-4">
+                <div class="col-12 col-md-4">
+                    <label class="form-label small fw-semibold">Employee ID *</label>
+                    {{ form.employee_id }}
+                </div>
+                <div class="col-12 col-md-4">
+                    <label class="form-label small fw-semibold">First Name *</label>
+                    {{ form.first_name }}
+                </div>
+                <div class="col-12 col-md-4">
+                    <label class="form-label small fw-semibold">Last Name *</label>
+                    {{ form.last_name }}
+                </div>
+                <div class="col-12 col-md-4">
+                    <label class="form-label small fw-semibold">Work Corporate Email *</label>
+                    {{ form.email }}
+                </div>
+                <div class="col-12 col-md-4">
+                    <label class="form-label small fw-semibold">Phone Number *</label>
+                    {{ form.phone }}
+                </div>
+                <div class="col-12 col-md-4">
+                    <label class="form-label small fw-semibold">Date of Joining *</label>
+                    {{ form.date_of_joining }}
+                </div>
+                <div class="col-12 col-md-3">
+                    <label class="form-label small fw-semibold">Department *</label>
+                    {{ form.department }}
+                </div>
+                <div class="col-12 col-md-3">
+                    <label class="form-label small fw-semibold">Team</label>
+                    {{ form.team }}
+                </div>
+                <div class="col-12 col-md-3">
+                    <label class="form-label small fw-semibold">Designation *</label>
+                    {{ form.designation }}
+                </div>
+                <div class="col-12 col-md-3">
+                    <label class="form-label small fw-semibold">Reporting Manager</label>
+                    {{ form.reporting_manager }}
+                </div>
+                <div class="col-12 col-md-4">
+                    <label class="form-label small fw-semibold">Employment Status *</label>
+                    {{ form.employment_status }}
+                </div>
+                <div class="col-12 col-md-4">
+                    <label class="form-label small fw-semibold">Employment Type *</label>
+                    {{ form.employment_type }}
+                </div>
+                <div class="col-12 col-md-4">
+                    <label class="form-label small fw-semibold">Profile Photo</label>
+                    {{ form.profile_photo }}
+                </div>
+            </div>
+
+            <h5 class="fw-bold text-primary border-bottom pb-2 mb-3">2. Personal & Emergency Details</h5>
+            <div class="row g-3 mb-4">
+                <div class="col-12 col-md-3">
+                    <label class="form-label small fw-semibold">Date of Birth</label>
+                    {{ form.date_of_birth }}
+                </div>
+                <div class="col-12 col-md-3">
+                    <label class="form-label small fw-semibold">Gender</label>
+                    {{ form.gender }}
+                </div>
+                <div class="col-12 col-md-3">
+                    <label class="form-label small fw-semibold">Marital Status</label>
+                    {{ form.marital_status }}
+                </div>
+                <div class="col-12 col-md-3">
+                    <label class="form-label small fw-semibold">Blood Group</label>
+                    {{ form.blood_group }}
+                </div>
+                <div class="col-12 col-md-4">
+                    <label class="form-label small fw-semibold">Emergency Contact Name</label>
+                    {{ form.emergency_contact_name }}
+                </div>
+                <div class="col-12 col-md-4">
+                    <label class="form-label small fw-semibold">Emergency Contact Phone</label>
+                    {{ form.emergency_contact_phone }}
+                </div>
+                <div class="col-12 col-md-4">
+                    <label class="form-label small fw-semibold">Relationship</label>
+                    {{ form.emergency_contact_relation }}
+                </div>
+                <div class="col-12 col-md-6">
+                    <label class="form-label small fw-semibold">Current Residential Address</label>
+                    {{ form.current_address }}
+                </div>
+                <div class="col-12 col-md-6">
+                    <label class="form-label small fw-semibold">Permanent Address</label>
+                    {{ form.permanent_address }}
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2">
+                <a href="{% url 'employees:employee_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary px-4"><i class="bi bi-check-lg me-1"></i>Save Employee Record</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

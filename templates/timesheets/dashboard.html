@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Timesheets & Billing — Smart EMS{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div>
+        <h1 class="ems-page-heading"><i class="bi bi-clock-history text-warning"></i> Client Project Timesheets & Billing</h1>
+        <p class="ems-page-subheading">Weekly billable hours tracking, project rate cards & manager sign-off workflows</p>
+    </div>
+</div>
+<div class="ems-card"><div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+    <thead><tr><th>Employee</th><th>Week Starting</th><th>Week Ending</th><th>Billable Hours</th><th>Non-Billable</th><th>Status</th><th>Action</th></tr></thead>
+    <tbody>{% for t in timesheets %}
+        <tr>
+            <td><strong>{{ t.employee.full_name }}</strong></td>
+            <td>{{ t.week_start_date }}</td>
+            <td>{{ t.week_end_date }}</td>
+            <td class="fw-bold text-success">{{ t.total_billable_hours }} hrs</td>
+            <td>{{ t.total_non_billable_hours }} hrs</td>
+            <td><span class="badge {% if t.status == 'APPROVED' %}bg-success{% else %}bg-warning text-dark{% endif %}">{{ t.get_status_display }}</span></td>
+            <td><a href="{% url 'timesheets:timesheet_detail' t.id %}" class="btn btn-sm btn-outline-primary">Details</a></td>
+        </tr>
+    {% empty %}<tr><td colspan="7" class="text-center py-4 text-muted">No timesheets submitted.</td></tr>{% endfor %}</tbody>
+</table></div></div></div>
+{% endblock %}

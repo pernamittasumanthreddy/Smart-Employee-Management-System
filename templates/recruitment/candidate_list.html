@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Candidates Pool — Smart EMS{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div>
+        <h1 class="ems-page-heading"><i class="bi bi-people-fill text-primary"></i> Candidate Talent Pool</h1>
+        <p class="ems-page-subheading">Search and evaluate active applicants and candidate profiles</p>
+    </div>
+</div>
+<div class="ems-card"><div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+    <thead><tr><th>Candidate Name</th><th>Email</th><th>Phone</th><th>Current Company</th><th>Experience</th><th>Current Location</th><th>Action</th></tr></thead>
+    <tbody>{% for c in candidates %}
+        <tr>
+            <td><strong>{{ c.full_name }}</strong></td>
+            <td>{{ c.email }}</td>
+            <td>{{ c.phone }}</td>
+            <td>{{ c.current_company|default:"Not Disclosed" }}</td>
+            <td>{{ c.total_experience_years }} yrs</td>
+            <td>{{ c.current_location }}</td>
+            <td><a href="{% url 'recruitment:candidate_detail' c.id %}" class="btn btn-sm btn-outline-primary">View 360</a></td>
+        </tr>
+    {% empty %}<tr><td colspan="7" class="text-center py-4 text-muted">No candidates found.</td></tr>{% endfor %}</tbody>
+</table></div></div></div>
+{% endblock %}

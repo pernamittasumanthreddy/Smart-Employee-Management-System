@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}System Settings — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header"><div><h1 class="ems-page-heading"><i class="bi bi-sliders text-primary"></i> System Configuration & Parameters</h1></div></div>
+<div class="ems-card mb-4"><div class="ems-card-body p-4"><h5 class="fw-bold mb-3">Add / Update Setting</h5>
+    <form method="post">{% csrf_token %}<div class="row g-3">
+        <div class="col-12 col-md-6"><label class="form-label small">Key *</label>{{ form.key }}</div>
+        <div class="col-12 col-md-6"><label class="form-label small">Value *</label>{{ form.value }}</div>
+        <div class="col-12 col-md-6"><label class="form-label small">Category</label>{{ form.category }}</div>
+        <div class="col-12 col-md-6"><label class="form-label small">Description</label>{{ form.description }}</div>
+    </div><button type="submit" class="btn btn-primary mt-3">Save Setting</button></form>
+</div></div>
+<div class="ems-card"><div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+    <thead><tr><th>Key</th><th>Value</th><th>Category</th><th>Description</th></tr></thead>
+    <tbody>{% for s in settings %}
+        <tr>
+            <td><span class="badge bg-light text-dark border font-monospace">{{ s.key }}</span></td>
+            <td><strong>{{ s.value }}</strong></td>
+            <td>{{ s.get_category_display }}</td>
+            <td class="small text-muted">{{ s.description }}</td>
+        </tr>
+    {% empty %}<tr><td colspan="4" class="text-center text-muted py-4">No custom settings configured.</td></tr>{% endfor %}</tbody>
+</table></div></div></div>
+{% endblock %}

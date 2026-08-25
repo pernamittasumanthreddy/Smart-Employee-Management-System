@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header">
+    <div>
+        <h1 class="ems-page-heading"><i class="bi bi-building text-primary"></i> {{ title }}</h1>
+        <p class="ems-page-subheading">Configure department details, operational budget, and leadership</p>
+    </div>
+</div>
+<div class="ems-card"><div class="ems-card-body p-4"><form method="post">{% csrf_token %}
+    <div class="row g-3">
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Department Name *</label>{{ form.name }}</div>
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Department Code *</label>{{ form.code }}</div>
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Head of Department</label>{{ form.head_of_department }}</div>
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Annual Operating Budget ($)</label>{{ form.budget }}</div>
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Office Location / Floor</label>{{ form.location }}</div>
+        <div class="col-12 col-md-6 form-check mt-4 ms-2">{{ form.is_active }} <label class="form-check-label small fw-semibold">Active Status</label></div>
+        <div class="col-12"><label class="form-label small fw-semibold">Department Description</label>{{ form.description }}</div>
+    </div>
+    <div class="d-flex justify-content-end gap-2 mt-4">
+        <a href="{% url 'organization:department_list' %}" class="btn btn-outline-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary px-4">Save Department</button>
+    </div>
+</form></div></div>
+{% endblock %}

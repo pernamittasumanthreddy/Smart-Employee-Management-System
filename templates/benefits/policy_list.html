@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Insurance Policies — Smart EMS{% endblock %}
+{% block content %}
+<div class="ems-page-header"><div><h1 class="ems-page-heading"><i class="bi bi-shield-plus text-primary"></i> Company Insurance Policies</h1></div></div>
+<div class="ems-card"><div class="ems-card-body p-0"><div class="table-responsive"><table class="ems-table">
+    <thead><tr><th>Policy Name</th><th>Policy Number</th><th>Type</th><th>Provider</th><th>Sum Insured</th></tr></thead>
+    <tbody>{% for p in policies %}
+        <tr>
+            <td><strong>{{ p.name }}</strong></td>
+            <td>{{ p.policy_number }}</td>
+            <td>{{ p.get_policy_type_display }}</td>
+            <td>{{ p.provider_name }}</td>
+            <td class="fw-bold text-success">₹{{ p.sum_insured|floatformat:0 }}</td>
+        </tr>
+    {% empty %}<tr><td colspan="5" class="text-center py-4 text-muted">No policies.</td></tr>{% endfor %}</tbody>
+</table></div></div></div>
+{% endblock %}

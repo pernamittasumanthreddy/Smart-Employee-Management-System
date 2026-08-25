@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Submit Expense Claim — Smart Employee Management System{% endblock %}
+{% block content %}
+<div class="ems-page-header"><div><h1 class="ems-page-heading"><i class="bi bi-receipt text-primary"></i> Submit Expense Claim</h1></div></div>
+<div class="ems-card"><div class="ems-card-body p-4"><form method="post" enctype="multipart/form-data">{% csrf_token %}
+    <div class="row g-3">
+        <div class="col-12"><label class="form-label small fw-semibold">Expense Title *</label>{{ form.title }}</div>
+        <div class="col-12 col-md-4"><label class="form-label small fw-semibold">Category *</label>{{ form.category }}</div>
+        <div class="col-12 col-md-4"><label class="form-label small fw-semibold">Amount *</label>{{ form.amount }}</div>
+        <div class="col-12 col-md-4"><label class="form-label small fw-semibold">Date Incurred *</label>{{ form.expense_date }}</div>
+        <div class="col-12"><label class="form-label small fw-semibold">Description / Purpose</label>{{ form.description }}</div>
+        <div class="col-12 col-md-6"><label class="form-label small fw-semibold">Receipt Upload</label>{{ form.receipt_file }}</div>
+    </div>
+    <div class="d-flex justify-content-end gap-2 mt-4"><button type="submit" class="btn btn-primary px-4">Submit Claim</button></div>
+</form></div></div>
+{% endblock %}
