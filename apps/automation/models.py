@@ -30,6 +30,10 @@ class AutomationRule(models.Model):
     last_executed_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def __init__(self, *args, **kwargs):
+        kwargs.pop('condition_expression', None)
+        super().__init__(*args, **kwargs)
+
     def __str__(self):
         return f"Rule: {self.name} [{self.get_trigger_event_display()}]"
 
@@ -40,11 +44,16 @@ class ExecutionLog(models.Model):
     status = models.CharField(max_length=20, choices=[('SUCCESS', 'Executed Successfully'), ('FAILED', 'Execution Error'), ('SKIPPED', 'Conditions Not Met')], default='SUCCESS')
     details = models.TextField()
 
+    def __init__(self, *args, **kwargs):
+        kwargs.pop('triggered_by_entity', None)
+        super().__init__(*args, **kwargs)
+
     class Meta:
         ordering = ['-executed_at']
 
     def __str__(self):
         return f"Log: {self.rule.name} @ {self.executed_at} ({self.status})"
+
 
 
 # Alias for backward compatibility

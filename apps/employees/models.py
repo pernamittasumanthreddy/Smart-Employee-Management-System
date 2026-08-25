@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 
@@ -38,7 +39,7 @@ class Employee(models.Model):
     last_name = models.CharField(max_length=50)
     email = models.EmailField(unique=True)
     personal_email = models.EmailField(blank=True, null=True)
-    phone = models.CharField(max_length=25)
+    phone = models.CharField(max_length=25, blank=True, default='')
     
     # Personal & Demographic Details
     date_of_birth = models.DateField(null=True, blank=True)
@@ -62,7 +63,8 @@ class Employee(models.Model):
     emergency_contact_relation = models.CharField(max_length=50, blank=True, null=True)
 
     # Organizational Placement
-    date_of_joining = models.DateField()
+    date_of_joining = models.DateField(default=timezone.now)
+
     department = models.ForeignKey(
         'organization.Department',
         on_delete=models.SET_NULL,

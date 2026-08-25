@@ -17,7 +17,7 @@ class RecognitionGamificationEngine:
 
     @classmethod
     def get_top_kudos_leaderboard(cls, limit: int = 10) -> List[Dict[str, Any]]:
-        leaders = Recognition.objects.values('receiver__id', 'receiver__user__first_name', 'receiver__user__last_name')\
+        leaders = Recognition.objects.values('recipient__id', 'recipient__first_name', 'recipient__last_name')\
             .annotate(kudos_count=Count('id'))\
             .order_by('-kudos_count')[:limit]
 
@@ -34,9 +34,10 @@ class RecognitionGamificationEngine:
 
             results.append({
                 'rank': rank,
-                'employee_id': row['receiver__id'],
-                'full_name': f"{row['receiver__user__first_name']} {row['receiver__user__last_name']}".strip(),
+                'employee_id': row['recipient__id'],
+                'full_name': f"{row['recipient__first_name']} {row['recipient__last_name']}".strip(),
                 'total_kudos_received': count,
                 'awarded_badge': cls.BADGE_TIERS.get(tier, {}).get('badge_title', 'Rising Star'),
             })
         return results
+

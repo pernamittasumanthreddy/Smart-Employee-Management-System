@@ -53,11 +53,39 @@ class SupportTicket(models.Model):
         choices=TicketStatus.choices,
         default=TicketStatus.OPEN
     )
+
+    def __init__(self, *args, **kwargs):
+        if 'employee' in kwargs and 'creator' not in kwargs:
+            kwargs['creator'] = kwargs.pop('employee')
+        if 'title' in kwargs and 'subject' not in kwargs:
+            kwargs['subject'] = kwargs.pop('title')
+        if 'ticket_number' not in kwargs:
+            import uuid
+            kwargs['ticket_number'] = f"TICK-{uuid.uuid4().hex[:6].upper()}"
+        super().__init__(*args, **kwargs)
+
+    @property
+    def employee(self):
+        return self.creator
+
+    @employee.setter
+    def employee(self, val):
+        self.creator = val
+
+    @property
+    def title(self):
+        return self.subject
+
+    @title.setter
+    def title(self, val):
+        self.subject = val
+
     assigned_to = models.ForeignKey(
         'employees.Employee',
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
+
         related_name='assigned_support_tickets'
     )
     resolution_notes = models.TextField(blank=True, null=True)

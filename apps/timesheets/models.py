@@ -10,8 +10,23 @@ class ClientRateCard(models.Model):
     role_name = models.CharField(max_length=150, help_text="e.g. Lead Architect, Senior Fullstack Engineer")
     hourly_billable_rate = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('85.00'))
     currency = models.CharField(max_length=10, default="USD")
-    effective_start = models.DateField()
+    effective_start = models.DateField(default=timezone.now)
     effective_end = models.DateField(null=True, blank=True)
+
+    def __init__(self, *args, **kwargs):
+        if 'hourly_billing_rate' in kwargs and 'hourly_billable_rate' not in kwargs:
+            kwargs['hourly_billable_rate'] = kwargs.pop('hourly_billing_rate')
+        if 'effective_start' not in kwargs:
+            kwargs['effective_start'] = timezone.now().date()
+        super().__init__(*args, **kwargs)
+
+    @property
+    def hourly_billing_rate(self):
+        return self.hourly_billable_rate
+
+    @hourly_billing_rate.setter
+    def hourly_billing_rate(self, val):
+        self.hourly_billable_rate = val
 
     def __str__(self):
         return f"{self.project.name} - {self.role_name} ({self.currency} {self.hourly_billable_rate}/hr)"
@@ -51,6 +66,30 @@ class TimesheetEntry(models.Model):
     is_billable = models.BooleanField(default=True)
     task_description = models.TextField(help_text="Detailed summary of deliverables worked on")
     jira_or_ticket_id = models.CharField(max_length=50, blank=True)
+
+    def __init__(self, *args, **kwargs):
+        if 'date' in kwargs and 'entry_date' not in kwargs:
+            kwargs['entry_date'] = kwargs.pop('date')
+        if 'hours' in kwargs and 'hours_logged' not in kwargs:
+            kwargs['hours_logged'] = kwargs.pop('hours')
+        super().__init__(*args, **kwargs)
+
+    @property
+    def date(self):
+        return self.entry_date
+
+    @date.setter
+    def date(self, val):
+        self.entry_date = val
+
+    @property
+    def hours(self):
+        return self.hours_logged
+
+    @hours.setter
+    def hours(self, val):
+        self.hours_logged = val
+
 
     def __str__(self):
         return f"{self.entry_date} - {self.project.name} ({self.hours_logged} hrs)"

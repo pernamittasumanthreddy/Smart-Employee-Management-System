@@ -21,6 +21,19 @@ class TravelRequest(models.Model):
     manager_approval_notes = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def __init__(self, *args, **kwargs):
+        if 'estimated_cost' in kwargs and 'estimated_total_cost' not in kwargs:
+            kwargs['estimated_total_cost'] = kwargs.pop('estimated_cost')
+        super().__init__(*args, **kwargs)
+
+    @property
+    def estimated_cost(self):
+        return self.estimated_total_cost
+
+    @estimated_cost.setter
+    def estimated_cost(self, val):
+        self.estimated_total_cost = val
+
     def __str__(self):
         return f"Travel: {self.employee.full_name} -> {self.destination_city} ({self.departure_date})"
 
@@ -34,6 +47,7 @@ class DeskBooking(models.Model):
     time_slot = models.CharField(max_length=30, choices=[('FULL_DAY', 'Full Day (9 AM - 6 PM)'), ('MORNING', 'Morning (8 AM - 1 PM)'), ('EVENING', 'Afternoon/Evening (1 PM - 8 PM)')], default='FULL_DAY')
     has_dual_monitors = models.BooleanField(default=True)
     is_checked_in = models.BooleanField(default=True)
+    status = models.CharField(max_length=30, default='CONFIRMED')
 
     class Meta:
         unique_together = ('building', 'floor', 'desk_number', 'booking_date', 'time_slot')
@@ -51,8 +65,34 @@ class MeetingRoom(models.Model):
     has_whiteboard = models.BooleanField(default=True)
     is_active = models.BooleanField(default=True)
 
+    def __init__(self, *args, **kwargs):
+        if 'capacity' in kwargs and 'capacity_seats' not in kwargs:
+            kwargs['capacity_seats'] = kwargs.pop('capacity')
+        if 'has_video_conference' in kwargs and 'has_video_conferencing' not in kwargs:
+            kwargs['has_video_conferencing'] = kwargs.pop('has_video_conference')
+        if 'floor_number' in kwargs and 'floor' not in kwargs:
+            kwargs['floor'] = f"Floor {kwargs.pop('floor_number')}"
+        super().__init__(*args, **kwargs)
+
+    @property
+    def capacity(self):
+        return self.capacity_seats
+
+    @capacity.setter
+    def capacity(self, val):
+        self.capacity_seats = val
+
+    @property
+    def has_video_conference(self):
+        return self.has_video_conferencing
+
+    @has_video_conference.setter
+    def has_video_conference(self, val):
+        self.has_video_conferencing = val
+
     def __str__(self):
         return f"{self.name} ({self.capacity_seats} Seats, {self.floor})"
+
 
 
 class VisitorPass(models.Model):

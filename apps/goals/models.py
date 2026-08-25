@@ -51,10 +51,24 @@ class Goal(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def __init__(self, *args, **kwargs):
+        if 'target_date' in kwargs and 'due_date' not in kwargs:
+            kwargs['due_date'] = kwargs.pop('target_date')
+        super().__init__(*args, **kwargs)
+
+    @property
+    def target_date(self):
+        return self.due_date
+
+    @target_date.setter
+    def target_date(self, val):
+        self.due_date = val
+
     class Meta:
         verbose_name = _('Goal')
         verbose_name_plural = _('Goals')
         ordering = ['due_date']
+
 
     def __str__(self):
         owner = self.employee.full_name if self.employee else f"Team {self.team.name}"

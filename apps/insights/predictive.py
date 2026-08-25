@@ -1,7 +1,9 @@
 from decimal import Decimal
 from typing import List, Dict, Any
+from django.utils import timezone
 from django.db.models import Avg, Count
 from apps.employees.models import Employee
+
 from apps.attendance.models import AttendanceRecord
 from apps.performance.models import PerformanceEvaluation
 from apps.workload.models import WorkloadMetric
@@ -21,14 +23,18 @@ class WorkforcePredictiveEngine:
         factors = []
 
         # 1. Tenure factor (Higher risk around 1.5 - 2.5 years mark)
-        tenure_days = (employee.updated_at.date() - employee.date_of_joining).days if hasattr(employee, 'date_of_joining') and employee.date_of_joining else 365
-        tenure_years = Decimal(str(tenure_days / 365.0))
+        if hasattr(employee, 'date_of_joining') and employee.date_of_joining:
+            ref_date = employee.updated_at.date() if (hasattr(employee, 'updated_at') and employee.updated_at) else timezone.now().date()
+            tenure_days = (ref_date - employee.date_of_joining).days
+        else:
+            tenure_days = 365
+        tenure_years = Decimal(str(max(0, tenure_days) / 365.0))
         if Decimal('1.5') <= tenure_years <= Decimal('2.5'):
             risk_score += Decimal('25.0')
             factors.append("Tenure milestone (1.5-2.5 yr retention window)")
 
         # 2. Performance & Rating Trend
-        perf = PerformanceEvaluation.objects.filter(employee=employee).order_by('-period_end').first()
+        perf = PerformanceEvaluation.objects.filter(employee=employee).order_by('-id').first()
         if perf:
             score_val = getattr(perf, 'overall_score', Decimal('3.5')) or Decimal('3.5')
             if Decimal(str(score_val)) >= Decimal('4.5'):
@@ -39,7 +45,8 @@ class WorkforcePredictiveEngine:
                 factors.append("Performance disengagement alert")
 
         # 3. Workload & Overtime Stress
-        workload = WorkloadMetric.objects.filter(employee=employee).order_by('-date').first()
+        workload = WorkloadMetric.objects.filter(employee=employee).order_by('-id').first()
+
         if workload:
             util = getattr(workload, 'utilization_score', Decimal('75.0')) or Decimal('75.0')
             if Decimal(str(util)) > Decimal('95.0'):
@@ -75,8 +82,9 @@ class WorkforcePredictiveEngine:
             reasons.append(f"Strong verified skill portfolio ({skills_count} skills)")
 
         # Performance history
-        perf = PerformanceEvaluation.objects.filter(employee=employee).order_by('-period_end').first()
+        perf = PerformanceEvaluation.objects.filter(employee=employee).order_by('-id').first()
         if perf and (getattr(perf, 'overall_score', Decimal('3.0')) or Decimal('3.0')) >= Decimal('4.0'):
+
             readiness_score += Decimal('20.0')
             reasons.append("Exceeds performance benchmarks consistently")
 

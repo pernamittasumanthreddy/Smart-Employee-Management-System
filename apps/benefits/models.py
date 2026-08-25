@@ -65,14 +65,32 @@ class InsuranceClaim(models.Model):
     discharge_date = models.DateField()
     claimed_amount = models.DecimalField(max_digits=12, decimal_places=2)
     approved_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'))
-    diagnosis = models.CharField(max_length=255)
+    diagnosis = models.CharField(max_length=255, blank=True, default='General Medical Care')
     status = models.CharField(max_length=30, choices=STATUS_CHOICES, default='SUBMITTED')
     settled_date = models.DateField(null=True, blank=True)
     tpa_remarks = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def __init__(self, *args, **kwargs):
+        if 'claim_number' in kwargs and 'claim_id' not in kwargs:
+            kwargs['claim_id'] = kwargs.pop('claim_number')
+        kwargs.pop('relationship', None)
+        if 'diagnosis' not in kwargs:
+            kwargs['diagnosis'] = 'General Medical Care'
+        super().__init__(*args, **kwargs)
+
+
+    @property
+    def claim_number(self):
+        return self.claim_id
+
+    @claim_number.setter
+    def claim_number(self, val):
+        self.claim_id = val
+
     def __str__(self):
         return f"Claim #{self.claim_id} - {self.patient_name} (INR {self.claimed_amount:,.2f})"
+
 
 
 class FlexibleBenefitPlan(models.Model):

@@ -11,7 +11,7 @@ class JobRequisition(models.Model):
 
     title = models.CharField(max_length=200, help_text="e.g. Senior Cloud Architect, HR Talent Partner")
     requisition_code = models.CharField(max_length=50, unique=True)
-    department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='job_requisitions')
+    department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True, related_name='job_requisitions')
     designation = models.ForeignKey(Designation, on_delete=models.SET_NULL, null=True, blank=True)
     headcount = models.PositiveIntegerField(default=1)
     hiring_manager = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, blank=True, related_name='managed_requisitions')
@@ -23,10 +23,11 @@ class JobRequisition(models.Model):
     work_location = models.CharField(max_length=150, default="Bengaluru HQ / Hybrid")
     priority = models.CharField(max_length=20, choices=PRIORITY_CHOICES, default='HIGH')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='APPROVED')
-    justification = models.TextField(help_text="Business justification for hiring")
-    job_description = models.TextField()
+    justification = models.TextField(blank=True, default="Headcount growth")
+    job_description = models.TextField(blank=True, default="Job overview and core responsibilities")
     required_skills = models.TextField(help_text="Comma-separated skills e.g. Python, Django, AWS, PostgreSQL")
     target_hire_date = models.DateField()
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -155,8 +156,9 @@ class OfferLetter(models.Model):
     application = models.OneToOneField(JobApplication, on_delete=models.CASCADE, related_name='offer_letter')
     offer_code = models.CharField(max_length=50, unique=True)
     offered_designation = models.CharField(max_length=150)
-    department = models.ForeignKey(Department, on_delete=models.CASCADE)
+    department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True)
     offered_ctc_annual = models.DecimalField(max_digits=12, decimal_places=2)
+
     joining_date = models.DateField()
     probation_months = models.IntegerField(default=6)
     offer_valid_until = models.DateField()

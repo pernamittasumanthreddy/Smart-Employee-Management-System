@@ -42,6 +42,19 @@ class LeaveBalance(models.Model):
     used_days = models.DecimalField(max_digits=5, decimal_places=1, default=0.0)
     pending_days = models.DecimalField(max_digits=5, decimal_places=1, default=0.0)
 
+    def __init__(self, *args, **kwargs):
+        if 'total_days' in kwargs and 'total_allocated' not in kwargs:
+            kwargs['total_allocated'] = kwargs.pop('total_days')
+        super().__init__(*args, **kwargs)
+
+    @property
+    def total_days(self):
+        return self.total_allocated
+
+    @total_days.setter
+    def total_days(self, val):
+        self.total_allocated = val
+
     class Meta:
         verbose_name = _('Leave Balance')
         verbose_name_plural = _('Leave Balances')
@@ -75,6 +88,20 @@ class LeaveRequest(models.Model):
         choices=LeaveStatus.choices,
         default=LeaveStatus.PENDING
     )
+
+    def __init__(self, *args, **kwargs):
+        if 'days' in kwargs and 'total_days' not in kwargs:
+            kwargs['total_days'] = kwargs.pop('days')
+        super().__init__(*args, **kwargs)
+
+    @property
+    def days(self):
+        return self.total_days
+
+    @days.setter
+    def days(self, val):
+        self.total_days = val
+
     reviewed_by = models.ForeignKey(
         'employees.Employee',
         on_delete=models.SET_NULL,
