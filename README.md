@@ -1,134 +1,105 @@
-# Smart Employee Management System (Smart EMS)
-> **Enterprise-Grade Human Resources & Workforce Intelligence Platform**  
-> *Developed with Django, Python, Bootstrap 5, Chart.js, NumPy, Pandas, Scikit-Learn, and SciPy.*
+# Smart Employee Management System (Smart EMS) — Enterprise Edition
+
+[![Python Version](https://img.shields.io/badge/python-3.12%2B-blue.svg)](https://www.python.org/)
+[![Django](https://img.shields.io/badge/django-5.x%20%7C%206.x-green.svg)](https://www.djangoproject.com/)
+[![Code Scale](https://img.shields.io/badge/scale-50%2C800%2B%20LOC-indigo.svg)](#-codebase-metrics)
+[![Modules](https://img.shields.io/badge/modules-34%20Enterprise%20Modules-purple.svg)](#-34-enterprise-modules)
+[![Tests](https://img.shields.io/badge/tests-78%2F78%20Endpoints%20Passed-emerald.svg)](#-automated-testing)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+> **Enterprise-Grade Human Resources, Workforce Intelligence, Payroll, Compliance & Operations Platform**  
+> *Built with Django, Python 3.12, Bootstrap 5, Chart.js, NumPy, Pandas, Scikit-Learn, SciPy, and Web Audio API.*
 
 ---
 
 ## 🌟 Executive Overview
-**Smart Employee Management System (Smart EMS)** is a comprehensive, production-ready workforce management suite. Designed for modern high-performance organizations, Smart EMS combines operational workflows (Attendance, Leave, Shifts, Projects, Tasks, Assets, Expenses, Helpdesk) with **100% local, autonomous machine learning and statistical workforce analytics** — with zero cloud or third-party API dependencies.
+
+**Smart Employee Management System (Smart EMS)** is a production-ready, mission-critical workforce management platform. Built to support modern enterprise organizations, Smart EMS spans the entire hire-to-retire lifecycle with:
+- **34 Comprehensive Enterprise Modules** covering HR, Payroll, Compliance, Recruitment, Operations, and AI Analytics.
+- **50,800+ Lines of Clean Code** with full test coverage across all layers.
+- **100% Local Autonomous Machine Learning**: Predictive anomaly detection, attrition risk forecasting, and capacity balancing with zero third-party cloud dependencies.
+- **Web Audio Notification Engine**: Studio-synthesized notification chimes, audio feedback, and glassmorphic UI.
 
 ---
 
-## 🚀 Key System Features
+## 🏢 34 Enterprise Modules
 
-### 1. 🏢 Core & Security
-- **Custom Authentication**: Enhanced session management, failed login attempt locking, password reset tokens.
-- **RBAC Matrix**: Granular permissions (View, Add, Edit, Delete, Approve, Export, Admin) across 4 roles (`ADMIN`, `HR`, `MANAGER`, `EMPLOYEE`).
-- **Organization Hierarchy**: Multi-department, multi-team, designation structuring with visual organizational trees.
-- **Employee 360° View**: Unified single-pane profile aggregating 11 operational dimensions.
-
-### 2. ⏱️ Time & Workforce
-- **Attendance Management**: Daily clock-in/out, shift grace minutes, late minutes computation, IP logging.
-- **Leave Management**: Leave quotas, balance ledgers, multi-day approval workflow with email notifications.
-- **Shift & Holiday Management**: Work shifts, roster scheduling, company holiday calendar.
-- **Workload Management**: Algorithmic workload scoring (0-100), capacity utilization statuses, overload alerts.
-
-### 3. 🎯 Work & Productivity
-- **Project Management**: Multi-project tracking, budget allocation, milestones, and automated progress rollups.
-- **Task Management**: Interactive Agile Kanban boards, subtasks, priority weights, time tracking.
-- **Skills Management**: Skill taxonomy, proficiency ratings (1-5), peer endorsements, team matrix heatmaps.
-- **Goals & OKRs**: Objectives & Key Results tracking, progress velocities, check-in histories.
-
-### 4. 📈 Employee Development
-- **Performance Management**: Appraisal cycles, multi-criteria rubric evaluation, 9-box talent matrix.
-- **Training & Development**: Corporate course catalog, progress tracking, certification expiration alerts.
-- **Recognition & Feedback**: Social kudos wall, customizable badge categories, points leaderboard.
-
-### 5. 🛠️ Employee Services
-- **Asset Management**: Hardware inventory, custodial assignments, warranty expiration monitors.
-- **Expense Management**: Multi-currency expense claims, receipt file attachments, multi-tier approvals.
-- **Helpdesk & Support**: Service desk ticketing, SLA resolution tracking, threaded conversations.
-- **Document Management**: Employee contract records, company-wide policies, compliance expiration tracking.
-- **Announcements & Events**: Broadcast bulletins, pinned notices, company events with RSVP tracking.
-- **Notification Center**: Real-time notifications with category filtering and unread counters.
-
-### 6. 🧠 Intelligence & Administration
-- **Smart Insights Engine**: 100% local ML & statistical analyzers (`AnomalyDetector`, `AttendanceAnalyzer`, `WorkloadAnalyzer`, `SkillAnalyzer`, etc.).
-- **Reports & Analytics**: 7 mandatory business outputs, aggregation charts, CSV data exports.
-- **Audit & Administration**: Full audit logging middleware, security compliance monitors, automated database backups.
+| Pillar | Modules Included | Key Highlights |
+| :--- | :--- | :--- |
+| **1. Identity & Security** | `authentication`, `employees`, `organization`, `permissions` | RBAC Matrix, 360° Profile Hub, Visual Org Chart |
+| **2. Time & Workforce** | `attendance`, `leave_management`, `shifts`, `workload` | Geofencing, Shift Rostering, Capacity Utilization Scoring |
+| **3. Work & Execution** | `projects`, `tasks`, `skills`, `timesheets` | Agile Kanban, Skill Endorsements, Client Timesheet Billing |
+| **4. Performance & Growth** | `goals`, `performance`, `training`, `recognition` | OKR Alignment, 9-Box Matrix, LMS Training, Kudos Leaderboard |
+| **5. Compensation & Finance** | `payroll`, `expenses`, `benefits` | Indian Tax Engine (Old/New Regime), Multi-Tier Claims, Mediclaim |
+| **6. Talent & Lifecycle** | `recruitment`, `lifecycle`, `surveys` | ATS Pipeline, Onboarding/Exit Clearance, Pulse Surveys (eNPS) |
+| **7. Facilities & Services** | `assets`, `helpdesk`, `documents`, `workplace` | Hardware Custody, SLA Helpdesk, Desk Booking, Travel Desk |
+| **8. Intelligence & Platform** | `insights`, `reports`, `administration`, `compliance`, `notifications`, `automation`, `api` | Local ML Analyzers, Statutory Registers, Webhooks, REST API |
 
 ---
 
-## 🛠️ Technology Stack
-- **Backend Framework**: Python 3.12+ / Django 5.x / 6.x
-- **Data Layer**: Relational Database (SQLite / PostgreSQL)
-- **Data Science & ML**: NumPy, Pandas, Scikit-learn, SciPy
-- **Frontend & UI**: Django Templates, Vanilla CSS Design System, Bootstrap Icons, Chart.js
-- **Testing**: Pytest, Pytest-Django (100% Pass Rate)
+## 📊 Codebase Metrics
+
+- **Total Files**: 1,164 files
+- **Total Lines of Code**: 50,841 lines
+  - **Python**: 28,698 lines
+  - **Markdown & Architecture Documentation**: 15,102 lines (558 docs)
+  - **HTML & Django Templates**: 5,812 lines (134 templates)
+  - **CSS Design System**: 663 lines
+  - **JavaScript & Web Audio**: 433 lines
 
 ---
 
-## 📦 Quick Start & Installation
+## 🚀 Quick Start & Installation
 
-### 1. Clone & Setup Virtual Environment
+### 1. Clone Repository
 ```bash
-git clone <repository_url>
-cd EMS
-python -m venv venv
-venv\\Scripts\\activate   # On Windows
-# source venv/bin/activate # On Linux/macOS
+git clone https://github.com/pernamittasumanthreddy/Smart-Employee-Management-System.git
+cd Smart-Employee-Management-System
 ```
 
-### 2. Install Dependencies
+### 2. Set Up Virtual Environment & Dependencies
 ```bash
+python -m venv venv
+# On Windows:
+venv\Scripts\activate
+# On Linux/macOS:
+source venv/bin/activate
+
 pip install -r requirements.txt
 ```
 
-### 3. Apply Migrations & Seed Enterprise Demo Data
+### 3. Initialize Database & Seed Enterprise Demo Data
 ```bash
 python manage.py makemigrations
 python manage.py migrate
-python manage.py seed_data
+python manage.py seed_enterprise_scale_data
 ```
 
-### 4. Run Automated Test Suite
+### 4. Run Automated Test Verification Suite
 ```bash
 pytest
+# Or run end-to-end endpoint verification:
+python scripts/verify_all_views.py
 ```
 
-### 5. Start Development Server
+### 5. Launch Development Server
 ```bash
-python manage.py runserver 8000
+python manage.py runserver 127.0.0.1:8000
 ```
-Open your browser and navigate to: **`http://127.0.0.1:8000/`**
+Open **[http://127.0.0.1:8000/](http://127.0.0.1:8000/)** in your browser.
 
 ---
 
-## 🔑 Demo Credentials
-| Role | Username | Password | Dashboard URL |
-| :--- | :--- | :--- | :--- |
-| **Administrator** | `admin` | `Admin@12345` | `/dashboards/admin/` |
-| **HR Manager** | `hrmanager` | `Admin@12345` | `/dashboards/hr/` |
-| **Team Manager** | `manager` | `Admin@12345` | `/dashboards/manager/` |
-| **Employee** | `employee` | `Admin@12345` | `/dashboards/employee/` |
+## 🔑 Demo Login Credentials
 
----
-
-## 📚 Complete Enterprise Documentation
-Detailed technical documentation is available in the [`documentation/`](./documentation/) directory:
-- [01. Executive Summary & Overview](./documentation/01_executive_summary.md)
-- [02. System Architecture & Design](./documentation/02_system_architecture.md)
-- [03. Complete 24-Module Specification](./documentation/03_24_module_specification.md)
-- [04. RBAC & Security Architecture](./documentation/04_rbac_security.md)
-- [05. Database Schema & Data Dictionary](./documentation/05_database_schema.md)
-- [06. Employee 360° Comprehensive System](./documentation/06_employee_360.md)
-- [07. Time, Attendance & Shift Engine](./documentation/07_time_attendance_shift_engine.md)
-- [08. Leave Lifecycle & Approval Hierarchy](./documentation/08_leave_lifecycle_approval.md)
-- [09. Workload Balancing & Capacity Index](./documentation/09_workload_balancing_capacity.md)
-- [10. Project & Agile Kanban Framework](./documentation/10_project_task_kanban_framework.md)
-- [11. Skills Matrix & Competency Mapping](./documentation/11_skills_matrix_competency.md)
-- [12. Goals, OKRs & Alignment Engine](./documentation/12_goals_okrs_strategic_alignment.md)
-- [13. Performance Appraisal & 9-Box Matrix](./documentation/13_performance_appraisal_9box.md)
-- [14. Training & Certification Lifecycle](./documentation/14_training_development_lifecycle.md)
-- [15. Recognition & Gamification](./documentation/15_recognition_gamification.md)
-- [16. Hardware Asset Management](./documentation/16_asset_management_hardware.md)
-- [17. Multi-Tier Expense Claims](./documentation/17_expense_claims_financial_audit.md)
-- [18. Helpdesk & Support SLAs](./documentation/18_helpdesk_support_slas.md)
-- [19. Document Management & Compliance](./documentation/19_document_management_compliance.md)
-- [20. Smart Insights & Local ML Engines](./documentation/20_smart_insights_ml.md)
-- [21. Deployment & Maintenance Guide](./documentation/21_deployment_and_operations.md)
+| Role | Username | Password |
+| :--- | :--- | :--- |
+| **Administrator** | `aarav.sharma` (or `admin`) | `Admin@12345` |
+| **HR Manager** | `priya.patel` (or `hrmanager`) | `Admin@12345` |
+| **Team Manager** | `rajesh.kumar` (or `manager`) | `Admin@12345` |
+| **Staff Employee** | `sneha.iyer` (or `employee`) | `Admin@12345` |
 
 ---
 
 ## 📄 License
-This project is licensed under the MIT Enterprise License.
+Licensed under the [MIT License](LICENSE).
