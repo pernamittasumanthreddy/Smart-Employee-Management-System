@@ -101,5 +101,16 @@ Open **[http://127.0.0.1:8000/](http://127.0.0.1:8000/)** in your browser.
 
 ---
 
+## 🔐 Authentication & Role-Based Access Control (RBAC)
+
+Smart EMS incorporates a military-grade Role-Based Access Control (RBAC) matrix spanning all 34 business pillars:
+- **Zero-Trust Permission Guards**: Granular permission checks at view, API, and model levels.
+- **Session Hardening**: Secure session cookies, CSRF protection, and automatic idle timeouts.
+- **Multi-Role Switcher**: Native demo support for Administrator, HR Manager, Team Manager, and Staff Employee workflows.
+- For complete technical specifications, see [AUTHENTICATION.md](documentation/AUTHENTICATION.md).
+
+---
+
 ## 📄 License
 Licensed under the [MIT License](LICENSE).
+
