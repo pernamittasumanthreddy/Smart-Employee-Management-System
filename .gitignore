@@ -23,6 +23,11 @@ wheels/
 .installed.cfg
 *.egg
 
+# Environment Secrets
+.env
+.env.*
+*.env.local
+
 # Django
 *.log
 local_settings.py
@@ -30,7 +35,7 @@ db.sqlite3
 db.sqlite3-journal
 media/
 
-# Pytest
+# Pytest & Coverage
 .pytest_cache/
 .coverage
 htmlcov/

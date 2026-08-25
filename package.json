@@ -1,0 +1,16 @@
+{
+  "name": "smart-employee-management-system",
+  "version": "2.5.0",
+  "description": "Smart Employee Management System UI & Frontend Assets",
+  "private": true,
+  "scripts": {
+    "dev": "python manage.py runserver 127.0.0.1:8000",
+    "test": "pytest",
+    "lint": "ruff check ."
+  },
+  "dependencies": {
+    "bootstrap": "^5.3.3",
+    "bootstrap-icons": "^1.11.3",
+    "chart.js": "^4.4.3"
+  }
+}
