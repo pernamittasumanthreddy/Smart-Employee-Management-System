@@ -51,8 +51,8 @@ class EnterpriseFieldValidator:
         if not pan:
             return ValidationResult(False, "PAN", "PAN number cannot be empty.")
         clean_pan = pan.strip().upper()
-        # Structure: 5 letters, 4 digits, 1 letter. 4th letter is entity status (P, C, H, F, A, T, B, L, J, G)
-        pattern = r'^[A-Z]{3}[PCHFATBLJG]{1}[A-Z]{1}[0-9]{4}[A-Z]{1}$'
+        # Structure: 5 uppercase letters, 4 digits, 1 uppercase letter
+        pattern = r'^[A-Z]{5}[0-9]{4}[A-Z]{1}$'
         if not re.match(pattern, clean_pan):
             return ValidationResult(False, "PAN", "Invalid PAN format. Must be 10 characters (e.g. ABCDE1234F).", clean_pan)
         return ValidationResult(True, "PAN", None, clean_pan)
